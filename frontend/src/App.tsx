@@ -1,4 +1,5 @@
 import React from "react";
+import RequesterForm from "./components/RequesterForm";
 
 export default function App() {
   return (
@@ -15,9 +16,14 @@ export default function App() {
         13º proporcional e férias proporcionais.
       </p>
 
-      <p>
-        Vamos adicionar o formulário de cálculo nas próximas etapas.
-      </p>
+      <hr style={{ margin: "20px 0" }} />
+
+      <h2 style={{ color: "#0B2B4A" }}>
+        Formulário de Identificação do Requerente
+      </h2>
+
+      {/* Aqui o formulário é exibido */}
+      <RequesterForm />
     </div>
   );
 }
