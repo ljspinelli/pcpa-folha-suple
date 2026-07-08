@@ -1,5 +1,6 @@
 import React from "react";
 import RequesterForm from "./components/RequesterForm";
+import BasicInfoForm from "./components/BasicInfoForm";
 
 export default function App() {
   return (
@@ -18,12 +19,19 @@ export default function App() {
 
       <hr style={{ margin: "20px 0" }} />
 
+      {/* Formulário de Identificação */}
       <h2 style={{ color: "#0B2B4A" }}>
         Formulário de Identificação do Requerente
       </h2>
-
-      {/* Aqui o formulário é exibido */}
       <RequesterForm />
+
+      <hr style={{ margin: "20px 0" }} />
+
+      {/* Formulário Básico de Informações Preliminares */}
+      <h2 style={{ color: "#0B2B4A" }}>
+        Informações Preliminares para Base de Cálculo
+      </h2>
+      <BasicInfoForm />
     </div>
   );
 }
