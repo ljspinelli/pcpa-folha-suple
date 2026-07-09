@@ -1,9 +1,55 @@
 import React, { useState } from "react";
 
-// Expressões regulares para validação
-const regexCargo = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+// Expressões regulares
 const regexData = /^\d{2}\/\d{2}\/\d{4}$/;
 
+// Lista exaustiva de Cargos
+const cargos = [
+  "Agente de Artes Práticas",
+  "Agente de Eletricidade",
+  "Agente de Mecânica",
+  "Agente de Portaria",
+  "Assistente Administrativo",
+  "Assistente de Informática",
+  "Auxiliar de Escritório",
+  "Auxiliar de Necropsia",
+  "Auxiliar de Serviço de Comunicação",
+  "Auxiliar de Serviços Gerais",
+  "Auxiliar Técnico Polícia Civil",
+  "Auxiliar de Unidade Policial",
+  "Carregador",
+  "Datilógrafo",
+  "Delegado de Polícia",
+  "Enfermeiro",
+  "Escrivão de Polícia",
+  "Estagiário NM - 20HS",
+  "Estagiário NM - 30HS",
+  "Estagiário NS - 20HS",
+  "Estagiário NS - 30HS",
+  "Faxineiro",
+  "Fisioterapeuta",
+  "Fonoaudiólogo",
+  "Investigador de Polícia",
+  "Médico",
+  "Motorista",
+  "Motorista Policial",
+  "Odontólogo",
+  "Papiloscopista",
+  "Perito Policial",
+  "Psicólogo",
+  "Servente",
+  "Serviços Prestados",
+  "Técnico de Administração e Finanças",
+  "Técnico em Gestão de Informática",
+  "Técnico em Gestão de Infraestrutura",
+  "Técnico em Gestão Pública",
+  "Técnico em Saúde",
+  "Técnico em Telefonia",
+  "Vigilante",
+  "Zelador"
+];
+
+// Listas exaustivas de motivos
 const motivosPosse = [
   "Nomeação por Concurso Publico",
   "Livre Nomeação",
@@ -43,13 +89,17 @@ export default function BasicInfoForm() {
 
     switch (nomeCampo) {
       case "cargo":
-        valido = regexCargo.test(valor);
+        valido = cargos.includes(valor);
         break;
       case "dataPosse":
-        valido = regexData.test(valor);
-        break;
       case "dataEncerramento":
         valido = regexData.test(valor);
+        break;
+      case "motivoPosse":
+        valido = motivosPosse.includes(valor);
+        break;
+      case "motivoEncerramento":
+        valido = motivosEncerramento.includes(valor);
         break;
       default:
         valido = true;
@@ -79,12 +129,16 @@ export default function BasicInfoForm() {
       {/* Cargo */}
       <div>
         <label>Cargo:</label><br />
-        <input
+        <select
           name="cargo"
           value={form.cargo}
           onChange={atualizarCampo}
-          placeholder="Ex: Investigador"
-        />
+        >
+          <option value="">Selecione...</option>
+          {cargos.map((cargo, index) => (
+            <option key={index} value={cargo}>{cargo}</option>
+          ))}
+        </select>
         <div style={{ color: "red" }}>{errors["cargo"]}</div>
       </div>
 
@@ -109,10 +163,11 @@ export default function BasicInfoForm() {
           onChange={atualizarCampo}
         >
           <option value="">Selecione...</option>
-          {motivosPosse.map((m, i) => (
-            <option key={i} value={m}>{m}</option>
+          {motivosPosse.map((motivo, index) => (
+            <option key={index} value={motivo}>{motivo}</option>
           ))}
         </select>
+        <div style={{ color: "red" }}>{errors["motivoPosse"]}</div>
       </div>
 
       {/* Data de Encerramento */}
@@ -136,10 +191,11 @@ export default function BasicInfoForm() {
           onChange={atualizarCampo}
         >
           <option value="">Selecione...</option>
-          {motivosEncerramento.map((m, i) => (
-            <option key={i} value={m}>{m}</option>
+          {motivosEncerramento.map((motivo, index) => (
+            <option key={index} value={motivo}>{motivo}</option>
           ))}
         </select>
+        <div style={{ color: "red" }}>{errors["motivoEncerramento"]}</div>
       </div>
     </div>
   );
