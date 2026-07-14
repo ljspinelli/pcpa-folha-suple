@@ -1,7 +1,7 @@
 // Lista de rubricas
 const rubricas = [
   "0100 - Vencimento Cargo Comissionado",
-  "0191 - Vencimento Decisao Judicial SISPEMB",
+  "0191 - Vencisao Judicial SISPEMB",
   "0168 - Abono Complementar Salario Minimo",
   "0274 - Grat Magistério_Vantagem Pessoal Nominalmente Identificada",
   "0109 - Salário Familia Temp/Com",
@@ -47,9 +47,12 @@ const rubricas = [
 ];
 
 // Meses válidos
-const mesesValidos = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+const mesesValidos = [
+  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+  "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+];
 
-// Formatar moeda brasileira
+// Formatar moeda brasileira a partir de dígitos
 function formatarMoeda(valor) {
   const num = Number(valor.replace(/\D/g, "")) / 100;
   return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
@@ -64,9 +67,8 @@ function formatarMesRef(texto) {
     letras = letras.charAt(0).toUpperCase() + letras.slice(1).toLowerCase();
   }
 
-  // Validar mês
   if (letras.length === 3 && !mesesValidos.includes(letras)) {
-    return ""; // impede meses inválidos
+    return "";
   }
 
   let ano = texto.replace(/\D/g, "").slice(0, 4);
@@ -122,12 +124,12 @@ function PayrollForm() {
     setLinhaSelecionada(null);
   }
 
+  // Total como número real (sem reformatar com formatarMoeda)
   const total = vantagens.reduce((acc, item) => {
     const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
     return acc + v;
   }, 0);
 
-  // Estilo padronizado para labels e campos
   const estiloLabel = {
     fontSize: "15px",
     fontWeight: "600",
@@ -236,7 +238,7 @@ function PayrollForm() {
             border: "1px solid #e0e0e0"
           }}
         >
-          Total: R$ {formatarMoeda(String(total))}
+          Total: R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
         </div>
       </div>
     </div>
