@@ -4,49 +4,23 @@ const contribuicoes = [
   "0688 - FINANPREV"
 ];
 
-// Meses válidos
-const mesesValidos = [
-  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-  "Jul", "Ago", "Set", "Out", "Nov", "Dez"
-];
-
 // Formatar moeda brasileira
 function formatarMoeda(valor) {
   const num = Number(valor.replace(/\D/g, "")) / 100;
   return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }
 
-// Formatar porcentagem "00,00%"
-function formatarPercentual(texto) {
+// Máscara de porcentagem digitada da direita para a esquerda
+function mascaraPercentual(texto) {
   let digitos = texto.replace(/\D/g, "").slice(0, 4);
 
-  if (digitos.length <= 2) {
-    return digitos;
-  }
+  // Digitação da direita para a esquerda
+  if (digitos.length === 1) return `0${digitos},00%`;
+  if (digitos.length === 2) return `${digitos},00%`;
+  if (digitos.length === 3) return `${digitos.slice(0, 1)},${digitos.slice(1)}%`;
+  if (digitos.length === 4) return `${digitos.slice(0, 2)},${digitos.slice(2)}%`;
 
-  return digitos.slice(0, 2) + "," + digitos.slice(2) + "%";
-}
-
-// Formatar mês de referência
-function formatarMesRef(texto) {
-  texto = texto.replace(/\s+/g, "");
-
-  let letras = texto.replace(/[^A-Za-z]/g, "").slice(0, 3);
-  if (letras.length > 0) {
-    letras = letras.charAt(0).toUpperCase() + letras.slice(1).toLowerCase();
-  }
-
-  if (letras.length === 3 && !mesesValidos.includes(letras)) {
-    return "";
-  }
-
-  let ano = texto.replace(/\D/g, "").slice(0, 4);
-
-  if (letras.length === 3) {
-    return ano.length > 0 ? `${letras}/${ano}` : `${letras}/`;
-  }
-
-  return letras;
+  return "";
 }
 
 function DiscountForm({ totalVantagens }) {
@@ -77,22 +51,22 @@ function DiscountForm({ totalVantagens }) {
     }
   }, [aliquotaIR]);
 
-  function inserir() {
+  function aplicarDescontos() {
     if (!contrib || !aliquota || !valorCalc || !aliquotaIR || !valorIR) return;
 
-    const novaLinha1 = {
+    const linha1 = {
       rubrica: contrib,
       aliquota,
       valor: valorCalc
     };
 
-    const novaLinha2 = {
+    const linha2 = {
       rubrica: "0658 - Imposto de Renda - IRRF",
       aliquota: aliquotaIR,
       valor: valorIR
     };
 
-    setLista([novaLinha1, novaLinha2]);
+    setLista([linha1, linha2]);
   }
 
   const total = lista.reduce((acc, item) => {
@@ -109,7 +83,7 @@ function DiscountForm({ totalVantagens }) {
   const estiloInput = {
     fontSize: "15px",
     padding: "6px",
-    width: "200px"
+    width: "300px"
   };
 
   const estiloSelect = {
@@ -139,13 +113,17 @@ function DiscountForm({ totalVantagens }) {
         <input
           style={estiloInput}
           value={aliquota}
-          onChange={e => setAliquota(formatarPercentual(e.target.value))}
+          onChange={e => setAliquota(mascaraPercentual(e.target.value))}
           placeholder="00,00%"
         />
       </div>
 
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Valor:</label><br />
+        <label style={estiloLabel}>
+          <a href="https://www.calcule.net/trabalhista/calculo-de-inss/" target="_blank">
+            Valor:
+          </a>
+        </label><br />
         <input
           style={estiloInput}
           value={valorCalc}
@@ -173,7 +151,7 @@ function DiscountForm({ totalVantagens }) {
         <input
           style={estiloInput}
           value={aliquotaIR}
-          onChange={e => setAliquotaIR(formatarPercentual(e.target.value))}
+          onChange={e => setAliquotaIR(mascaraPercentual(e.target.value))}
           placeholder="00,00%"
         />
       </div>
@@ -188,7 +166,7 @@ function DiscountForm({ totalVantagens }) {
       </div>
 
       <div style={{ marginTop: "15px" }}>
-        <button onClick={inserir}>Aplicar Descontos</button>
+        <button onClick={aplicarDescontos}>Aplicar Descontos</button>
       </div>
 
       {/* Quadro inferior */}
@@ -241,4 +219,3 @@ function DiscountForm({ totalVantagens }) {
     </div>
   );
 }
-
