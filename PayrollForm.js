@@ -1,3 +1,4 @@
+// Lista de rubricas
 const rubricas = [
   "0100 - Vencimento Cargo Comissionado",
   "0191 - Vencimento Decisao Judicial SISPEMB",
@@ -45,25 +46,50 @@ const rubricas = [
   "0127 - Auxílio Transporte"
 ];
 
+// Função para formatar moeda brasileira
+function formatarMoeda(valor) {
+  const num = Number(valor.replace(/\D/g, "")) / 100;
+  return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+}
+
+// Função para formatar mês de referência
+function formatarMesRef(texto) {
+  let letras = texto.replace(/[^A-Za-z]/g, "").slice(0, 3);
+  let ano = texto.replace(/\D/g, "").slice(0, 4);
+
+  if (letras.length === 3) {
+    return `${letras}/${ano}`;
+  }
+  return letras;
+}
+
 function PayrollForm() {
   const [rubricaSelecionada, setRubricaSelecionada] = React.useState("");
   const [valor, setValor] = React.useState("");
+  const [mesRef, setMesRef] = React.useState("");
   const [vantagens, setVantagens] = React.useState([]);
   const [linhaSelecionada, setLinhaSelecionada] = React.useState(null);
 
   function inserir() {
-    if (!rubricaSelecionada || !valor) return;
+    if (!rubricaSelecionada || !valor || !mesRef) return;
+
+    const item = {
+      rubrica: rubricaSelecionada,
+      mesRef,
+      valor: formatarMoeda(valor)
+    };
 
     if (linhaSelecionada !== null) {
       const nova = [...vantagens];
-      nova[linhaSelecionada] = { rubrica: rubricaSelecionada, valor };
+      nova[linhaSelecionada] = item;
       setVantagens(nova);
     } else {
-      setVantagens(prev => [...prev, { rubrica: rubricaSelecionada, valor }]);
+      setVantagens(prev => [...prev, item]);
     }
 
     setRubricaSelecionada("");
     setValor("");
+    setMesRef("");
     setLinhaSelecionada(null);
   }
 
@@ -72,6 +98,7 @@ function PayrollForm() {
     const item = vantagens[linhaSelecionada];
     setRubricaSelecionada(item.rubrica);
     setValor(item.valor);
+    setMesRef(item.mesRef);
   }
 
   function excluir() {
@@ -79,6 +106,14 @@ function PayrollForm() {
     setVantagens(vantagens.filter((_, i) => i !== linhaSelecionada));
     setLinhaSelecionada(null);
   }
+
+  const total = vantagens
+    .reduce((acc, item) => {
+      const v = Number(item.valor.replace(/\./g, "").replace(",", ".")); 
+      return acc + v;
+    }, 0)
+    .toFixed(2)
+    .replace(".", ",");
 
   return (
     <div>
@@ -94,10 +129,19 @@ function PayrollForm() {
       </select>
 
       <div style={{ marginTop: "10px" }}>
+        <label>Mês de Referência:</label><br />
+        <input
+          value={mesRef}
+          onChange={e => setMesRef(formatarMesRef(e.target.value))}
+          placeholder="Abr/2020"
+        />
+      </div>
+
+      <div style={{ marginTop: "10px" }}>
         <label>Valor (R$):</label><br />
         <input
           value={valor}
-          onChange={e => setValor(e.target.value)}
+          onChange={e => setValor(formatarMoeda(e.target.value))}
           placeholder="000.000,00"
         />
       </div>
@@ -119,36 +163,35 @@ function PayrollForm() {
       >
         <h3>Vantagens Lançadas</h3>
 
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {vantagens.map((item, index) => (
-            <li
-              key={index}
-              onClick={() => setLinhaSelecionada(index)}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "8px",
-                marginBottom: "5px",
-                background: linhaSelecionada === index ? "#e6f0ff" : "#f9f9f9",
-                borderRadius: "5px",
-                cursor: "pointer"
-              }}
-            >
-              <span>{item.rubrica}</span>
-              <span>{item.valor}</span>
-            </li>
-          ))}
-        </ul>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "#f0f0f0" }}>
+              <th style={{ padding: "8px", textAlign: "left" }}>Rubrica</th>
+              <th style={{ padding: "8px", textAlign: "left" }}>Mês Ref.</th>
+              <th style={{ padding: "8px", textAlign: "right" }}>Valor (R$)</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {vantagens.map((item, index) => (
+              <tr
+                key={index}
+                onClick={() => setLinhaSelecionada(index)}
+                style={{
+                  background: linhaSelecionada === index ? "#e6f0ff" : "#fff",
+                  cursor: "pointer"
+                }}
+              >
+                <td style={{ padding: "8px" }}>{item.rubrica}</td>
+                <td style={{ padding: "8px" }}>{item.mesRef}</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>{item.valor}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
         <div style={{ marginTop: "10px", fontWeight: "bold" }}>
-          Total: R$
-          {vantagens
-            .reduce((acc, item) => {
-              const v = Number(item.valor.replace(".", "").replace(",", "."));
-              return acc + v;
-            }, 0)
-            .toFixed(2)
-            .replace(".", ",")}
+          Total: R$ {total}
         </div>
       </div>
     </div>
