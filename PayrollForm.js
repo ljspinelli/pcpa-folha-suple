@@ -11,7 +11,7 @@ const rubricas = [
   "0209 - Complementação Pecuniária",
   "0219 - Grat. Exerc. de Atividade de Direção de Polícia Judiciária",
   "0186 - Gratificação de Atividade Aerea",
-  "0122 - Gratificação de Atividade de Motorista",
+  "0122 - Gratificação de Motorista",
   "0052 - Gratificação de Localidade Especial",
   "0070 - Gratificação de Polícia Judiciária",
   "0040 - Gratificação de Risco de Vida",
@@ -46,20 +46,35 @@ const rubricas = [
   "0127 - Auxílio Transporte"
 ];
 
+// Meses válidos
+const mesesValidos = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
 // Formatar moeda brasileira
 function formatarMoeda(valor) {
   const num = Number(valor.replace(/\D/g, "")) / 100;
   return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }
 
-// Formatar mês de referência
+// Formatar mês de referência com validação
 function formatarMesRef(texto) {
+  texto = texto.replace(/\s+/g, "");
+
   let letras = texto.replace(/[^A-Za-z]/g, "").slice(0, 3);
+  if (letras.length > 0) {
+    letras = letras.charAt(0).toUpperCase() + letras.slice(1).toLowerCase();
+  }
+
+  // Validar mês
+  if (letras.length === 3 && !mesesValidos.includes(letras)) {
+    return ""; // impede meses inválidos
+  }
+
   let ano = texto.replace(/\D/g, "").slice(0, 4);
 
   if (letras.length === 3) {
-    return `${letras}/${ano}`;
+    return ano.length > 0 ? `${letras}/${ano}` : `${letras}/`;
   }
+
   return letras;
 }
 
@@ -107,16 +122,35 @@ function PayrollForm() {
     setLinhaSelecionada(null);
   }
 
-  // Cálculo do total como número puro
   const total = vantagens.reduce((acc, item) => {
     const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
     return acc + v;
   }, 0);
 
+  // Estilo padronizado para labels e campos
+  const estiloLabel = {
+    fontSize: "15px",
+    fontWeight: "600",
+    color: "#0B2B4A"
+  };
+
+  const estiloInput = {
+    fontSize: "15px",
+    padding: "6px",
+    width: "200px"
+  };
+
+  const estiloSelect = {
+    fontSize: "15px",
+    padding: "6px",
+    width: "300px"
+  };
+
   return (
     <div>
-      <label>Selecionar Rubrica:</label><br />
+      <label style={estiloLabel}>Selecionar Rubrica:</label><br />
       <select
+        style={estiloSelect}
         value={rubricaSelecionada}
         onChange={e => setRubricaSelecionada(e.target.value)}
       >
@@ -127,8 +161,9 @@ function PayrollForm() {
       </select>
 
       <div style={{ marginTop: "10px" }}>
-        <label>Mês de Referência:</label><br />
+        <label style={estiloLabel}>Mês de Referência:</label><br />
         <input
+          style={estiloInput}
           value={mesRef}
           onChange={e => setMesRef(formatarMesRef(e.target.value))}
           placeholder="Abr/2020"
@@ -136,8 +171,9 @@ function PayrollForm() {
       </div>
 
       <div style={{ marginTop: "10px" }}>
-        <label>Valor (R$):</label><br />
+        <label style={estiloLabel}>Valor (R$):</label><br />
         <input
+          style={estiloInput}
           value={valor}
           onChange={e => setValor(formatarMoeda(e.target.value))}
           placeholder="000.000,00"
@@ -188,7 +224,6 @@ function PayrollForm() {
           </tbody>
         </table>
 
-        {/* TOTAL FORMATADO E ALINHADO À DIREITA */}
         <div
           style={{
             marginTop: "15px",
