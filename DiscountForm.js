@@ -123,11 +123,7 @@ function DiscountForm({ totalVantagens }) {
       </div>
 
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>
-          <a href="https://www.calcule.net/trabalhista/calculo-de-inss/" target="_blank">
-            Valor:
-          </a>
-        </label><br />
+        <label style={estiloLabel}>Valor:</label><br />
         <input
           style={estiloInput}
           value={valorCalc}
