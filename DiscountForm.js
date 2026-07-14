@@ -14,7 +14,6 @@ function formatarMoeda(valor) {
 function mascaraPercentual(texto) {
   let digitos = texto.replace(/\D/g, "").slice(0, 4);
 
-  // Digitação da direita para a esquerda
   if (digitos.length === 1) return `0${digitos},00%`;
   if (digitos.length === 2) return `${digitos},00%`;
   if (digitos.length === 3) return `${digitos.slice(0, 1)},${digitos.slice(1)}%`;
@@ -96,7 +95,12 @@ function DiscountForm({ totalVantagens }) {
     <div>
 
       {/* Linha 1 - Contribuição Previdenciária */}
-      <label style={estiloLabel}>Contribuição Previdenciária:</label><br />
+      <label style={estiloLabel}>
+        <a href="https://www.calcule.net/trabalhista/calculo-de-inss/" target="_blank">
+          Contribuição Previdenciária:
+        </a>
+      </label><br />
+
       <select
         style={estiloSelect}
         value={contrib}
