@@ -46,13 +46,13 @@ const rubricas = [
   "0127 - Auxílio Transporte"
 ];
 
-// Função para formatar moeda brasileira
+// Formatar moeda brasileira
 function formatarMoeda(valor) {
   const num = Number(valor.replace(/\D/g, "")) / 100;
   return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }
 
-// Função para formatar mês de referência
+// Formatar mês de referência
 function formatarMesRef(texto) {
   let letras = texto.replace(/[^A-Za-z]/g, "").slice(0, 3);
   let ano = texto.replace(/\D/g, "").slice(0, 4);
@@ -107,13 +107,11 @@ function PayrollForm() {
     setLinhaSelecionada(null);
   }
 
-  const total = vantagens
-    .reduce((acc, item) => {
-      const v = Number(item.valor.replace(/\./g, "").replace(",", ".")); 
-      return acc + v;
-    }, 0)
-    .toFixed(2)
-    .replace(".", ",");
+  // Cálculo do total como número puro
+  const total = vantagens.reduce((acc, item) => {
+    const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
+    return acc + v;
+  }, 0);
 
   return (
     <div>
@@ -190,8 +188,20 @@ function PayrollForm() {
           </tbody>
         </table>
 
-        <div style={{ marginTop: "10px", fontWeight: "bold" }}>
-          Total: R$ {total}
+        {/* TOTAL FORMATADO E ALINHADO À DIREITA */}
+        <div
+          style={{
+            marginTop: "15px",
+            fontWeight: "bold",
+            textAlign: "right",
+            fontSize: "18px",
+            padding: "10px",
+            background: "#f7f7f7",
+            borderRadius: "8px",
+            border: "1px solid #e0e0e0"
+          }}
+        >
+          Total: R$ {formatarMoeda(String(total))}
         </div>
       </div>
     </div>
