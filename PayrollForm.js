@@ -80,7 +80,7 @@ function formatarMesRef(texto) {
   return letras;
 }
 
-function PayrollForm() {
+function PayrollForm({ onTotalChange }) {
   const [rubricaSelecionada, setRubricaSelecionada] = React.useState("");
   const [valor, setValor] = React.useState("");
   const [mesRef, setMesRef] = React.useState("");
@@ -124,11 +124,18 @@ function PayrollForm() {
     setLinhaSelecionada(null);
   }
 
-  // Total como número real (sem reformatar com formatarMoeda)
+  // Total como número real
   const total = vantagens.reduce((acc, item) => {
     const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
     return acc + v;
   }, 0);
+
+  // Enviar total para o App.js
+  React.useEffect(() => {
+    if (onTotalChange) {
+      onTotalChange(total);
+    }
+  }, [total]);
 
   const estiloLabel = {
     fontSize: "15px",
