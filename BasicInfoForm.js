@@ -1,110 +1,105 @@
-const cargos = [
-  "Agente de Artes Práticas",
-  "Agente de Eletricidade",
-  "Agente de Mecânica",
-  "Agente de Portaria",
-  "Assistente Administrativo",
-  "Assistente de Informática",
-  "Auxiliar de Escritório",
-  "Auxiliar de Necropsia",
-  "Auxiliar de Serviço de Comunicação",
-  "Auxiliar de Serviços Gerais",
-  "Auxiliar Técnico Polícia Civil",
-  "Auxiliar de Unidade Policial",
-  "Carregador",
-  "Datilógrafo",
-  "Delegado de Polícia",
-  "Enfermeiro",
-  "Escrivão de Polícia",
-  "Estagiário NM - 20HS",
-  "Estagiário NM - 30HS",
-  "Estagiário NS - 20HS",
-  "Estagiário NS - 30HS",
-  "Faxineiro",
-  "Fisioterapeuta",
-  "Fonoaudiólogo",
-  "Investigador de Polícia",
-  "Médico",
-  "Motorista",
-  "Motorista Policial",
-  "Odontólogo",
-  "Papiloscopista",
-  "Perito Policial",
-  "Psicólogo",
-  "Servente",
-  "Serviços Prestados",
-  "Técnico de Administração e Finanças",
-  "Técnico em Gestão de Informática",
-  "Técnico em Gestão de Infraestrutura",
-  "Técnico em Gestão Pública",
-  "Técnico em Saúde",
-  "Técnico em Telefonia",
-  "Vigilante",
-  "Zelador"
-];
+// Máscara de data DD/MM/AAAA com validação fluída
+function mascaraData(texto) {
+  let digitos = texto.replace(/\D/g, "").slice(0, 8);
 
-const motivosPosse = [
-  "Nomeação por Concurso Publico",
-  "Livre Nomeação",
-  "Promoção",
-  "Reintegração",
-  "Transferência",
-  "Reversão",
-  "Aproveitamento",
-  "Readaptação",
-  "Recondução"
-];
+  let dia = digitos.slice(0, 2);
+  let mes = digitos.slice(2, 4);
+  let ano = digitos.slice(4, 8);
 
-const motivosEncerramento = [
-  "Exoneração",
-  "Demissão",
-  "Promoção",
-  "Aposentadoria",
-  "Readaptação",
-  "Falecimento",
-  "Transferência",
-  "Destituição"
-];
+  // Validação de dia
+  if (dia.length === 2) {
+    const d = Number(dia);
+    if (d < 1 || d > 31) dia = "";
+  }
+
+  // Validação de mês
+  if (mes.length === 2) {
+    const m = Number(mes);
+    if (m < 1 || m > 12) mes = "";
+  }
+
+  // Validação de ano (mínimo 1900, máximo 2100)
+  if (ano.length === 4) {
+    const a = Number(ano);
+    if (a < 1900 || a > 2100) ano = "";
+  }
+
+  let resultado = "";
+  if (dia) resultado = dia;
+  if (mes) resultado += "/" + mes;
+  if (ano) resultado += "/" + ano;
+
+  return resultado;
+}
 
 function BasicInfoForm() {
-  const [form, setForm] = React.useState({
-    cargo: "",
-    dataPosse: "",
-    motivoPosse: "",
-    dataEncerramento: "",
-    motivoEncerramento: ""
-  });
+  const [posse, setPosse] = React.useState("");
+  const [motivoPosse, setMotivoPosse] = React.useState("");
+  const [encerramento, setEncerramento] = React.useState("");
+  const [motivoEncerramento, setMotivoEncerramento] = React.useState("");
 
-  function atualizar(e) {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-  }
+  // Estilos padronizados conforme PayrollForm
+  const estiloLabel = {
+    fontSize: "15px",
+    fontWeight: "600",
+    color: "#0B2B4A"
+  };
+
+  const estiloInput = {
+    fontSize: "15px",
+    padding: "6px",
+    width: "300px"
+  };
+
+  const estiloSelect = {
+    fontSize: "15px",
+    padding: "6px",
+    width: "300px"
+  };
+
+  const motivosPosse = [
+    "Nomeação por Concurso Publico",
+    "Livre Nomeação",
+    "Promoção",
+    "Reintegração",
+    "Transferência",
+    "Reversão",
+    "Aproveitamento",
+    "Readaptação",
+    "Recondução"
+  ];
+
+  const motivosEncerramento = [
+    "Exoneração",
+    "Demissão",
+    "Promoção",
+    "Aposentadoria",
+    "Readaptação",
+    "Falecimento",
+    "Transferência",
+    "Destituição"
+  ];
 
   return (
     <div>
-      <div>
-        <label>Cargo:</label><br />
-        <select name="cargo" value={form.cargo} onChange={atualizar}>
-          <option value="">Selecione...</option>
-          {cargos.map((c, i) => (
-            <option key={i} value={c}>{c}</option>
-          ))}
-        </select>
-      </div>
 
-      <div>
-        <label>Data da Posse:</label><br />
-        <input
-          name="dataPosse"
-          value={form.dataPosse}
-          onChange={atualizar}
-          placeholder="DD/MM/AAAA"
-        />
-      </div>
+      {/* Data da Posse */}
+      <label style={estiloLabel}>Data da Posse:</label><br />
+      <input
+        style={estiloInput}
+        value={posse}
+        onChange={e => setPosse(mascaraData(e.target.value))}
+        placeholder="DD/MM/AAAA"
+      />
 
-      <div>
-        <label>Motivo da Posse:</label><br />
-        <select name="motivoPosse" value={form.motivoPosse} onChange={atualizar}>
+      {/* Motivo da Posse */}
+      <div style={{ marginTop: "10px" }}>
+        <label style={estiloLabel}>Motivo da Posse:</label><br />
+        <select
+          style={estiloSelect}
+          value={motivoPosse}
+          onChange={e => setMotivoPosse(e.target.value)}
+        >
           <option value="">Selecione...</option>
           {motivosPosse.map((m, i) => (
             <option key={i} value={m}>{m}</option>
@@ -112,22 +107,24 @@ function BasicInfoForm() {
         </select>
       </div>
 
-      <div>
-        <label>Data de Encerramento:</label><br />
+      {/* Data de Encerramento */}
+      <div style={{ marginTop: "10px" }}>
+        <label style={estiloLabel}>Data de Encerramento de Vínculo:</label><br />
         <input
-          name="dataEncerramento"
-          value={form.dataEncerramento}
-          onChange={atualizar}
+          style={estiloInput}
+          value={encerramento}
+          onChange={e => setEncerramento(mascaraData(e.target.value))}
           placeholder="DD/MM/AAAA"
         />
       </div>
 
-      <div>
-        <label>Motivo de Encerramento:</label><br />
+      {/* Motivo de Encerramento */}
+      <div style={{ marginTop: "10px" }}>
+        <label style={estiloLabel}>Motivo de Encerramento de Vínculo:</label><br />
         <select
-          name="motivoEncerramento"
-          value={form.motivoEncerramento}
-          onChange={atualizar}
+          style={estiloSelect}
+          value={motivoEncerramento}
+          onChange={e => setMotivoEncerramento(e.target.value)}
         >
           <option value="">Selecione...</option>
           {motivosEncerramento.map((m, i) => (
@@ -135,6 +132,7 @@ function BasicInfoForm() {
           ))}
         </select>
       </div>
+
     </div>
   );
 }
