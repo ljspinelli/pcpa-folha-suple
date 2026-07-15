@@ -66,7 +66,7 @@ function App() {
         </h2>
         <DiscountForm
           totalVantagens={totalVantagens}
-          onTotalDescontosChange={setTotalDescontos}
+          setTotalDescontos={setTotalDescontos}
         />
       </div>
 
