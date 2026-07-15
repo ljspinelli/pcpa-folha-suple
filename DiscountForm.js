@@ -31,7 +31,7 @@ function formatarPercentualFinal(digitos) {
   return "";
 }
 
-function DiscountForm({ totalVantagens }) {
+function DiscountForm({ totalVantagens, setTotalDescontos }) {
   const [contrib, setContrib] = React.useState("");
 
   const [aliquota, setAliquota] = React.useState("");
@@ -112,10 +112,18 @@ function DiscountForm({ totalVantagens }) {
     setLista([linha1, linha2]);
   }
 
+  // Total dos descontos
   const total = lista.reduce((acc, item) => {
     const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
     return acc + (isNaN(v) ? 0 : v);
   }, 0);
+
+  // 🔥 CORREÇÃO CRÍTICA — envia o total para o App.js
+  React.useEffect(() => {
+    if (typeof setTotalDescontos === "function") {
+      setTotalDescontos(total);
+    }
+  }, [total, setTotalDescontos]);
 
   const estiloLabel = {
     fontSize: "15px",
