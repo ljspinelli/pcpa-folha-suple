@@ -38,7 +38,7 @@ function BasicInfoForm() {
   const [encerramento, setEncerramento] = React.useState("");
   const [motivoEncerramento, setMotivoEncerramento] = React.useState("");
 
-  // Estilos padronizados conforme PayrollForm
+  // Estilos padronizados (referência: Data da Posse)
   const estiloLabel = {
     fontSize: "15px",
     fontWeight: "600",
@@ -48,13 +48,19 @@ function BasicInfoForm() {
   const estiloInput = {
     fontSize: "15px",
     padding: "6px",
-    width: "300px"
+    width: "300px",
+    backgroundColor: "#ffffff",
+    border: "1px solid #ccc",
+    borderRadius: "4px"
   };
 
   const estiloSelect = {
     fontSize: "15px",
     padding: "6px",
-    width: "300px"
+    width: "300px",
+    backgroundColor: "#ffffff",
+    border: "1px solid #ccc",
+    borderRadius: "4px"
   };
 
   const motivosPosse = [
