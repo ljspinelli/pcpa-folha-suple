@@ -1,9 +1,11 @@
 function App() {
   const [totalVantagens, setTotalVantagens] = React.useState(0);
+  const [totalDescontos, setTotalDescontos] = React.useState(0);
 
   return (
     <PageLayout>
 
+      {/* Identificação do Requerente */}
       <div
         style={{
           background: "#ffffff",
@@ -17,6 +19,7 @@ function App() {
         <RequesterForm />
       </div>
 
+      {/* Informações Preliminares */}
       <div
         style={{
           background: "#ffffff",
@@ -32,6 +35,7 @@ function App() {
         <BasicInfoForm />
       </div>
 
+      {/* Vantagens */}
       <div
         style={{
           background: "#ffffff",
@@ -47,6 +51,7 @@ function App() {
         <PayrollForm onTotalChange={setTotalVantagens} />
       </div>
 
+      {/* Descontos */}
       <div
         style={{
           background: "#ffffff",
@@ -59,7 +64,27 @@ function App() {
         <h2 style={{ color: "#0B2B4A" }}>
           Descontos e Retenções
         </h2>
-        <DiscountForm totalVantagens={totalVantagens} />
+        <DiscountForm
+          totalVantagens={totalVantagens}
+          onTotalDescontosChange={setTotalDescontos}
+        />
+      </div>
+
+      {/* Valor Líquido */}
+      <div
+        style={{
+          background: "#ffffff",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+          marginBottom: "20px"
+        }}
+      >
+        <h2 style={{ color: "#0B2B4A" }}>Valor Líquido</h2>
+        <NetValueForm
+          totalVantagens={totalVantagens}
+          totalDescontos={totalDescontos}
+        />
       </div>
 
     </PageLayout>
