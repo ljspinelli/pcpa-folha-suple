@@ -4,10 +4,17 @@ const contribuicoes = [
   "0688 - FINANPREV"
 ];
 
-// Formatar moeda brasileira a partir de dígitos
-function formatarMoeda(valor) {
-  const num = Number(valor.replace(/\D/g, "")) / 100;
-  return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+// Máscara fluída de moeda (sem NaN)
+function formatarMoedaDigitacao(valor) {
+  const digitos = valor.replace(/\D/g, "");
+  if (!digitos) return "";
+
+  const num = Number(digitos) / 100;
+
+  return num.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 // Formata string numérica em "00,00%"
@@ -39,12 +46,21 @@ function DiscountForm({ totalVantagens }) {
 
   const [lista, setLista] = React.useState([]);
 
-  // Cálculo do valor previdenciário após final da digitação da alíquota
+  // Cálculo do valor previdenciário
   React.useEffect(() => {
     if (aliquota.includes(",")) {
-      const perc = Number(aliquota.replace("%", "").replace(",", ".")) / 100;
+      const perc = Number(
+        aliquota.replace("%", "").replace(",", ".")
+      ) / 100;
+
       const calc = totalVantagens * perc;
-      setValorCalc(calc.toLocaleString("pt-BR", { minimumFractionDigits: 2 }));
+
+      setValorCalc(
+        calc.toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      );
     } else {
       setValorCalc("");
     }
@@ -52,33 +68,30 @@ function DiscountForm({ totalVantagens }) {
 
   // Digitação fluída da alíquota
   function onAliquotaChange(e) {
-    const texto = e.target.value;
-    const filtrado = texto.replace(/[^0-9,]/g, "");
-    setAliquotaRaw(filtrado);
-    setAliquota(filtrado);
+    const texto = e.target.value.replace(/[^0-9,]/g, "");
+    setAliquotaRaw(texto);
+    setAliquota(texto);
   }
 
   function onAliquotaBlur() {
-    const formatado = formatarPercentualFinal(aliquotaRaw);
-    setAliquota(formatado);
+    setAliquota(formatarPercentualFinal(aliquotaRaw));
   }
 
   // Digitação fluída da alíquota IR
   function onAliquotaIRChange(e) {
-    const texto = e.target.value;
-    const filtrado = texto.replace(/[^0-9,]/g, "");
-    setAliquotaIRRaw(filtrado);
-    setAliquotaIR(filtrado);
+    const texto = e.target.value.replace(/[^0-9,]/g, "");
+    setAliquotaIRRaw(texto);
+    setAliquotaIR(texto);
   }
 
   function onAliquotaIRBlur() {
-    const formatado = formatarPercentualFinal(aliquotaIRRaw);
-    setAliquotaIR(formatado);
+    setAliquotaIR(formatarPercentualFinal(aliquotaIRRaw));
   }
 
-  // Valor IR com máscara de moeda durante digitação
+  // Valor IR — máscara fluída sem NaN
   function onValorIRChange(e) {
-    setValorIR(formatarMoeda(e.target.value));
+    const texto = e.target.value;
+    setValorIR(formatarMoedaDigitacao(texto));
   }
 
   function aplicarDescontos() {
@@ -101,7 +114,7 @@ function DiscountForm({ totalVantagens }) {
 
   const total = lista.reduce((acc, item) => {
     const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
-    return acc + v;
+    return acc + (isNaN(v) ? 0 : v);
   }, 0);
 
   const estiloLabel = {
@@ -150,7 +163,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
-      {/* Valor */}
+      {/* Valor Previdenciário */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor:</label><br />
         <input
