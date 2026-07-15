@@ -4,7 +4,7 @@ const contribuicoes = [
   "0688 - FINANPREV"
 ];
 
-// Formatar moeda brasileira a partir de dígitos (sempre 2 casas decimais)
+// Formatar moeda brasileira sempre com 2 casas decimais
 function formatarMoeda(valor) {
   const num = Number(valor.replace(/\D/g, "")) / 100;
   return num.toLocaleString("pt-BR", {
@@ -27,7 +27,7 @@ function formatarPercentualFinal(digitos) {
   return "";
 }
 
-function DiscountForm({ totalVantagens }) {
+function DiscountForm({ totalVantagens, setTotalDescontos }) {
   const [contrib, setContrib] = React.useState("");
 
   const [aliquota, setAliquota] = React.useState("");
@@ -48,7 +48,6 @@ function DiscountForm({ totalVantagens }) {
       const perc = Number(aliquota.replace("%", "").replace(",", ".")) / 100;
       const calc = totalVantagens * perc;
 
-      // Sempre 2 casas decimais, com arredondamento correto
       setValorCalc(
         calc.toLocaleString("pt-BR", {
           minimumFractionDigits: 2,
@@ -86,7 +85,7 @@ function DiscountForm({ totalVantagens }) {
     setAliquotaIR(formatado);
   }
 
-  // Valor IR com máscara de moeda durante digitação (sempre 2 casas)
+  // Valor IR com máscara de moeda durante digitação
   function onValorIRChange(e) {
     setValorIR(formatarMoeda(e.target.value));
   }
@@ -106,13 +105,17 @@ function DiscountForm({ totalVantagens }) {
       valor: valorIR
     };
 
-    setLista([linha1, linha2]);
-  }
+    const novaLista = [linha1, linha2];
+    setLista(novaLista);
 
-  const total = lista.reduce((acc, item) => {
-    const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
-    return acc + v;
-  }, 0);
+    // Calcula total de descontos e envia para App.js
+    const total = novaLista.reduce((acc, item) => {
+      const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
+      return acc + v;
+    }, 0);
+
+    setTotalDescontos(total);
+  }
 
   const estiloLabel = {
     fontSize: "15px",
@@ -216,56 +219,6 @@ function DiscountForm({ totalVantagens }) {
         <button onClick={aplicarDescontos}>Aplicar Descontos</button>
       </div>
 
-      {/* Quadro inferior */}
-      <div
-        style={{
-          marginTop: "20px",
-          background: "#ffffff",
-          borderRadius: "8px",
-          padding: "10px",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.08)"
-        }}
-      >
-        <h3>Descontos Aplicados</h3>
-
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ background: "#f0f0f0" }}>
-              <th style={{ padding: "8px", textAlign: "left" }}>Rúbrica</th>
-              <th style={{ padding: "8px", textAlign: "left" }}>Alíquota</th>
-              <th style={{ padding: "8px", textAlign: "right" }}>Valor (R$)</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {lista.map((item, index) => (
-              <tr key={index}>
-                <td style={{ padding: "8px" }}>{item.rubrica}</td>
-                <td style={{ padding: "8px" }}>{item.aliquota}</td>
-                <td style={{ padding: "8px", textAlign: "right" }}>{item.valor}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div
-          style={{
-            marginTop: "15px",
-            fontWeight: "bold",
-            textAlign: "right",
-            fontSize: "18px",
-            padding: "10px",
-            background: "#f7f7f7",
-            borderRadius: "8px",
-            border: "1px solid #e0e0e0"
-          }}
-        >
-          Total: R$ {total.toLocaleString("pt-BR", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          })}
-        </div>
-      </div>
     </div>
   );
 }
