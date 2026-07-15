@@ -124,13 +124,11 @@ function PayrollForm({ onTotalChange }) {
     setLinhaSelecionada(null);
   }
 
-  // Total como número real
   const total = vantagens.reduce((acc, item) => {
     const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
     return acc + v;
   }, 0);
 
-  // Enviar total para o App.js
   React.useEffect(() => {
     if (onTotalChange) {
       onTotalChange(total);
@@ -139,7 +137,7 @@ function PayrollForm({ onTotalChange }) {
 
   return (
     <div>
-      {/* ... resto do JSX ... */}
+      {/* Seu JSX original aqui */}
     </div>
   );
 }
