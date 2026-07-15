@@ -10,7 +10,7 @@ function formatarMoeda(valor) {
   return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }
 
-// Máscara de porcentagem “00,00%”
+// Máscara de porcentagem fluída “00,00%” sem mover cursor
 function mascaraPercentual(texto) {
   let digitos = texto.replace(/\D/g, "").slice(0, 4);
 
@@ -93,7 +93,7 @@ function DiscountForm({ totalVantagens }) {
   return (
     <div>
 
-      {/* Linha 1 - Contribuição Previdenciária */}
+      {/* Contribuição Previdenciária */}
       <label style={estiloLabel}>Contribuição Previdenciária:</label><br />
       <select
         style={estiloSelect}
@@ -106,6 +106,7 @@ function DiscountForm({ totalVantagens }) {
         ))}
       </select>
 
+      {/* Alíquota */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Alíquota:</label><br />
         <input
@@ -116,6 +117,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
+      {/* Valor */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor:</label><br />
         <input
@@ -126,7 +128,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
-      {/* Linha 2 - Imposto de Renda */}
+      {/* Imposto de Renda */}
       <div style={{ marginTop: "20px" }}>
         <label style={estiloLabel}>
           <a
@@ -144,6 +146,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
+      {/* Alíquota IR */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Alíquota IR:</label><br />
         <input
@@ -154,6 +157,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
+      {/* Valor IR */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor IR:</label><br />
         <input
