@@ -39,7 +39,7 @@ function DiscountForm({ totalVantagens }) {
 
   const [lista, setLista] = React.useState([]);
 
-  // Alíquota: cálculo após fim da digitação (quando já está formatada)
+  // Cálculo do valor previdenciário após final da digitação da alíquota
   React.useEffect(() => {
     if (aliquota.includes(",")) {
       const perc = Number(aliquota.replace("%", "").replace(",", ".")) / 100;
@@ -50,17 +50,12 @@ function DiscountForm({ totalVantagens }) {
     }
   }, [aliquota, totalVantagens]);
 
-  // Valor IR digitado manualmente com máscara de moeda
-  function onValorIRChange(e) {
-    setValorIR(formatarMoeda(e.target.value));
-  }
-
-  // Digitação fluída da alíquota (somente números e vírgula)
+  // Digitação fluída da alíquota
   function onAliquotaChange(e) {
     const texto = e.target.value;
     const filtrado = texto.replace(/[^0-9,]/g, "");
     setAliquotaRaw(filtrado);
-    setAliquota(filtrado); // durante digitação, sem forçar formato final
+    setAliquota(filtrado);
   }
 
   function onAliquotaBlur() {
@@ -79,6 +74,11 @@ function DiscountForm({ totalVantagens }) {
   function onAliquotaIRBlur() {
     const formatado = formatarPercentualFinal(aliquotaIRRaw);
     setAliquotaIR(formatado);
+  }
+
+  // Valor IR com máscara de moeda durante digitação
+  function onValorIRChange(e) {
+    setValorIR(formatarMoeda(e.target.value));
   }
 
   function aplicarDescontos() {
