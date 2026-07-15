@@ -4,7 +4,13 @@ const contribuicoes = [
   "0688 - FINANPREV"
 ];
 
-// Formata percentual final (00,00%)
+// Formatar moeda brasileira a partir de dígitos
+function formatarMoeda(valor) {
+  const num = Number(valor.replace(/\D/g, "")) / 100;
+  return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+}
+
+// Formata string numérica em "00,00%"
 function formatarPercentualFinal(digitos) {
   let nums = digitos.replace(/\D/g, "").slice(0, 4);
 
@@ -18,81 +24,61 @@ function formatarPercentualFinal(digitos) {
   return "";
 }
 
-function DiscountForm({ totalVantagens, setTotalDescontos }) {
+function DiscountForm({ totalVantagens }) {
   const [contrib, setContrib] = React.useState("");
 
-  // Alíquota previdenciária
   const [aliquota, setAliquota] = React.useState("");
   const [aliquotaRaw, setAliquotaRaw] = React.useState("");
 
-  // Valor previdenciário calculado
   const [valorCalc, setValorCalc] = React.useState("");
 
-  // Alíquota IR
   const [aliquotaIR, setAliquotaIR] = React.useState("");
   const [aliquotaIRRaw, setAliquotaIRRaw] = React.useState("");
 
-  // Valor IR (com máscara corrigida)
   const [valorIR, setValorIR] = React.useState("");
 
   const [lista, setLista] = React.useState([]);
 
-  // Cálculo automático do valor previdenciário
+  // Cálculo do valor previdenciário após final da digitação da alíquota
   React.useEffect(() => {
     if (aliquota.includes(",")) {
       const perc = Number(aliquota.replace("%", "").replace(",", ".")) / 100;
       const calc = totalVantagens * perc;
-
-      setValorCalc(
-        calc.toLocaleString("pt-BR", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })
-      );
+      setValorCalc(calc.toLocaleString("pt-BR", { minimumFractionDigits: 2 }));
     } else {
       setValorCalc("");
     }
   }, [aliquota, totalVantagens]);
 
-  // Digitação fluída da alíquota previdenciária
+  // Digitação fluída da alíquota
   function onAliquotaChange(e) {
-    const texto = e.target.value.replace(/[^0-9,]/g, "");
-    setAliquotaRaw(texto);
-    setAliquota(texto);
+    const texto = e.target.value;
+    const filtrado = texto.replace(/[^0-9,]/g, "");
+    setAliquotaRaw(filtrado);
+    setAliquota(filtrado);
   }
 
   function onAliquotaBlur() {
-    setAliquota(formatarPercentualFinal(aliquotaRaw));
+    const formatado = formatarPercentualFinal(aliquotaRaw);
+    setAliquota(formatado);
   }
 
   // Digitação fluída da alíquota IR
   function onAliquotaIRChange(e) {
-    const texto = e.target.value.replace(/[^0-9,]/g, "");
-    setAliquotaIRRaw(texto);
-    setAliquotaIR(texto);
+    const texto = e.target.value;
+    const filtrado = texto.replace(/[^0-9,]/g, "");
+    setAliquotaIRRaw(filtrado);
+    setAliquotaIR(filtrado);
   }
 
   function onAliquotaIRBlur() {
-    setAliquotaIR(formatarPercentualFinal(aliquotaIRRaw));
+    const formatado = formatarPercentualFinal(aliquotaIRRaw);
+    setAliquotaIR(formatado);
   }
 
-  // Máscara corrigida para Valor IR
+  // Valor IR com máscara de moeda durante digitação
   function onValorIRChange(e) {
-    const texto = e.target.value.replace(/\D/g, "");
-    setValorIR(texto);
-  }
-
-  function onValorIRBlur() {
-    if (!valorIR) return;
-
-    const num = Number(valorIR) / 100;
-
-    setValorIR(
-      num.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })
-    );
+    setValorIR(formatarMoeda(e.target.value));
   }
 
   function aplicarDescontos() {
@@ -110,17 +96,13 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
       valor: valorIR
     };
 
-    const novaLista = [linha1, linha2];
-    setLista(novaLista);
-
-    // Calcula total de descontos
-    const total = novaLista.reduce((acc, item) => {
-      const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
-      return acc + v;
-    }, 0);
-
-    setTotalDescontos(total);
+    setLista([linha1, linha2]);
   }
+
+  const total = lista.reduce((acc, item) => {
+    const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
+    return acc + v;
+  }, 0);
 
   const estiloLabel = {
     fontSize: "15px",
@@ -168,7 +150,7 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
         />
       </div>
 
-      {/* Valor Previdenciário */}
+      {/* Valor */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor:</label><br />
         <input
@@ -216,7 +198,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
           style={estiloInput}
           value={valorIR}
           onChange={onValorIRChange}
-          onBlur={onValorIRBlur}
           placeholder="000.000,00"
         />
       </div>
@@ -225,6 +206,53 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
         <button onClick={aplicarDescontos}>Aplicar Descontos</button>
       </div>
 
+      {/* Quadro inferior */}
+      <div
+        style={{
+          marginTop: "20px",
+          background: "#ffffff",
+          borderRadius: "8px",
+          padding: "10px",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.08)"
+        }}
+      >
+        <h3>Descontos Aplicados</h3>
+
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "#f0f0f0" }}>
+              <th style={{ padding: "8px", textAlign: "left" }}>Rúbrica</th>
+              <th style={{ padding: "8px", textAlign: "left" }}>Alíquota</th>
+              <th style={{ padding: "8px", textAlign: "right" }}>Valor (R$)</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {lista.map((item, index) => (
+              <tr key={index}>
+                <td style={{ padding: "8px" }}>{item.rubrica}</td>
+                <td style={{ padding: "8px" }}>{item.aliquota}</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>{item.valor}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div
+          style={{
+            marginTop: "15px",
+            fontWeight: "bold",
+            textAlign: "right",
+            fontSize: "18px",
+            padding: "10px",
+            background: "#f7f7f7",
+            borderRadius: "8px",
+            border: "1px solid #e0e0e0"
+          }}
+        >
+          Total: R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+        </div>
+      </div>
     </div>
   );
 }
