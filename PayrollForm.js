@@ -1,7 +1,7 @@
-// Lista de rubricas
+// Lista de rubricas (rol exaustivo)
 const rubricas = [
   "0100 - Vencimento Cargo Comissionado",
-  "0191 - Vencisao Judicial SISPEMB",
+  "0191 - Vencimento Decisao Judicial SISPEMB",
   "0168 - Abono Complementar Salario Minimo",
   "0274 - Grat Magistério_Vantagem Pessoal Nominalmente Identificada",
   "0109 - Salário Familia Temp/Com",
@@ -11,7 +11,7 @@ const rubricas = [
   "0209 - Complementação Pecuniária",
   "0219 - Grat. Exerc. de Atividade de Direção de Polícia Judiciária",
   "0186 - Gratificação de Atividade Aerea",
-  "0122 - Gratificação de Motorista",
+  "0122 - Gratificação de Atividade de Motorista",
   "0052 - Gratificação de Localidade Especial",
   "0070 - Gratificação de Polícia Judiciária",
   "0040 - Gratificação de Risco de Vida",
@@ -46,19 +46,23 @@ const rubricas = [
   "0127 - Auxílio Transporte"
 ];
 
-// Meses válidos
 const mesesValidos = [
   "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
   "Jul", "Ago", "Set", "Out", "Nov", "Dez"
 ];
 
-// Formatar moeda brasileira a partir de dígitos
-function formatarMoeda(valor) {
-  const num = Number(valor.replace(/\D/g, "")) / 100;
-  return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+// máscara de moeda brasileira durante a digitação
+function formatarMoedaDigitacao(valor) {
+  const apenasDigitos = valor.replace(/\D/g, "");
+  if (!apenasDigitos) return "";
+  const num = Number(apenasDigitos) / 100;
+  return num.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
-// Formatar mês de referência com validação
+// formatação e validação do mês de referência
 function formatarMesRef(texto) {
   texto = texto.replace(/\s+/g, "");
 
@@ -82,10 +86,15 @@ function formatarMesRef(texto) {
 
 function PayrollForm({ onTotalChange }) {
   const [rubricaSelecionada, setRubricaSelecionada] = React.useState("");
-  const [valor, setValor] = React.useState("");
   const [mesRef, setMesRef] = React.useState("");
+  const [valor, setValor] = React.useState("");
   const [vantagens, setVantagens] = React.useState([]);
   const [linhaSelecionada, setLinhaSelecionada] = React.useState(null);
+
+  function handleValorChange(e) {
+    const texto = e.target.value;
+    setValor(formatarMoedaDigitacao(texto));
+  }
 
   function inserir() {
     if (!rubricaSelecionada || !valor || !mesRef) return;
@@ -93,7 +102,7 @@ function PayrollForm({ onTotalChange }) {
     const item = {
       rubrica: rubricaSelecionada,
       mesRef,
-      valor: formatarMoeda(valor)
+      valor
     };
 
     if (linhaSelecionada !== null) {
@@ -105,8 +114,8 @@ function PayrollForm({ onTotalChange }) {
     }
 
     setRubricaSelecionada("");
-    setValor("");
     setMesRef("");
+    setValor("");
     setLinhaSelecionada(null);
   }
 
@@ -114,8 +123,8 @@ function PayrollForm({ onTotalChange }) {
     if (linhaSelecionada === null) return;
     const item = vantagens[linhaSelecionada];
     setRubricaSelecionada(item.rubrica);
-    setValor(item.valor);
     setMesRef(item.mesRef);
+    setValor(item.valor);
   }
 
   function excluir() {
@@ -126,18 +135,123 @@ function PayrollForm({ onTotalChange }) {
 
   const total = vantagens.reduce((acc, item) => {
     const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
-    return acc + v;
+    return acc + (isNaN(v) ? 0 : v);
   }, 0);
 
   React.useEffect(() => {
-    if (onTotalChange) {
-      onTotalChange(total);
-    }
+    if (onTotalChange) onTotalChange(total);
   }, [total]);
+
+  const estiloLabel = {
+    fontSize: "15px",
+    fontWeight: "600",
+    color: "#0B2B4A"
+  };
+
+  const estiloInput = {
+    fontSize: "15px",
+    padding: "6px",
+    width: "220px"
+  };
+
+  const estiloSelect = {
+    fontSize: "15px",
+    padding: "6px",
+    width: "360px"
+  };
 
   return (
     <div>
-      {/* Seu JSX original aqui */}
+      <label style={estiloLabel}>Selecionar Rubrica:</label><br />
+      <select
+        style={estiloSelect}
+        value={rubricaSelecionada}
+        onChange={e => setRubricaSelecionada(e.target.value)}
+      >
+        <option value="">Selecione...</option>
+        {rubricas.map((r, i) => (
+          <option key={i} value={r}>{r}</option>
+        ))}
+      </select>
+
+      <div style={{ marginTop: "10px" }}>
+        <label style={estiloLabel}>Mês de Referência:</label><br />
+        <input
+          style={estiloInput}
+          value={mesRef}
+          onChange={e => setMesRef(formatarMesRef(e.target.value))}
+          placeholder="Abr/2020"
+        />
+      </div>
+
+      <div style={{ marginTop: "10px" }}>
+        <label style={estiloLabel}>Valor (R$):</label><br />
+        <input
+          style={estiloInput}
+          value={valor}
+          onChange={handleValorChange}
+          placeholder="000.000,00"
+        />
+      </div>
+
+      <div style={{ marginTop: "15px", display: "flex", gap: "10px" }}>
+        <button onClick={inserir}>Inserir</button>
+        <button onClick={editar}>Editar</button>
+        <button onClick={excluir}>Excluir</button>
+      </div>
+
+      <div
+        style={{
+          marginTop: "20px",
+          background: "#ffffff",
+          borderRadius: "8px",
+          padding: "10px",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.08)"
+        }}
+      >
+        <h3>Vantagens Lançadas</h3>
+
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "#f0f0f0" }}>
+              <th style={{ padding: "8px", textAlign: "left" }}>Rubrica</th>
+              <th style={{ padding: "8px", textAlign: "left" }}>Mês de Referência</th>
+              <th style={{ padding: "8px", textAlign: "right" }}>Valor (R$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {vantagens.map((item, index) => (
+              <tr
+                key={index}
+                onClick={() => setLinhaSelecionada(index)}
+                style={{
+                  background: linhaSelecionada === index ? "#e6f0ff" : "#fff",
+                  cursor: "pointer"
+                }}
+              >
+                <td style={{ padding: "8px" }}>{item.rubrica}</td>
+                <td style={{ padding: "8px" }}>{item.mesRef}</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>{item.valor}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div
+          style={{
+            marginTop: "15px",
+            fontWeight: "bold",
+            textAlign: "right",
+            fontSize: "18px",
+            padding: "10px",
+            background: "#f7f7f7",
+            borderRadius: "8px",
+            border: "1px solid #e0e0e0"
+          }}
+        >
+          Total: R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+        </div>
+      </div>
     </div>
   );
 }
