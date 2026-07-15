@@ -52,13 +52,7 @@ const mesesValidos = [
   "Jul", "Ago", "Set", "Out", "Nov", "Dez"
 ];
 
-// Formatar moeda brasileira a partir de dígitos
-function formatarMoeda(valor) {
-  const num = Number(valor.replace(/\D/g, "")) / 100;
-  return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
-}
-
-// Formatar mês de referência com validação
+// Formatar mês de referência
 function formatarMesRef(texto) {
   texto = texto.replace(/\s+/g, "");
 
@@ -82,18 +76,39 @@ function formatarMesRef(texto) {
 
 function PayrollForm({ onTotalChange }) {
   const [rubricaSelecionada, setRubricaSelecionada] = React.useState("");
-  const [valor, setValor] = React.useState("");
+  const [valor, setValor] = React.useState(""); // valor bruto digitado
   const [mesRef, setMesRef] = React.useState("");
   const [vantagens, setVantagens] = React.useState([]);
   const [linhaSelecionada, setLinhaSelecionada] = React.useState(null);
 
+  // Máscara de moeda corrigida
+  function handleValorChange(e) {
+    const texto = e.target.value.replace(/\D/g, "");
+    setValor(texto);
+  }
+
+  function handleValorBlur() {
+    if (!valor) return;
+    const num = Number(valor) / 100;
+    const formatado = num.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    setValor(formatado);
+  }
+
   function inserir() {
     if (!rubricaSelecionada || !valor || !mesRef) return;
+
+    const valorNumerico = Number(valor.replace(/\./g, "").replace(",", ".")); 
 
     const item = {
       rubrica: rubricaSelecionada,
       mesRef,
-      valor: formatarMoeda(valor)
+      valor: valorNumerico.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
     };
 
     if (linhaSelecionada !== null) {
@@ -184,7 +199,8 @@ function PayrollForm({ onTotalChange }) {
         <input
           style={estiloInput}
           value={valor}
-          onChange={e => setValor(formatarMoeda(e.target.value))}
+          onChange={handleValorChange}
+          onBlur={handleValorBlur}
           placeholder="000.000,00"
         />
       </div>
