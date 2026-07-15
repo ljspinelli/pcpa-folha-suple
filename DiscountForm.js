@@ -1,10 +1,8 @@
-// Lista de contribuições previdenciárias
 const contribuicoes = [
   "0656 - INSS - Temporário/Comissionado",
   "0688 - FINANPREV"
 ];
 
-// Formatar moeda brasileira sempre com 2 casas decimais
 function formatarMoeda(valor) {
   const num = Number(valor.replace(/\D/g, "")) / 100;
   return num.toLocaleString("pt-BR", {
@@ -13,12 +11,10 @@ function formatarMoeda(valor) {
   });
 }
 
-// Formata string numérica em "00,00%"
 function formatarPercentualFinal(digitos) {
   let nums = digitos.replace(/\D/g, "").slice(0, 4);
 
   if (!nums) return "";
-
   if (nums.length === 1) return `0${nums},00%`;
   if (nums.length === 2) return `${nums},00%`;
   if (nums.length === 3) return `${nums.slice(0, 2)},${nums.slice(2)}0%`;
@@ -42,7 +38,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
 
   const [lista, setLista] = React.useState([]);
 
-  // Cálculo do valor previdenciário após final da digitação da alíquota
   React.useEffect(() => {
     if (aliquota.includes(",")) {
       const perc = Number(aliquota.replace("%", "").replace(",", ".")) / 100;
@@ -59,7 +54,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
     }
   }, [aliquota, totalVantagens]);
 
-  // Digitação fluída da alíquota
   function onAliquotaChange(e) {
     const texto = e.target.value;
     const filtrado = texto.replace(/[^0-9,]/g, "");
@@ -72,7 +66,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
     setAliquota(formatado);
   }
 
-  // Digitação fluída da alíquota IR
   function onAliquotaIRChange(e) {
     const texto = e.target.value;
     const filtrado = texto.replace(/[^0-9,]/g, "");
@@ -85,7 +78,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
     setAliquotaIR(formatado);
   }
 
-  // Valor IR com máscara de moeda durante digitação
   function onValorIRChange(e) {
     setValorIR(formatarMoeda(e.target.value));
   }
@@ -108,7 +100,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
     const novaLista = [linha1, linha2];
     setLista(novaLista);
 
-    // Calcula total de descontos e envia para App.js
     const total = novaLista.reduce((acc, item) => {
       const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
       return acc + v;
@@ -138,7 +129,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
   return (
     <div>
 
-      {/* Contribuição Previdenciária */}
       <label style={estiloLabel}>Contribuição Previdenciária:</label><br />
       <select
         style={estiloSelect}
@@ -151,7 +141,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
         ))}
       </select>
 
-      {/* Alíquota */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Alíquota:</label><br />
         <input
@@ -163,7 +152,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
         />
       </div>
 
-      {/* Valor */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor:</label><br />
         <input
@@ -174,7 +162,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
         />
       </div>
 
-      {/* Imposto de Renda */}
       <div style={{ marginTop: "20px" }}>
         <label style={estiloLabel}>
           <a
@@ -192,7 +179,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
         />
       </div>
 
-      {/* Alíquota IR */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Alíquota IR:</label><br />
         <input
@@ -204,7 +190,6 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
         />
       </div>
 
-      {/* Valor IR */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor IR:</label><br />
         <input
