@@ -10,13 +10,14 @@ function formatarMoeda(valor) {
   return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }
 
-// Máscara de porcentagem digitada da direita para a esquerda
+// Máscara de porcentagem fluída “00,00%”
 function mascaraPercentual(texto) {
   let digitos = texto.replace(/\D/g, "").slice(0, 4);
 
+  if (digitos.length === 0) return "";
   if (digitos.length === 1) return `0${digitos},00%`;
   if (digitos.length === 2) return `${digitos},00%`;
-  if (digitos.length === 3) return `${digitos.slice(0, 1)},${digitos.slice(1)}%`;
+  if (digitos.length === 3) return `${digitos.slice(0, 2)},${digitos.slice(2)}0%`;
   if (digitos.length === 4) return `${digitos.slice(0, 2)},${digitos.slice(2)}%`;
 
   return "";
@@ -94,7 +95,7 @@ function DiscountForm({ totalVantagens }) {
   return (
     <div>
 
-      {/* Linha 1 - Contribuição Previdenciária */}
+      {/* Contribuição Previdenciária */}
       <label style={estiloLabel}>
         <a href="https://www.calcule.net/trabalhista/calculo-de-inss/" target="_blank">
           Contribuição Previdenciária:
@@ -112,6 +113,7 @@ function DiscountForm({ totalVantagens }) {
         ))}
       </select>
 
+      {/* Alíquota */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Alíquota:</label><br />
         <input
@@ -122,6 +124,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
+      {/* Valor */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor:</label><br />
         <input
@@ -131,7 +134,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
-      {/* Linha 2 - Imposto de Renda */}
+      {/* Imposto de Renda */}
       <div style={{ marginTop: "20px" }}>
         <label style={estiloLabel}>
           <a href="https://www27.receita.fazenda.gov.br/simulador-irpf/" target="_blank">
@@ -146,6 +149,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
+      {/* Alíquota IR */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Alíquota IR:</label><br />
         <input
@@ -156,6 +160,7 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
+      {/* Valor IR */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor IR:</label><br />
         <input
