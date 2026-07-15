@@ -10,30 +10,36 @@ function formatarMoeda(valor) {
   return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }
 
-// Máscara de porcentagem fluída “00,00%” sem mover cursor
-function mascaraPercentual(texto) {
-  let digitos = texto.replace(/\D/g, "").slice(0, 4);
+// Formata string numérica em "00,00%"
+function formatarPercentualFinal(digitos) {
+  let nums = digitos.replace(/\D/g, "").slice(0, 4);
 
-  if (digitos.length === 0) return "";
-  if (digitos.length === 1) return `0${digitos},00%`;
-  if (digitos.length === 2) return `${digitos},00%`;
-  if (digitos.length === 3) return `${digitos.slice(0, 2)},${digitos.slice(2)}0%`;
-  if (digitos.length === 4) return `${digitos.slice(0, 2)},${digitos.slice(2)}%`;
+  if (!nums) return "";
+
+  if (nums.length === 1) return `0${nums},00%`;
+  if (nums.length === 2) return `${nums},00%`;
+  if (nums.length === 3) return `${nums.slice(0, 2)},${nums.slice(2)}0%`;
+  if (nums.length === 4) return `${nums.slice(0, 2)},${nums.slice(2)}%`;
 
   return "";
 }
 
 function DiscountForm({ totalVantagens }) {
   const [contrib, setContrib] = React.useState("");
+
   const [aliquota, setAliquota] = React.useState("");
+  const [aliquotaRaw, setAliquotaRaw] = React.useState("");
+
   const [valorCalc, setValorCalc] = React.useState("");
 
   const [aliquotaIR, setAliquotaIR] = React.useState("");
+  const [aliquotaIRRaw, setAliquotaIRRaw] = React.useState("");
+
   const [valorIR, setValorIR] = React.useState("");
 
   const [lista, setLista] = React.useState([]);
 
-  // Calcula valor da contribuição previdenciária após digitação da alíquota
+  // Alíquota: cálculo após fim da digitação (quando já está formatada)
   React.useEffect(() => {
     if (aliquota.includes(",")) {
       const perc = Number(aliquota.replace("%", "").replace(",", ".")) / 100;
@@ -47,6 +53,32 @@ function DiscountForm({ totalVantagens }) {
   // Valor IR digitado manualmente com máscara de moeda
   function onValorIRChange(e) {
     setValorIR(formatarMoeda(e.target.value));
+  }
+
+  // Digitação fluída da alíquota (somente números e vírgula)
+  function onAliquotaChange(e) {
+    const texto = e.target.value;
+    const filtrado = texto.replace(/[^0-9,]/g, "");
+    setAliquotaRaw(filtrado);
+    setAliquota(filtrado); // durante digitação, sem forçar formato final
+  }
+
+  function onAliquotaBlur() {
+    const formatado = formatarPercentualFinal(aliquotaRaw);
+    setAliquota(formatado);
+  }
+
+  // Digitação fluída da alíquota IR
+  function onAliquotaIRChange(e) {
+    const texto = e.target.value;
+    const filtrado = texto.replace(/[^0-9,]/g, "");
+    setAliquotaIRRaw(filtrado);
+    setAliquotaIR(filtrado);
+  }
+
+  function onAliquotaIRBlur() {
+    const formatado = formatarPercentualFinal(aliquotaIRRaw);
+    setAliquotaIR(formatado);
   }
 
   function aplicarDescontos() {
@@ -112,7 +144,8 @@ function DiscountForm({ totalVantagens }) {
         <input
           style={estiloInput}
           value={aliquota}
-          onChange={e => setAliquota(mascaraPercentual(e.target.value))}
+          onChange={onAliquotaChange}
+          onBlur={onAliquotaBlur}
           placeholder="00,00%"
         />
       </div>
@@ -152,7 +185,8 @@ function DiscountForm({ totalVantagens }) {
         <input
           style={estiloInput}
           value={aliquotaIR}
-          onChange={e => setAliquotaIR(mascaraPercentual(e.target.value))}
+          onChange={onAliquotaIRChange}
+          onBlur={onAliquotaIRBlur}
           placeholder="00,00%"
         />
       </div>
