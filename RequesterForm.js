@@ -72,13 +72,19 @@ function RequesterForm() {
   const estiloInput = {
     fontSize: "15px",
     padding: "6px",
-    width: "300px"
+    width: "300px",
+    backgroundColor: "#ffffff",
+    border: "1px solid #ccc",
+    borderRadius: "4px"
   };
 
   const estiloSelect = {
     fontSize: "15px",
     padding: "6px",
-    width: "300px"
+    width: "300px",
+    backgroundColor: "#ffffff",
+    border: "1px solid #ccc",
+    borderRadius: "4px"
   };
 
   const cargos = [
