@@ -4,13 +4,13 @@ const contribuicoes = [
   "0688 - FINANPREV"
 ];
 
-// Formatar moeda brasileira
+// Formatar moeda brasileira a partir de dígitos
 function formatarMoeda(valor) {
   const num = Number(valor.replace(/\D/g, "")) / 100;
   return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
 }
 
-// Máscara de porcentagem fluída “00,00%”
+// Máscara de porcentagem “00,00%”
 function mascaraPercentual(texto) {
   let digitos = texto.replace(/\D/g, "").slice(0, 4);
 
@@ -33,23 +33,21 @@ function DiscountForm({ totalVantagens }) {
 
   const [lista, setLista] = React.useState([]);
 
-  // Calcular valor da contribuição previdenciária
+  // Calcula valor da contribuição previdenciária após digitação da alíquota
   React.useEffect(() => {
     if (aliquota.includes(",")) {
       const perc = Number(aliquota.replace("%", "").replace(",", ".")) / 100;
       const calc = totalVantagens * perc;
       setValorCalc(calc.toLocaleString("pt-BR", { minimumFractionDigits: 2 }));
+    } else {
+      setValorCalc("");
     }
-  }, [aliquota]);
+  }, [aliquota, totalVantagens]);
 
-  // Calcular valor do IR
-  React.useEffect(() => {
-    if (aliquotaIR.includes(",")) {
-      const perc = Number(aliquotaIR.replace("%", "").replace(",", ".")) / 100;
-      const calc = totalVantagens * perc;
-      setValorIR(calc.toLocaleString("pt-BR", { minimumFractionDigits: 2 }));
-    }
-  }, [aliquotaIR]);
+  // Valor IR digitado manualmente com máscara de moeda
+  function onValorIRChange(e) {
+    setValorIR(formatarMoeda(e.target.value));
+  }
 
   function aplicarDescontos() {
     if (!contrib || !aliquota || !valorCalc || !aliquotaIR || !valorIR) return;
@@ -95,13 +93,8 @@ function DiscountForm({ totalVantagens }) {
   return (
     <div>
 
-      {/* Contribuição Previdenciária */}
-      <label style={estiloLabel}>
-        <a href="https://www.calcule.net/trabalhista/calculo-de-inss/" target="_blank">
-          Contribuição Previdenciária:
-        </a>
-      </label><br />
-
+      {/* Linha 1 - Contribuição Previdenciária */}
+      <label style={estiloLabel}>Contribuição Previdenciária:</label><br />
       <select
         style={estiloSelect}
         value={contrib}
@@ -113,7 +106,6 @@ function DiscountForm({ totalVantagens }) {
         ))}
       </select>
 
-      {/* Alíquota */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Alíquota:</label><br />
         <input
@@ -124,24 +116,27 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
-      {/* Valor */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor:</label><br />
         <input
           style={estiloInput}
           value={valorCalc}
           readOnly
+          placeholder="0,00"
         />
       </div>
 
-      {/* Imposto de Renda */}
+      {/* Linha 2 - Imposto de Renda */}
       <div style={{ marginTop: "20px" }}>
         <label style={estiloLabel}>
-          <a href="https://www27.receita.fazenda.gov.br/simulador-irpf/" target="_blank">
+          <a
+            href="https://www27.receita.fazenda.gov.br/simulador-irpf/"
+            target="_blank"
+            rel="noreferrer"
+          >
             Imposto de Renda:
           </a>
         </label><br />
-
         <input
           style={estiloInput}
           value="0658 - Imposto de Renda - IRRF"
@@ -149,7 +144,6 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
-      {/* Alíquota IR */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Alíquota IR:</label><br />
         <input
@@ -160,13 +154,13 @@ function DiscountForm({ totalVantagens }) {
         />
       </div>
 
-      {/* Valor IR */}
       <div style={{ marginTop: "10px" }}>
         <label style={estiloLabel}>Valor IR:</label><br />
         <input
           style={estiloInput}
           value={valorIR}
-          readOnly
+          onChange={onValorIRChange}
+          placeholder="000.000,00"
         />
       </div>
 
