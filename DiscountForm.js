@@ -4,10 +4,13 @@ const contribuicoes = [
   "0688 - FINANPREV"
 ];
 
-// Formatar moeda brasileira a partir de dígitos
+// Formatar moeda brasileira a partir de dígitos (sempre 2 casas decimais)
 function formatarMoeda(valor) {
   const num = Number(valor.replace(/\D/g, "")) / 100;
-  return num.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+  return num.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 // Formata string numérica em "00,00%"
@@ -44,7 +47,14 @@ function DiscountForm({ totalVantagens }) {
     if (aliquota.includes(",")) {
       const perc = Number(aliquota.replace("%", "").replace(",", ".")) / 100;
       const calc = totalVantagens * perc;
-      setValorCalc(calc.toLocaleString("pt-BR", { minimumFractionDigits: 2 }));
+
+      // Sempre 2 casas decimais, com arredondamento correto
+      setValorCalc(
+        calc.toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      );
     } else {
       setValorCalc("");
     }
@@ -76,7 +86,7 @@ function DiscountForm({ totalVantagens }) {
     setAliquotaIR(formatado);
   }
 
-  // Valor IR com máscara de moeda durante digitação
+  // Valor IR com máscara de moeda durante digitação (sempre 2 casas)
   function onValorIRChange(e) {
     setValorIR(formatarMoeda(e.target.value));
   }
@@ -250,7 +260,10 @@ function DiscountForm({ totalVantagens }) {
             border: "1px solid #e0e0e0"
           }}
         >
-          Total: R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+          Total: R$ {total.toLocaleString("pt-BR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })}
         </div>
       </div>
     </div>
