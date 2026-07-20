@@ -5,10 +5,11 @@
 const RubricasTable = ({ rubricas, valores, setValores }) => {
   const handleChange = (codigo, novoValor) => {
     const valorFormatado = mascaraMoeda(novoValor);
-    setValores(prev => ({
-      ...prev,
+    const novoEstado = {
+      ...valores,
       [codigo]: valorFormatado
-    }));
+    };
+    setValores(novoEstado);
   };
 
   return (
