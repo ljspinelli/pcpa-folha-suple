@@ -1,0 +1,318 @@
+// ============================
+// CONSTANTES - RUBRICAS E BASES
+// ============================
+
+export const RUBRICAS_POR_ABA = {
+  dias: [
+    { codigo: "0001", nome: "Vencimento Base" },
+    { codigo: "0016", nome: "Adicional pelo Exercício de Cargo em Comissão" },
+    { codigo: "0023", nome: "Gratificação pelo Exercício da Função" },
+    { codigo: "0028", nome: "Gratificação Tempo Integral" },
+    { codigo: "0029", nome: "Gratificação Dedicação Exclusiva" },
+    { codigo: "0031", nome: "Gratificação de Titularidade" },
+    { codigo: "0040", nome: "Gratificação de Risco de Vida" },
+    { codigo: "0047", nome: "Adicional de Insalubridade" },
+    { codigo: "0052", nome: "Gratificação de Localidade Especial" },
+    { codigo: "0054", nome: "Gratificação pela Escolaridade" },
+    { codigo: "0056", nome: "Adicional de Curso de Especialização" },
+    { codigo: "0070", nome: "Gratificação de Polícia Judiciária" },
+    { codigo: "0079", nome: "Adicional pelo Exercício de Função Gratificada" },
+    { codigo: "0080", nome: "Adicional por Tempo de Serviço" },
+    { codigo: "0099", nome: "Vencimento Decisão Judicial (Delegado)" },
+    { codigo: "0100", nome: "Vencimento Cargo Comissionado" },
+    { codigo: "0109", nome: "Salário Família Temp/Com" },
+    { codigo: "0110", nome: "Salário Família Estatutário" },
+    { codigo: "0119", nome: "Abono Salarial" },
+    { codigo: "0122", nome: "Gratificação de Atividade de Motorista" },
+    { codigo: "0168", nome: "Abono Complementar Salário Mínimo" },
+    { codigo: "0185", nome: "Gratificação pela Escolaridade DJ" },
+    { codigo: "0186", nome: "Gratificação de Atividade Aérea" },
+    { codigo: "0191", nome: "Vencimento Decisão Judicial SISPEMB" },
+    { codigo: "0209", nome: "Complementação Pecuniária" },
+    { codigo: "0219", nome: "Grat. Exerc. de Atividade de Direção de Polícia Judiciária" },
+    { codigo: "0274", nome: "Grat Magistério - Vantagem Pessoal Nominalmente Identificada" },
+    { codigo: "0291", nome: "Gratificação de Representação Lei 9853/2023" },
+    { codigo: "0295", nome: "ATS da Gratificação da Substituição do Titular" }
+  ],
+  ferias: [
+    { codigo: "0001", nome: "Vencimento Base" },
+    { codigo: "0016", nome: "Adicional pelo Exercício de Cargo em Comissão" },
+    { codigo: "0023", nome: "Gratificação pelo Exercício da Função" },
+    { codigo: "0028", nome: "Gratificação Tempo Integral" },
+    { codigo: "0029", nome: "Gratificação Dedicação Exclusiva" },
+    { codigo: "0031", nome: "Gratificação de Titularidade" },
+    { codigo: "0040", nome: "Gratificação de Risco de Vida" },
+    { codigo: "0047", nome: "Adicional de Insalubridade" },
+    { codigo: "0052", nome: "Gratificação de Localidade Especial" },
+    { codigo: "0054", nome: "Gratificação pela Escolaridade" },
+    { codigo: "0056", nome: "Adicional de Curso de Especialização" },
+    { codigo: "0070", nome: "Gratificação de Polícia Judiciária" },
+    { codigo: "0079", nome: "Adicional pelo Exercício de Função Gratificada" },
+    { codigo: "0080", nome: "Adicional por Tempo de Serviço" },
+    { codigo: "0099", nome: "Vencimento Decisão Judicial (Delegado)" },
+    { codigo: "0100", nome: "Vencimento Cargo Comissionado" },
+    { codigo: "0109", nome: "Salário Família Temp/Com" },
+    { codigo: "0110", nome: "Salário Família Estatutário" },
+    { codigo: "0119", nome: "Abono Salarial" },
+    { codigo: "0122", nome: "Gratificação de Atividade de Motorista" },
+    { codigo: "0168", nome: "Abono Complementar Salário Mínimo" },
+    { codigo: "0185", nome: "Gratificação pela Escolaridade DJ" },
+    { codigo: "0186", nome: "Gratificação de Atividade Aérea" },
+    { codigo: "0191", nome: "Vencimento Decisão Judicial SISPEMB" },
+    { codigo: "0209", nome: "Complementação Pecuniária" },
+    { codigo: "0219", nome: "Grat. Exerc. de Atividade de Direção de Polícia Judiciária" },
+    { codigo: "0274", nome: "Grat Magistério - Vantagem Pessoal Nominalmente Identificada" },
+    { codigo: "0291", nome: "Gratificação de Representação Lei 9853/2023" },
+    { codigo: "0295", nome: "ATS da Gratificação da Substituição do Titular" }
+  ],
+  decimo: [
+    { codigo: "0001", nome: "Vencimento Base" },
+    { codigo: "0016", nome: "Adicional pelo Exercício de Cargo em Comissão" },
+    { codigo: "0023", nome: "Gratificação pelo Exercício da Função" },
+    { codigo: "0028", nome: "Gratificação Tempo Integral" },
+    { codigo: "0029", nome: "Gratificação Dedicação Exclusiva" },
+    { codigo: "0031", nome: "Gratificação de Titularidade" },
+    { codigo: "0040", nome: "Gratificação de Risco de Vida" },
+    { codigo: "0047", nome: "Adicional de Insalubridade" },
+    { codigo: "0054", nome: "Gratificação pela Escolaridade" },
+    { codigo: "0056", nome: "Adicional de Curso de Especialização" },
+    { codigo: "0070", nome: "Gratificação de Polícia Judiciária" },
+    { codigo: "0079", nome: "Adicional pelo Exercício de Função Gratificada" },
+    { codigo: "0080", nome: "Adicional por Tempo de Serviço" },
+    { codigo: "0099", nome: "Vencimento Decisão Judicial (Delegado)" },
+    { codigo: "0100", nome: "Vencimento Cargo Comissionado" },
+    { codigo: "0109", nome: "Salário Família Temp/Com" },
+    { codigo: "0110", nome: "Salário Família Estatutário" },
+    { codigo: "0119", nome: "Abono Salarial" },
+    { codigo: "0136", nome: "Gratificação de Atividade de Motorista" },
+    { codigo: "0146", nome: "Abono de Permanência" },
+    { codigo: "0168", nome: "Abono Complementar Salário Mínimo" },
+    { codigo: "0185", nome: "Gratificação pela Escolaridade DJ" },
+    { codigo: "0186", nome: "Gratificação de Atividade Aérea" },
+    { codigo: "0191", nome: "Vencimento Decisão Judicial SISPEMB" },
+    { codigo: "0209", nome: "Complementação Pecuniária" },
+    { codigo: "0218", nome: "Gratificação por Acúmulo de Titularidade" },
+    { codigo: "0219", nome: "Grat. Exerc. de Atividade de Direção de Polícia Judiciária" },
+    { codigo: "0274", nome: "Grat Magistério - Vantagem Pessoal Nominalmente Identificada" },
+    { codigo: "0279", nome: "Gratificação pela Substituição do Titular" },
+    { codigo: "0291", nome: "Gratificação de Representação Lei 9853/2023" },
+    { codigo: "0294", nome: "Gratificação da Substituição do Titular" },
+    { codigo: "0295", nome: "ATS da Gratificação da Substituição do Titular" }
+  ],
+  pecunia: [
+    { codigo: "0001", nome: "Vencimento Base" },
+    { codigo: "0016", nome: "Adicional pelo Exercício de Cargo em Comissão" },
+    { codigo: "0028", nome: "Gratificação Tempo Integral" },
+    { codigo: "0029", nome: "Gratificação Dedicação Exclusiva" },
+    { codigo: "0040", nome: "Gratificação de Risco de Vida" },
+    { codigo: "0054", nome: "Gratificação pela Escolaridade" },
+    { codigo: "0056", nome: "Adicional de Curso de Especialização" },
+    { codigo: "0070", nome: "Gratificação de Polícia Judiciária" },
+    { codigo: "0079", nome: "Adicional pelo Exercício de Função Gratificada" },
+    { codigo: "0080", nome: "Adicional por Tempo de Serviço" },
+    { codigo: "0099", nome: "Vencimento Decisão Judicial (Delegado)" },
+    { codigo: "0100", nome: "Vencimento Cargo Comissionado" },
+    { codigo: "0168", nome: "Abono Complementar Salário Mínimo" },
+    { codigo: "0185", nome: "Gratificação pela Escolaridade DJ" },
+    { codigo: "0191", nome: "Vencimento Decisão Judicial SISPEMB" },
+    { codigo: "0209", nome: "Complementação Pecuniária" },
+    { codigo: "0219", nome: "Grat. Exerc. de Atividade de Direção de Polícia Judiciária" },
+    { codigo: "0274", nome: "Grat Magistério - Vantagem Pessoal Nominalmente Identificada" },
+    { codigo: "0295", nome: "ATS da Gratificação da Substituição do Titular" }
+  ],
+  auxilioFuneral: [
+    { codigo: "0001", nome: "Vencimento Base" },
+    { codigo: "0016", nome: "Adicional pelo Exercício de Cargo em Comissão" },
+    { codigo: "0028", nome: "Gratificação Tempo Integral" },
+    { codigo: "0029", nome: "Gratificação Dedicação Exclusiva" },
+    { codigo: "0040", nome: "Gratificação de Risco de Vida" },
+    { codigo: "0047", nome: "Adicional de Insalubridade" },
+    { codigo: "0054", nome: "Gratificação pela Escolaridade" },
+    { codigo: "0056", nome: "Adicional de Curso de Especialização" },
+    { codigo: "0070", nome: "Gratificação de Polícia Judiciária" },
+    { codigo: "0079", nome: "Adicional pelo Exercício de Função Gratificada" },
+    { codigo: "0080", nome: "Adicional por Tempo de Serviço" },
+    { codigo: "0099", nome: "Vencimento Decisão Judicial (Delegado)" },
+    { codigo: "0100", nome: "Vencimento Cargo Comissionado" },
+    { codigo: "0168", nome: "Abono Complementar Salário Mínimo" },
+    { codigo: "0185", nome: "Gratificação pela Escolaridade DJ" },
+    { codigo: "0191", nome: "Vencimento Decisão Judicial SISPEMB" },
+    { codigo: "0209", nome: "Complementação Pecuniária" },
+    { codigo: "0219", nome: "Grat. Exerc. de Atividade de Direção de Polícia Judiciária" },
+    { codigo: "0274", nome: "Grat Magistério - Vantagem Pessoal Nominalmente Identificada" },
+    { codigo: "0295", nome: "ATS da Gratificação da Substituição do Titular" }
+  ],
+  ats: [
+    { codigo: "0001", nome: "Vencimento Base" },
+    { codigo: "0016", nome: "Adicional pelo Exercício de Cargo em Comissão" },
+    { codigo: "0023", nome: "Gratificação pelo Exercício da Função" },
+    { codigo: "0028", nome: "Gratificação Tempo Integral" },
+    { codigo: "0029", nome: "Gratificação Dedicação Exclusiva" },
+    { codigo: "0031", nome: "Gratificação de Titularidade" },
+    { codigo: "0040", nome: "Gratificação de Risco de Vida" },
+    { codigo: "0047", nome: "Adicional de Insalubridade" },
+    { codigo: "0052", nome: "Gratificação de Localidade Especial" },
+    { codigo: "0054", nome: "Gratificação pela Escolaridade" },
+    { codigo: "0056", nome: "Adicional de Curso de Especialização" },
+    { codigo: "0070", nome: "Gratificação de Polícia Judiciária" },
+    { codigo: "0079", nome: "Adicional pelo Exercício de Função Gratificada" },
+    { codigo: "0099", nome: "Vencimento Decisão Judicial (Delegado)" },
+    { codigo: "0100", nome: "Vencimento Cargo Comissionado" },
+    { codigo: "0122", nome: "Gratificação de Atividade de Motorista" },
+    { codigo: "0168", nome: "Abono Complementar Salário Mínimo" },
+    { codigo: "0185", nome: "Gratificação pela Escolaridade DJ" },
+    { codigo: "0186", nome: "Gratificação de Atividade Aérea" },
+    { codigo: "0191", nome: "Vencimento Decisão Judicial SISPEMB" },
+    { codigo: "0209", nome: "Complementação Pecuniária" },
+    { codigo: "0218", nome: "Gratificação por Acúmulo de Titularidade" },
+    { codigo: "0226", nome: "Grat. Exerc. de Atividade de Direção de Polícia Judiciária" },
+    { codigo: "0274", nome: "Grat Magistério - Vantagem Pessoal Nominalmente Identificada" },
+    { codigo: "0279", nome: "Gratificação pela Substituição do Titular" },
+    { codigo: "0291", nome: "Gratificação de Representação Lei 9853/2023" },
+    { codigo: "0294", nome: "Gratificação da Substituição do Titular" }
+  ],
+  auxilioDoenca: [
+    { codigo: "0001", nome: "Vencimento Base" },
+    { codigo: "0016", nome: "Adicional pelo Exercício de Cargo em Comissão" },
+    { codigo: "0028", nome: "Gratificação Tempo Integral" },
+    { codigo: "0029", nome: "Gratificação Dedicação Exclusiva" },
+    { codigo: "0040", nome: "Gratificação de Risco de Vida" },
+    { codigo: "0047", nome: "Adicional de Insalubridade" },
+    { codigo: "0054", nome: "Gratificação pela Escolaridade" },
+    { codigo: "0056", nome: "Adicional de Curso de Especialização" },
+    { codigo: "0070", nome: "Gratificação de Polícia Judiciária" },
+    { codigo: "0079", nome: "Adicional pelo Exercício de Função Gratificada" },
+    { codigo: "0080", nome: "Adicional por Tempo de Serviço" },
+    { codigo: "0099", nome: "Vencimento Decisão Judicial (Delegado)" },
+    { codigo: "0100", nome: "Vencimento Cargo Comissionado" },
+    { codigo: "0168", nome: "Abono Complementar Salário Mínimo" },
+    { codigo: "0185", nome: "Gratificação pela Escolaridade DJ" },
+    { codigo: "0191", nome: "Vencimento Decisão Judicial SISPEMB" },
+    { codigo: "0209", nome: "Complementação Pecuniária" },
+    { codigo: "0219", nome: "Grat. Exerc. de Atividade de Direção de Polícia Judiciária" },
+    { codigo: "0274", nome: "Grat Magistério - Vantagem Pessoal Nominalmente Identificada" },
+    { codigo: "0295", nome: "ATS da Gratificação da Substituição do Titular" }
+  ]
+};
+
+// ============================
+// CÓDIGOS PARA BASES DE CÁLCULO
+// ============================
+
+export const CODIGOS_BASE_IR = [
+  "0100","0191","0168","0274","0148","0056","0209","0219","0186","0122",
+  "0052","0070","0040","0031","0029","0185","0295","0291","0023","0001",
+  "0099","0047","0016","0079","0080","0054","0028","0124","0101","0279",
+  "0218","0136","0294","0146","0114"
+];
+
+export const CODIGOS_BASE_RPPS = [
+  "0191","0168","0274","0148","0056","0209","0219","0122","0052","0070",
+  "0040","0029","0185","0295","0291","0023","0001","0099","0016","0079",
+  "0080","0054","0028"
+];
+
+export const CODIGOS_BASE_INSS = [
+  "0100","0191","0168","0148","0295","0291","0023","0001","0099","0016",
+  "0079","0080"
+];
+
+// ============================
+// INFORMAÇÕES DAS ABAS
+// ============================
+
+export const ABAS_INFO = [
+  { id: "dias", label: "Dias Trabalhados" },
+  { id: "ferias", label: "Férias Indenizadas" },
+  { id: "decimo", label: "13º Salário" },
+  { id: "pecunia", label: "Pecúnia" },
+  { id: "auxilioFuneral", label: "Auxílio Funeral" },
+  { id: "ats", label: "Adicional Tempo Serviço" },
+  { id: "auxilioDoenca", label: "Auxílio Doença" }
+];
+
+// ============================
+// ESTILOS
+// ============================
+
+export const ESTILOS = {
+  label: {
+    fontSize: "15px",
+    fontWeight: "bold",
+    color: "#0B2B4A"
+  },
+  input: {
+    width: "300px",
+    padding: "6px",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    fontSize: "15px"
+  },
+  inputTabela: {
+    width: "180px",
+    padding: "6px",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    fontSize: "15px",
+    textAlign: "right"
+  },
+  containerPrincipal: {
+    padding: "20px"
+  },
+  navAbas: {
+    display: "flex",
+    gap: "10px",
+    marginBottom: "20px"
+  },
+  botaoAba: {
+    padding: "8px 12px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    backgroundColor: "#f5f5f5",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontWeight: "bold",
+    color: "#333"
+  },
+  botaoAbaAtivo: {
+    padding: "8px 12px",
+    border: "2px solid #0B2B4A",
+    borderRadius: "4px",
+    backgroundColor: "#0B2B4A",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontWeight: "bold",
+    color: "#fff"
+  },
+  containerTabela: {
+    background: "#ffffff",
+    padding: "15px",
+    borderRadius: "10px",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.08)"
+  },
+  tabelaHeader: {
+    background: "#f0f0f0",
+    padding: "8px",
+    textAlign: "left"
+  },
+  tabelaHeaderDireita: {
+    background: "#f0f0f0",
+    padding: "8px",
+    textAlign: "right"
+  },
+  totalGeral: {
+    marginTop: "20px",
+    fontWeight: "bold",
+    textAlign: "right",
+    fontSize: "18px",
+    padding: "10px",
+    background: "#f7f7f7",
+    borderRadius: "8px",
+    border: "1px solid #e0e0e0"
+  },
+  baseCalculo: {
+    marginTop: "10px",
+    fontWeight: "bold",
+    textAlign: "right"
+  }
+};
