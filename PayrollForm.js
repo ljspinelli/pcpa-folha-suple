@@ -2,7 +2,7 @@
 // COMPONENTE: PayrollForm (refatorado)
 // ============================
 
-function PayrollForm() {
+function PayrollForm({ onTotalChange }) {
   const [abaAtiva, setAbaAtiva] = React.useState("dias");
   const [bases, setBases] = React.useState({
     dias: "",
@@ -36,6 +36,18 @@ function PayrollForm() {
       [abaId]: novoValores
     }));
   };
+
+  // 🔥 CORREÇÃO CRÍTICA — soma os valores de TODAS as abas
+  // (não só a aba ativa) e envia o total para o App.js
+  React.useEffect(() => {
+    const totalGeral = ABAS_INFO.reduce((acc, aba) => {
+      return acc + calcularTotal(valores[aba.id] || {});
+    }, 0);
+
+    if (typeof onTotalChange === "function") {
+      onTotalChange(totalGeral);
+    }
+  }, [valores, onTotalChange]);
 
   return (
     <div style={ESTILOS.containerPrincipal}>
