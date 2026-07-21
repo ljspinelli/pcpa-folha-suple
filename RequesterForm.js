@@ -63,29 +63,6 @@ function RequesterForm() {
   const [interessado, setInteressado] = React.useState("");
   const [assunto, setAssunto] = React.useState("");
 
-  const estiloLabel = {
-    fontSize: "15px",
-    fontWeight: "600",
-    color: "#0B2B4A"
-  };
-
-  const estiloInput = {
-    fontSize: "15px",
-    padding: "6px",
-    width: "300px",
-    backgroundColor: "#ffffff",
-    border: "1px solid #ccc",
-    borderRadius: "4px"
-  };
-
-  const estiloSelect = {
-    fontSize: "15px",
-    padding: "6px",
-    width: "300px",
-    backgroundColor: "#ffffff",
-    border: "1px solid #ccc",
-    borderRadius: "4px"
-  };
 
   const cargos = [
     "Agente de Artes Práticas", "Agente de Eletricidade", "Agente de Mecânica",
@@ -106,9 +83,9 @@ function RequesterForm() {
     <div>
 
       {/* Nome Completo */}
-      <label style={estiloLabel}>Nome Completo:</label><br />
+      <label style={ESTILOS.label}>Nome Completo:</label><br />
       <input
-        style={estiloInput}
+        style={ESTILOS.input}
         value={nome}
         onChange={e => setNome(mascaraNome(e.target.value))}
         placeholder="Digite o nome completo"
@@ -116,9 +93,9 @@ function RequesterForm() {
 
       {/* CPF */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>CPF:</label><br />
+        <label style={ESTILOS.label}>CPF:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={cpf}
           onChange={e => setCpf(mascaraCPF(e.target.value))}
           placeholder="xxx.xxx.xxx-xx"
@@ -127,9 +104,9 @@ function RequesterForm() {
 
       {/* Matrícula */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Matrícula:</label><br />
+        <label style={ESTILOS.label}>Matrícula:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={matricula}
           onChange={e => setMatricula(mascaraMatricula(e.target.value))}
           placeholder="xxxxxxxxxxxx/xx"
@@ -138,9 +115,9 @@ function RequesterForm() {
 
       {/* Cargo */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Cargo:</label><br />
+        <label style={ESTILOS.label}>Cargo:</label><br />
         <select
-          style={estiloSelect}
+          style={ESTILOS.select}
           value={cargo}
           onChange={e => setCargo(e.target.value)}
         >
@@ -153,9 +130,9 @@ function RequesterForm() {
 
       {/* Protocolo PAE */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Protocolo PAE:</label><br />
+        <label style={ESTILOS.label}>Protocolo PAE:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={pae}
           onChange={e => setPae(mascaraPAE(e.target.value))}
           placeholder="xxxx/xxxxxxxxxxxx"
@@ -164,9 +141,9 @@ function RequesterForm() {
 
       {/* Interessado */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Interessado:</label><br />
+        <label style={ESTILOS.label}>Interessado:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={interessado}
           onChange={e => setInteressado(mascaraTextoLivre(e.target.value))}
           placeholder="Digite o interessado"
@@ -175,9 +152,9 @@ function RequesterForm() {
 
       {/* Assunto */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Assunto:</label><br />
+        <label style={ESTILOS.label}>Assunto:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={assunto}
           onChange={e => setAssunto(mascaraTextoLivre(e.target.value))}
           placeholder="Digite o assunto"
