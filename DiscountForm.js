@@ -109,7 +109,18 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
       valor: valorIR
     };
 
-    setLista([linha1, linha2]);
+    // Atualiza a linha se a rubrica já existir na lista, senão adiciona.
+    // Isso evita perder descontos já aplicados ao clicar novamente.
+    setLista(prev => {
+      const semDuplicatas = prev.filter(
+        item => item.rubrica !== linha1.rubrica && item.rubrica !== linha2.rubrica
+      );
+      return [...semDuplicatas, linha1, linha2];
+    });
+  }
+
+  function removerDesconto(rubrica) {
+    setLista(prev => prev.filter(item => item.rubrica !== rubrica));
   }
 
   // Total dos descontos
@@ -125,31 +136,13 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
     }
   }, [total, setTotalDescontos]);
 
-  const estiloLabel = {
-    fontSize: "15px",
-    fontWeight: "600",
-    color: "#0B2B4A"
-  };
-
-  const estiloInput = {
-    fontSize: "15px",
-    padding: "6px",
-    width: "300px"
-  };
-
-  const estiloSelect = {
-    fontSize: "15px",
-    padding: "6px",
-    width: "300px"
-  };
-
   return (
     <div>
 
       {/* Contribuição Previdenciária */}
-      <label style={estiloLabel}>Contribuição Previdenciária:</label><br />
+      <label style={ESTILOS.label}>Contribuição Previdenciária:</label><br />
       <select
-        style={estiloSelect}
+        style={ESTILOS.select}
         value={contrib}
         onChange={e => setContrib(e.target.value)}
       >
@@ -161,9 +154,9 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
 
       {/* Alíquota */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Alíquota:</label><br />
+        <label style={ESTILOS.label}>Alíquota:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={aliquota}
           onChange={onAliquotaChange}
           onBlur={onAliquotaBlur}
@@ -173,9 +166,9 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
 
       {/* Valor Previdenciário */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Valor:</label><br />
+        <label style={ESTILOS.label}>Valor:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.inputSomenteLeitura}
           value={valorCalc}
           readOnly
           placeholder="0,00"
@@ -184,8 +177,8 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
 
       {/* Imposto de Renda */}
       <div style={{ marginTop: "20px" }}>
-        <label style={estiloLabel}>
-          <a
+        <label style={ESTILOS.label}>
+          
             href="https://www27.receita.fazenda.gov.br/simulador-irpf/"
             target="_blank"
             rel="noreferrer"
@@ -194,7 +187,7 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
           </a>
         </label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.inputSomenteLeitura}
           value="0658 - Imposto de Renda - IRRF"
           readOnly
         />
@@ -202,9 +195,9 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
 
       {/* Alíquota IR */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Alíquota IR:</label><br />
+        <label style={ESTILOS.label}>Alíquota IR:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={aliquotaIR}
           onChange={onAliquotaIRChange}
           onBlur={onAliquotaIRBlur}
@@ -214,9 +207,9 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
 
       {/* Valor IR */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Valor IR:</label><br />
+        <label style={ESTILOS.label}>Valor IR:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={valorIR}
           onChange={onValorIRChange}
           placeholder="000.000,00"
@@ -245,15 +238,25 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
               <th style={{ padding: "8px", textAlign: "left" }}>Rúbrica</th>
               <th style={{ padding: "8px", textAlign: "left" }}>Alíquota</th>
               <th style={{ padding: "8px", textAlign: "right" }}>Valor (R$)</th>
+              <th style={{ padding: "8px", textAlign: "center" }}></th>
             </tr>
           </thead>
 
           <tbody>
-            {lista.map((item, index) => (
-              <tr key={index}>
+            {lista.map((item) => (
+              <tr key={item.rubrica}>
                 <td style={{ padding: "8px" }}>{item.rubrica}</td>
                 <td style={{ padding: "8px" }}>{item.aliquota}</td>
                 <td style={{ padding: "8px", textAlign: "right" }}>{item.valor}</td>
+                <td style={{ padding: "8px", textAlign: "center" }}>
+                  <button
+                    onClick={() => removerDesconto(item.rubrica)}
+                    style={{ color: "#b00020", border: "none", background: "none", cursor: "pointer" }}
+                    title="Remover"
+                  >
+                    ✕
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
