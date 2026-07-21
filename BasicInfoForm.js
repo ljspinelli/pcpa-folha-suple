@@ -38,31 +38,6 @@ function BasicInfoForm() {
   const [encerramento, setEncerramento] = React.useState("");
   const [motivoEncerramento, setMotivoEncerramento] = React.useState("");
 
-  // Estilos padronizados (referência: Data da Posse)
-  const estiloLabel = {
-    fontSize: "15px",
-    fontWeight: "600",
-    color: "#0B2B4A"
-  };
-
-  const estiloInput = {
-    fontSize: "15px",
-    padding: "6px",
-    width: "300px",
-    backgroundColor: "#ffffff",
-    border: "1px solid #ccc",
-    borderRadius: "4px"
-  };
-
-  const estiloSelect = {
-    fontSize: "15px",
-    padding: "6px",
-    width: "300px",
-    backgroundColor: "#ffffff",
-    border: "1px solid #ccc",
-    borderRadius: "4px"
-  };
-
   const motivosPosse = [
     "Nomeação por Concurso Publico",
     "Livre Nomeação",
@@ -90,9 +65,9 @@ function BasicInfoForm() {
     <div>
 
       {/* Data da Posse */}
-      <label style={estiloLabel}>Data da Posse:</label><br />
+      <label style={ESTILOS.label}>Data da Posse:</label><br />
       <input
-        style={estiloInput}
+        style={ESTILOS.input}
         value={posse}
         onChange={e => setPosse(mascaraData(e.target.value))}
         placeholder="DD/MM/AAAA"
@@ -100,9 +75,9 @@ function BasicInfoForm() {
 
       {/* Motivo da Posse */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Motivo da Posse:</label><br />
+        <label style={ESTILOS.label}>Motivo da Posse:</label><br />
         <select
-          style={estiloSelect}
+          style={ESTILOS.select}
           value={motivoPosse}
           onChange={e => setMotivoPosse(e.target.value)}
         >
@@ -115,9 +90,9 @@ function BasicInfoForm() {
 
       {/* Data de Encerramento */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Data de Encerramento de Vínculo:</label><br />
+        <label style={ESTILOS.label}>Data de Encerramento de Vínculo:</label><br />
         <input
-          style={estiloInput}
+          style={ESTILOS.input}
           value={encerramento}
           onChange={e => setEncerramento(mascaraData(e.target.value))}
           placeholder="DD/MM/AAAA"
@@ -126,9 +101,9 @@ function BasicInfoForm() {
 
       {/* Motivo de Encerramento */}
       <div style={{ marginTop: "10px" }}>
-        <label style={estiloLabel}>Motivo de Encerramento de Vínculo:</label><br />
+        <label style={ESTILOS.label}>Motivo de Encerramento de Vínculo:</label><br />
         <select
-          style={estiloSelect}
+          style={ESTILOS.select}
           value={motivoEncerramento}
           onChange={e => setMotivoEncerramento(e.target.value)}
         >
