@@ -2,7 +2,7 @@
 // CONSTANTES - RUBRICAS E BASES
 // ============================
 
-export const RUBRICAS_POR_ABA = {
+const RUBRICAS_POR_ABA = {
   dias: [
     { codigo: "0001", nome: "Vencimento Base" },
     { codigo: "0016", nome: "Adicional pelo Exercício de Cargo em Comissão" },
@@ -195,33 +195,25 @@ export const RUBRICAS_POR_ABA = {
   ]
 };
 
-// ============================
-// CÓDIGOS PARA BASES DE CÁLCULO
-// ============================
-
-export const CODIGOS_BASE_IR = [
+const CODIGOS_BASE_IR = [
   "0100","0191","0168","0274","0148","0056","0209","0219","0186","0122",
   "0052","0070","0040","0031","0029","0185","0295","0291","0023","0001",
   "0099","0047","0016","0079","0080","0054","0028","0124","0101","0279",
   "0218","0136","0294","0146","0114"
 ];
 
-export const CODIGOS_BASE_RPPS = [
+const CODIGOS_BASE_RPPS = [
   "0191","0168","0274","0148","0056","0209","0219","0122","0052","0070",
   "0040","0029","0185","0295","0291","0023","0001","0099","0016","0079",
   "0080","0054","0028"
 ];
 
-export const CODIGOS_BASE_INSS = [
+const CODIGOS_BASE_INSS = [
   "0100","0191","0168","0148","0295","0291","0023","0001","0099","0016",
   "0079","0080"
 ];
 
-// ============================
-// INFORMAÇÕES DAS ABAS
-// ============================
-
-export const ABAS_INFO = [
+const ABAS_INFO = [
   { id: "dias", label: "Dias Trabalhados" },
   { id: "ferias", label: "Férias Indenizadas" },
   { id: "decimo", label: "13º Salário" },
@@ -231,11 +223,7 @@ export const ABAS_INFO = [
   { id: "auxilioDoenca", label: "Auxílio Doença" }
 ];
 
-// ============================
-// ESTILOS
-// ============================
-
-export const ESTILOS = {
+const ESTILOS = {
   label: {
     fontSize: "15px",
     fontWeight: "bold",
@@ -246,7 +234,34 @@ export const ESTILOS = {
     padding: "6px",
     border: "1px solid #ccc",
     borderRadius: "6px",
-    fontSize: "15px"
+    fontSize: "15px",
+    backgroundColor: "#ffffff"
+  },
+  select: {
+    width: "300px",
+    padding: "6px",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    fontSize: "15px",
+    backgroundColor: "#ffffff"
+  },
+  inputSomenteLeitura: {
+    width: "300px",
+    padding: "6px",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    fontSize: "15px",
+    backgroundColor: "#f7f7f7"
+  },
+  inputDestaque: {
+    width: "300px",
+    padding: "6px",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    fontSize: "15px",
+    fontWeight: "bold",
+    color: "#0B2B4A",
+    backgroundColor: "#e8f5e9"
   },
   inputTabela: {
     width: "180px",
@@ -262,7 +277,8 @@ export const ESTILOS = {
   navAbas: {
     display: "flex",
     gap: "10px",
-    marginBottom: "20px"
+    marginBottom: "20px",
+    flexWrap: "wrap"
   },
   botaoAba: {
     padding: "8px 12px",
@@ -289,16 +305,6 @@ export const ESTILOS = {
     padding: "15px",
     borderRadius: "10px",
     boxShadow: "0 2px 6px rgba(0,0,0,0.08)"
-  },
-  tabelaHeader: {
-    background: "#f0f0f0",
-    padding: "8px",
-    textAlign: "left"
-  },
-  tabelaHeaderDireita: {
-    background: "#f0f0f0",
-    padding: "8px",
-    textAlign: "right"
   },
   totalGeral: {
     marginTop: "20px",
