@@ -1,17 +1,15 @@
-import React from "react";
-import { ESTILOS } from "../constants.js";
-import { mascaraMoeda } from "../utils.js";
+// ============================
+// COMPONENTE: RubricasTable
+// ============================
 
-/**
- * Componente de tabela de rubricas
- */
-export default function RubricasTable({ rubricas, valores, setValores }) {
+const RubricasTable = ({ rubricas, valores, setValores }) => {
   const handleChange = (codigo, novoValor) => {
     const valorFormatado = mascaraMoeda(novoValor);
-    setValores(prev => ({
-      ...prev,
+    const novoEstado = {
+      ...valores,
       [codigo]: valorFormatado
-    }));
+    };
+    setValores(novoEstado);
   };
 
   return (
@@ -44,4 +42,4 @@ export default function RubricasTable({ rubricas, valores, setValores }) {
       </tbody>
     </table>
   );
-}
+};
