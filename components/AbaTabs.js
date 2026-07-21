@@ -1,10 +1,8 @@
-import React from "react";
-import { ABAS_INFO, ESTILOS } from "../constants.js";
+// ============================
+// COMPONENTE: AbaTabs
+// ============================
 
-/**
- * Componente de navegação entre abas
- */
-export default function AbaTabs({ abaAtiva, setAbaAtiva }) {
+const AbaTabs = ({ abaAtiva, setAbaAtiva }) => {
   return (
     <div style={ESTILOS.navAbas}>
       {ABAS_INFO.map((aba) => (
@@ -18,4 +16,4 @@ export default function AbaTabs({ abaAtiva, setAbaAtiva }) {
       ))}
     </div>
   );
-}
+};
