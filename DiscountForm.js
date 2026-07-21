@@ -1,7 +1,7 @@
 // Lista de contribuições previdenciárias
 const contribuicoes = [
   "0656 - INSS - Temporário/Comissionado",
-  "0688 - FINANPREV"
+  "0688 - FINANPREV",
   "0695 - FUNPREV Contribuição LC112",
   "0638 - FUNPREV Limite RPPS"
 ];
