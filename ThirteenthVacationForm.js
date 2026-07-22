@@ -17,79 +17,77 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
 
   return (
     <div style={ESTILOS.containerPrincipal}>
+      <div style={{ display: "flex", gap: "30px", flexWrap: "wrap" }}>
 
-      {/* 13º Salário */}
-      <div style={ESTILOS.containerTabela}>
-        <h3 style={{ color: "#0B2B4A" }}>Cálculo de 13º</h3>
+        {/* 13º Salário */}
+        <div style={{ ...ESTILOS.containerTabela, flex: "1", minWidth: "280px" }}>
+          <h3 style={{ color: "#0B2B4A" }}>Cálculo de 13º</h3>
 
-        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginTop: "10px" }}>
-          <div style={{ flex: "1", minWidth: "200px" }}>
+          <div>
             <label style={ESTILOS.label}>Valor Base 13º:</label><br />
             <input
-              style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+              style={ESTILOS.inputSomenteLeitura}
               value={formatarNumeroParaMoeda(valorBase13)}
               readOnly
             />
           </div>
 
-          <div style={{ flex: "1", minWidth: "200px" }}>
+          <div style={{ marginTop: "10px" }}>
             <label style={ESTILOS.label}>Valor Mensal (Base ÷ 12):</label><br />
             <input
-              style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+              style={ESTILOS.inputSomenteLeitura}
               value={formatarNumeroParaMoeda(valorMensal13)}
               readOnly
             />
           </div>
 
-          <div style={{ flex: "1", minWidth: "200px" }}>
+          <div style={{ marginTop: "10px" }}>
             <label style={ESTILOS.label}>
               Valor Diário Proporcional (÷ {diasMes13} dias de {mesRef13 || "—"}):
             </label><br />
             <input
-              style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+              style={ESTILOS.inputSomenteLeitura}
               value={formatarNumeroParaMoeda(valorDiario13)}
               readOnly
             />
           </div>
         </div>
-      </div>
 
-      {/* Férias */}
-      <div style={{ ...ESTILOS.containerTabela, marginTop: "20px" }}>
-        <h3 style={{ color: "#0B2B4A" }}>Cálculo de Férias</h3>
+        {/* Férias */}
+        <div style={{ ...ESTILOS.containerTabela, flex: "1", minWidth: "280px" }}>
+          <h3 style={{ color: "#0B2B4A" }}>Cálculo de Férias</h3>
 
-        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginTop: "10px" }}>
-          <div style={{ flex: "1", minWidth: "200px" }}>
+          <div>
             <label style={ESTILOS.label}>Valor Base Férias:</label><br />
             <input
-              style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+              style={ESTILOS.inputSomenteLeitura}
               value={formatarNumeroParaMoeda(valorBaseFerias)}
               readOnly
             />
           </div>
 
-          <div style={{ flex: "1", minWidth: "200px" }}>
+          <div style={{ marginTop: "10px" }}>
             <label style={ESTILOS.label}>Valor Mensal (Base ÷ 12):</label><br />
             <input
-              style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+              style={ESTILOS.inputSomenteLeitura}
               value={formatarNumeroParaMoeda(valorMensalFerias)}
               readOnly
             />
           </div>
 
-          <div style={{ flex: "1", minWidth: "200px" }}>
+          <div style={{ marginTop: "10px" }}>
             <label style={ESTILOS.label}>
               Valor Diário Proporcional (÷ {diasMesFerias} dias de {mesRefFerias || "—"}):
             </label><br />
             <input
-              style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+              style={ESTILOS.inputSomenteLeitura}
               value={formatarNumeroParaMoeda(valorDiarioFerias)}
               readOnly
             />
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   );
 }
