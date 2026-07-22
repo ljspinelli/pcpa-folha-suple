@@ -59,3 +59,31 @@ function formatarNumeroParaMoeda(numero) {
     maximumFractionDigits: 2
   });
 }
+// Mapa de meses abreviados (pt-BR) para número do mês (1-12)
+const MESES_ABREV = {
+  Jan: 1, Fev: 2, Mar: 3, Abr: 4, Mai: 5, Jun: 6,
+  Jul: 7, Ago: 8, Set: 9, Out: 10, Nov: 11, Dez: 12
+};
+
+// Recebe referência no formato "Mmm/AAAA" (ex: "Dez/2023")
+// e retorna o número de dias daquele mês/ano, calculado
+// automaticamente (considera anos bissextos corretamente).
+function diasNoMes(mesRef) {
+  if (!mesRef || !mesRef.includes("/")) return 30; // padrão de segurança
+
+  const [mesAbrev, anoTexto] = mesRef.split("/");
+  const mesNumero = MESES_ABREV[mesAbrev];
+  const ano = Number(anoTexto);
+
+  if (!mesNumero || !ano || anoTexto.length < 4) return 30;
+
+  // Dia 0 do mês seguinte = último dia do mês atual
+  return new Date(ano, mesNumero, 0).getDate();
+}
+
+// Arredondamento padrão (meio para cima), evitando problemas
+// de ponto flutuante do JavaScript
+function arredondarPadrao(valor, casas = 2) {
+  const fator = Math.pow(10, casas);
+  return Math.round((valor + Number.EPSILON) * fator) / fator;
+}
