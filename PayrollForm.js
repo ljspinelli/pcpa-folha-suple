@@ -2,7 +2,7 @@
 // COMPONENTE: PayrollForm (refatorado)
 // ============================
 
-function PayrollForm({ onTotalChange }) {
+function PayrollForm({ onTotalChange, onDecimoFeriasChange }) {
   const [abaAtiva, setAbaAtiva] = React.useState("dias");
   const [bases, setBases] = React.useState({
     dias: "",
@@ -48,6 +48,20 @@ function PayrollForm({ onTotalChange }) {
       onTotalChange(totalGeral);
     }
   }, [valores, onTotalChange]);
+
+  // Repassa para o App.js o Valor Base (soma das rubricas da aba) e o
+  // mês/ano de referência do 13º e das Férias, para o quadro de cálculo
+  // de avos (ThirteenthVacationForm).
+  React.useEffect(() => {
+    if (typeof onDecimoFeriasChange === "function") {
+      onDecimoFeriasChange({
+        valorBase13: calcularTotal(valores.decimo || {}),
+        mesRef13: bases.decimo,
+        valorBaseFerias: calcularTotal(valores.ferias || {}),
+        mesRefFerias: bases.ferias
+      });
+    }
+  }, [valores, bases, onDecimoFeriasChange]);
 
   return (
     <div style={ESTILOS.containerPrincipal}>
