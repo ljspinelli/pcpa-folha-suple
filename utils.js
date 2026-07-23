@@ -87,3 +87,53 @@ function arredondarPadrao(valor, casas = 2) {
   const fator = Math.pow(10, casas);
   return Math.round((valor + Number.EPSILON) * fator) / fator;
 }
+// Converte texto "DD/MM/AAAA" em objeto Date. Retorna null se incompleto/inválido.
+function parseDataBR(texto) {
+  if (!texto || texto.length < 10) return null;
+  const [diaTxt, mesTxt, anoTxt] = texto.split("/");
+  if (!diaTxt || !mesTxt || !anoTxt || anoTxt.length < 4) return null;
+
+  const dia = Number(diaTxt);
+  const mes = Number(mesTxt);
+  const ano = Number(anoTxt);
+
+  const data = new Date(ano, mes - 1, dia);
+  // Confirma que a data é realmente válida (evita 31/02 virar 03/03, etc.)
+  if (data.getFullYear() !== ano || data.getMonth() !== mes - 1 || data.getDate() !== dia) {
+    return null;
+  }
+  return data;
+}
+
+// Calcula os avos (0 a 12) entre duas datas no formato "DD/MM/AAAA",
+// seguindo a regra trabalhista: mês em que a pessoa trabalhou 15 dias
+// ou mais conta como mês cheio (1 avo).
+function calcularAvosPeriodo(dataInicialTexto, dataFinalTexto) {
+  const dataInicial = parseDataBR(dataInicialTexto);
+  const dataFinal = parseDataBR(dataFinalTexto);
+
+  if (!dataInicial || !dataFinal || dataFinal < dataInicial) return 0;
+
+  let avos = 0;
+  let cursor = new Date(dataInicial.getFullYear(), dataInicial.getMonth(), 1);
+  const fimLimite = new Date(dataFinal.getFullYear(), dataFinal.getMonth(), 1);
+
+  while (cursor <= fimLimite) {
+    const ano = cursor.getFullYear();
+    const mes = cursor.getMonth();
+
+    const inicioMes = new Date(ano, mes, 1);
+    const fimMes = new Date(ano, mes + 1, 0);
+
+    const inicioPeriodo = dataInicial > inicioMes ? dataInicial : inicioMes;
+    const fimPeriodo = dataFinal < fimMes ? dataFinal : fimMes;
+
+    const diasTrabalhados = Math.floor((fimPeriodo - inicioPeriodo) / 86400000) + 1;
+
+    if (diasTrabalhados >= 15) avos++;
+
+    cursor = new Date(ano, mes + 1, 1);
+  }
+
+  return Math.min(avos, 12);
+}
