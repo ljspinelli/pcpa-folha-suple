@@ -96,8 +96,3 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
     </div>
   );
 }
-        valorMensalFerias={valorMensalFerias}
-      />
-    </div>
-  );
-}
