@@ -13,8 +13,9 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
   // --- Férias ---
   // Regra específica: Valor Base × 0,3333 (não é avos ÷12 como o 13º)
   const valorMensalFerias = arredondarPadrao(valorBaseFerias * 0.3333);
-  const diasMesFerias = diasNoMes(mesRefFerias);
-  const valorDiarioFerias = arredondarPadrao(valorMensalFerias / diasMesFerias);
+  // Valor Mensal do 1/3 de Férias: o "1/3 de Férias" dividido por 12,
+  // usado como taxa mensal (equivalente ao "Valor Mensal ÷12" do 13º)
+  const valorMensalDoTerco = arredondarPadrao(valorMensalFerias / 12);
 
   return (
     <div style={ESTILOS.containerPrincipal}>
@@ -77,12 +78,10 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
           </div>
 
           <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>
-              Valor Diário Proporcional (÷ {diasMesFerias} dias de {mesRefFerias || "—"}):
-            </label><br />
+            <label style={ESTILOS.label}>Valor Mensal do 1/3 de Férias:</label><br />
             <input
               style={ESTILOS.inputSomenteLeitura}
-              value={formatarNumeroParaMoeda(valorDiarioFerias)}
+              value={formatarNumeroParaMoeda(valorMensalDoTerco)}
               readOnly
             />
           </div>
@@ -92,6 +91,11 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
 
       <PeriodosAquisitivosForm
         valorMensal13={valorMensal13}
+        valorMensalFerias={valorMensalDoTerco}
+      />
+    </div>
+  );
+}
         valorMensalFerias={valorMensalFerias}
       />
     </div>
