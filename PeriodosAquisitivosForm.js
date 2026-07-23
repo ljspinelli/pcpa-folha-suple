@@ -168,7 +168,14 @@ function PeriodosAquisitivosForm({ valorMensal13, valorMensalFerias }) {
             </tbody>
           </table>
 
-          <div style={{ marginTop: "10px", textAlign: "right", fontWeight: "bold", fontSize: "18px" }}>
+          <div style={{
+            marginTop: "10px",
+            textAlign: "right",
+            fontWeight: "bold",
+            fontSize: "18px",
+            background: "#f0f0f0",
+            padding: "8px"
+          }}>
             Total&nbsp;&nbsp;R$ {formatarNumeroParaMoeda(total)}
           </div>
         </div>
