@@ -1,6 +1,7 @@
 function App() {
   const [totalVantagens, setTotalVantagens] = React.useState(0);
   const [totalDescontos, setTotalDescontos] = React.useState(0);
+  const [totalBasePrevidencia, setTotalBasePrevidencia] = React.useState(0);
   const [decimoFeriasData, setDecimoFeriasData] = React.useState({
     valorBase13: 0,
     mesRef13: "",
