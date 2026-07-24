@@ -54,11 +54,11 @@ function App() {
       >
         <h2 style={{ color: "#0B2B4A" }}>
           Composição da Remuneração – Vantagens
+        </h2>
         <PayrollForm
           onTotalChange={setTotalVantagens}
           onDecimoFeriasChange={setDecimoFeriasData}
           onBasePrevidenciaChange={setTotalBasePrevidencia}
-        />
         />
       </div>
 
@@ -95,6 +95,7 @@ function App() {
       >
         <h2 style={{ color: "#0B2B4A" }}>
           Descontos e Retenções
+        </h2>
         <DiscountForm
           totalVantagens={totalVantagens}
           totalBasePrevidencia={totalBasePrevidencia}
