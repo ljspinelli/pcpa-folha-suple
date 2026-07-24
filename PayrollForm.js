@@ -2,7 +2,7 @@
 // COMPONENTE: PayrollForm (refatorado)
 // ============================
 
-function PayrollForm({ onTotalChange, onDecimoFeriasChange }) {
+function PayrollForm({ onTotalChange, onDecimoFeriasChange, onBasePrevidenciaChange }) {
   const [abaAtiva, setAbaAtiva] = React.useState("dias");
   const [bases, setBases] = React.useState({
     dias: "",
@@ -37,6 +37,10 @@ function PayrollForm({ onTotalChange, onDecimoFeriasChange }) {
     }));
   };
 
+ // Rubrica que não sofre incidência de desconto previdenciário
+  // (0291 - Gratificação de Representação Lei 9853/2023)
+  const RUBRICA_EXCLUIDA_PREVIDENCIA = "0291";
+
   // 🔥 CORREÇÃO CRÍTICA — soma os valores de TODAS as abas
   // (não só a aba ativa) e envia o total para o App.js
   React.useEffect(() => {
@@ -47,7 +51,19 @@ function PayrollForm({ onTotalChange, onDecimoFeriasChange }) {
     if (typeof onTotalChange === "function") {
       onTotalChange(totalGeral);
     }
-  }, [valores, onTotalChange]);
+
+    // Base específica para o cálculo do desconto previdenciário,
+    // excluindo a rubrica 0291 em todas as abas onde ela aparece
+    const totalBasePrevidencia = ABAS_INFO.reduce((acc, aba) => {
+      const valoresAba = { ...(valores[aba.id] || {}) };
+      delete valoresAba[RUBRICA_EXCLUIDA_PREVIDENCIA];
+      return acc + calcularTotal(valoresAba);
+    }, 0);
+
+    if (typeof onBasePrevidenciaChange === "function") {
+      onBasePrevidenciaChange(totalBasePrevidencia);
+    }
+  }, [valores, onTotalChange, onBasePrevidenciaChange]);
 
   // Repassa para o App.js o Valor Base (soma das rubricas da aba) e o
   // mês/ano de referência do 13º e das Férias, para o quadro de cálculo
