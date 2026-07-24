@@ -33,7 +33,7 @@ function formatarPercentualFinal(digitos) {
   return "";
 }
 
-function DiscountForm({ totalVantagens, setTotalDescontos }) {
+function DiscountForm({ totalVantagens, totalBasePrevidencia, setTotalDescontos }) {
   const [contrib, setContrib] = React.useState("");
 
   const [aliquota, setAliquota] = React.useState("");
@@ -49,13 +49,15 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
   const [lista, setLista] = React.useState([]);
 
   // Cálculo do valor previdenciário
+  // Usa totalBasePrevidencia (exclui a rubrica 0291, que não sofre
+  // incidência de desconto previdenciário), não o totalVantagens geral.
   React.useEffect(() => {
     if (aliquota.includes(",")) {
       const perc = Number(
         aliquota.replace("%", "").replace(",", ".")
       ) / 100;
 
-      const calc = totalVantagens * perc;
+      const calc = totalBasePrevidencia * perc;
 
       setValorCalc(
         calc.toLocaleString("pt-BR", {
@@ -66,7 +68,7 @@ function DiscountForm({ totalVantagens, setTotalDescontos }) {
     } else {
       setValorCalc("");
     }
-  }, [aliquota, totalVantagens]);
+  }, [aliquota, totalBasePrevidencia]);
 
   // Digitação fluída da alíquota
   function onAliquotaChange(e) {
