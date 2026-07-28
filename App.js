@@ -83,6 +83,23 @@ function App() {
         />
       </div>
 
+      {/* Adiantamentos e Outros Valores Recebidos */}
+      <div
+        style={{
+          background: "#ffffff",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+          marginBottom: "20px"
+        }}
+      >
+        <h2 style={{ color: "#0B2B4A" }}>
+          Adiantamentos e Outros Valores Recebidos
+        </h2>
+        <AdiantamentosForm />
+      </div>
+
+      {/* Descontos */}
       {/* Descontos */}
       <div
         style={{
