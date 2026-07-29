@@ -91,7 +91,9 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
 
       <PeriodosAquisitivosForm
         valorMensal13={valorMensal13}
-        valorMensalFerias={valorMensalDoTerco}
+        valorBaseFerias={valorBaseFerias}
+        valorTotalTerco={valorMensalFerias}
+        valorMensalDoTerco={valorMensalDoTerco}
       />
     </div>
   );
