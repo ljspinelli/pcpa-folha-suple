@@ -137,3 +137,13 @@ function calcularAvosPeriodo(dataInicialTexto, dataFinalTexto) {
 
   return Math.min(avos, 12);
 }
+// Quantidade de dias entre duas datas "DD/MM/AAAA" (inclusive).
+// Retorna null se as datas estiverem incompletas ou inválidas.
+function diasEntreDatas(dataInicialTexto, dataFinalTexto) {
+  const dataInicial = parseDataBR(dataInicialTexto);
+  const dataFinal = parseDataBR(dataFinalTexto);
+
+  if (!dataInicial || !dataFinal || dataFinal < dataInicial) return null;
+
+  return Math.floor((dataFinal - dataInicial) / 86400000) + 1;
+}
