@@ -205,15 +205,7 @@ function DiscountForm({
 
       {/* Imposto de Renda */}
       <div style={{ marginTop: "20px" }}>
-        <label style={ESTILOS.label}>
-          
-            href="https://www27.receita.fazenda.gov.br/simulador-irpf/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Imposto de Renda:
-          </a>
-        </label><br />
+        <label style={ESTILOS.label}><a href="https://www27.receita.fazenda.gov.br/simulador-irpf/" target="_blank" rel="noreferrer">Imposto de Renda:</a></label><br />
         <input
           style={ESTILOS.inputSomenteLeitura}
           value="0658 - Imposto de Renda - IRRF"
