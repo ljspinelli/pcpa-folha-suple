@@ -99,7 +99,7 @@ function App() {
         <AdiantamentosForm
           valorBase13={decimoFeriasData.valorBase13}
           valorDiario13={arredondarPadrao(
-            arredondarPadrao(decimoFeriasData.valorBase13 / 12) /
+            decimoFeriasData.valorBase13 /
             diasNoMes(decimoFeriasData.mesRef13)
           )}
         />
