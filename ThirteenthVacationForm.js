@@ -11,11 +11,10 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
   const valorDiario13 = arredondarPadrao(valorMensal13 / diasMes13);
 
   // --- Férias ---
-  // Regra específica: Valor Base × 0,3333 (não é avos ÷12 como o 13º)
-  const valorMensalFerias = arredondarPadrao(valorBaseFerias * 0.3333);
-  // Valor Mensal do 1/3 de Férias: o "1/3 de Férias" dividido por 12,
-  // usado como taxa mensal (equivalente ao "Valor Mensal ÷12" do 13º)
-  const valorMensalDoTerco = arredondarPadrao(valorMensalFerias / 12);
+  const valorBaseMensal = arredondarPadrao(valorBaseFerias / 12);
+  const valorBaseMensalDoTerco = arredondarPadrao(valorBaseMensal / 3);
+  const valorMensalDoAvo = arredondarPadrao(valorBaseMensal + valorBaseMensalDoTerco);
+  const valorTercoFerias = arredondarPadrao(valorMensalDoAvo * 12);
 
   return (
     <div style={ESTILOS.containerPrincipal}>
@@ -59,29 +58,51 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
         <div style={{ ...ESTILOS.containerTabela, flex: "1", minWidth: "280px" }}>
           <h3 style={{ color: "#0B2B4A" }}>Cálculo de Férias</h3>
 
-          <div>
-            <label style={ESTILOS.label}>Valor Base Férias:</label><br />
-            <input
-              style={ESTILOS.inputSomenteLeitura}
-              value={formatarNumeroParaMoeda(valorBaseFerias)}
-              readOnly
-            />
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+            <div style={{ flex: "1", minWidth: "140px" }}>
+              <label style={ESTILOS.label}>Valor Base Férias:</label><br />
+              <input
+                style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+                value={formatarNumeroParaMoeda(valorBaseFerias)}
+                readOnly
+              />
+            </div>
+
+            <div style={{ flex: "1", minWidth: "140px" }}>
+              <label style={ESTILOS.label}>Valor Base Mensal:</label><br />
+              <input
+                style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+                value={formatarNumeroParaMoeda(valorBaseMensal)}
+                readOnly
+              />
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginTop: "10px" }}>
+            <div style={{ flex: "1", minWidth: "140px" }}>
+              <label style={ESTILOS.label}>Valor Base Mensal do 1/3:</label><br />
+              <input
+                style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+                value={formatarNumeroParaMoeda(valorBaseMensalDoTerco)}
+                readOnly
+              />
+            </div>
+
+            <div style={{ flex: "1", minWidth: "140px" }}>
+              <label style={ESTILOS.label}>Valor Mensal do Avo de Férias:</label><br />
+              <input
+                style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+                value={formatarNumeroParaMoeda(valorMensalDoAvo)}
+                readOnly
+              />
+            </div>
           </div>
 
           <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>1/3 de Férias:</label><br />
+            <label style={ESTILOS.label}>Valor 1/3 de Férias:</label><br />
             <input
               style={ESTILOS.inputSomenteLeitura}
-              value={formatarNumeroParaMoeda(valorMensalFerias)}
-              readOnly
-            />
-          </div>
-
-          <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Valor Mensal do 1/3 de Férias:</label><br />
-            <input
-              style={ESTILOS.inputSomenteLeitura}
-              value={formatarNumeroParaMoeda(valorMensalDoTerco)}
+              value={formatarNumeroParaMoeda(valorTercoFerias)}
               readOnly
             />
           </div>
@@ -92,8 +113,8 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
       <PeriodosAquisitivosForm
         valorMensal13={valorMensal13}
         valorBaseFerias={valorBaseFerias}
-        valorTotalTerco={valorMensalFerias}
-        valorMensalDoTerco={valorMensalDoTerco}
+        valorTotalTerco={valorTercoFerias}
+        valorMensalDoTerco={valorMensalDoAvo}
       />
     </div>
   );
