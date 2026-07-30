@@ -115,6 +115,7 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
         valorBaseFerias={valorBaseFerias}
         valorTotalTerco={valorTercoFerias}
         valorMensalDoTerco={valorMensalDoAvo}
+        onTotalChange={onTotalPeriodosChange}
       />
     </div>
   );
