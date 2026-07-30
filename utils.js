@@ -147,3 +147,19 @@ function diasEntreDatas(dataInicialTexto, dataFinalTexto) {
 
   return Math.floor((dataFinal - dataInicial) / 86400000) + 1;
 }
+// Calcula os avos de FÉRIAS (0 a 12) — regra diferente do 13º salário.
+// Férias contam por blocos de 30 dias corridos a partir do início do
+// período aquisitivo (não pelo mês civil/calendário). A fração final
+// igual ou superior a 15 dias conta como avo completo.
+function calcularAvosFerias(dataInicialTexto, dataFinalTexto) {
+  const totalDias = diasEntreDatas(dataInicialTexto, dataFinalTexto);
+  if (totalDias === null) return 0;
+
+  const mesesCompletos = Math.floor(totalDias / 30);
+  const diasRestantes = totalDias % 30;
+
+  let avos = mesesCompletos;
+  if (diasRestantes >= 15) avos++;
+
+  return Math.min(avos, 12);
+}
