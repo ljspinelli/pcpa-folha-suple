@@ -56,8 +56,8 @@ function PeriodosAquisitivosForm({
         return valorTotalTerco;
       case "1/3 de Férias Indenizadas Proporcional":
         return arredondarPadrao(valorMensalDoTerco * avos);
-      case "Férias Indenizadas Integral":
-        return valorBaseFerias;
+     case "Férias Indenizadas Integral":
+        return valorTotalTerco;
       case "Férias Indenizadas Proporcional":
         return arredondarPadrao(valorMensalDoTerco * avos);
       default:
