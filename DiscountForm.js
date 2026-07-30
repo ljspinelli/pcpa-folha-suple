@@ -167,76 +167,82 @@ function DiscountForm({
         Total Bruto&nbsp;&nbsp;R$ {formatarNumeroParaMoeda(totalBruto)}
       </div>
 
-      {/* Contribuição Previdenciária */}
-      <label style={ESTILOS.label}>Contribuição Previdenciária:</label><br />
-      <select
-        style={ESTILOS.select}
-        value={contrib}
-        onChange={e => setContrib(e.target.value)}
-      >
-        <option value="">Selecione...</option>
-        {contribuicoes.map((c, i) => (
-          <option key={i} value={c}>{c}</option>
-        ))}
-      </select>
+      {/* Duas colunas: Previdência (esquerda) e Imposto de Renda (direita) */}
+      <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
 
-      {/* Alíquota */}
-      <div style={{ marginTop: "10px" }}>
-        <label style={ESTILOS.label}>Alíquota:</label><br />
-        <input
-          style={ESTILOS.input}
-          value={aliquota}
-          onChange={onAliquotaChange}
-          onBlur={onAliquotaBlur}
-          placeholder="00,00%"
-        />
+        {/* Coluna esquerda: Contribuição Previdenciária */}
+        <div style={{ flex: "1", minWidth: "260px" }}>
+          <label style={ESTILOS.label}>Contribuição Previdenciária:</label><br />
+          <select
+            style={{ ...ESTILOS.select, width: "100%" }}
+            value={contrib}
+            onChange={e => setContrib(e.target.value)}
+          >
+            <option value="">Selecione...</option>
+            {contribuicoes.map((c, i) => (
+              <option key={i} value={c}>{c}</option>
+            ))}
+          </select>
+
+          {/* Alíquota */}
+          <div style={{ marginTop: "10px" }}>
+            <label style={ESTILOS.label}>Alíquota:</label><br />
+            <input
+              style={{ ...ESTILOS.input, width: "100%" }}
+              value={aliquota}
+              onChange={onAliquotaChange}
+              onBlur={onAliquotaBlur}
+              placeholder="00,00%"
+            />
+          </div>
+
+          {/* Valor Previdenciário */}
+          <div style={{ marginTop: "10px" }}>
+            <label style={ESTILOS.label}>Valor:</label><br />
+            <input
+              style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+              value={valorCalc}
+              readOnly
+              placeholder="0,00"
+            />
+          </div>
+        </div>
+
+        {/* Coluna direita: Imposto de Renda */}
+        <div style={{ flex: "1", minWidth: "260px" }}>
+          <label style={ESTILOS.label}><a href="https://www27.receita.fazenda.gov.br/simulador-irpf/" target="_blank" rel="noreferrer">Imposto de Renda:</a></label><br />
+          <input
+            style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+            value="0658 - Imposto de Renda - IRRF"
+            readOnly
+          />
+
+          {/* Alíquota IR */}
+          <div style={{ marginTop: "10px" }}>
+            <label style={ESTILOS.label}>Alíquota IR:</label><br />
+            <input
+              style={{ ...ESTILOS.input, width: "100%" }}
+              value={aliquotaIR}
+              onChange={onAliquotaIRChange}
+              onBlur={onAliquotaIRBlur}
+              placeholder="00,00%"
+            />
+          </div>
+
+          {/* Valor IR */}
+          <div style={{ marginTop: "10px" }}>
+            <label style={ESTILOS.label}>Valor IR:</label><br />
+            <input
+              style={{ ...ESTILOS.input, width: "100%" }}
+              value={valorIR}
+              onChange={onValorIRChange}
+              placeholder="000.000,00"
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Valor Previdenciário */}
-      <div style={{ marginTop: "10px" }}>
-        <label style={ESTILOS.label}>Valor:</label><br />
-        <input
-          style={ESTILOS.inputSomenteLeitura}
-          value={valorCalc}
-          readOnly
-          placeholder="0,00"
-        />
-      </div>
-
-      {/* Imposto de Renda */}
-      <div style={{ marginTop: "20px" }}>
-        <label style={ESTILOS.label}><a href="https://www27.receita.fazenda.gov.br/simulador-irpf/" target="_blank" rel="noreferrer">Imposto de Renda:</a></label><br />
-        <input
-          style={ESTILOS.inputSomenteLeitura}
-          value="0658 - Imposto de Renda - IRRF"
-          readOnly
-        />
-      </div>
-
-      {/* Alíquota IR */}
-      <div style={{ marginTop: "10px" }}>
-        <label style={ESTILOS.label}>Alíquota IR:</label><br />
-        <input
-          style={ESTILOS.input}
-          value={aliquotaIR}
-          onChange={onAliquotaIRChange}
-          onBlur={onAliquotaIRBlur}
-          placeholder="00,00%"
-        />
-      </div>
-
-      {/* Valor IR */}
-      <div style={{ marginTop: "10px" }}>
-        <label style={ESTILOS.label}>Valor IR:</label><br />
-        <input
-          style={ESTILOS.input}
-          value={valorIR}
-          onChange={onValorIRChange}
-          placeholder="000.000,00"
-        />
-      </div>
-
-      <div style={{ marginTop: "15px" }}>
+      <div style={{ marginTop: "15px", textAlign: "right" }}>
         <button onClick={aplicarDescontos}>Aplicar Descontos</button>
       </div>
 
