@@ -96,7 +96,13 @@ function App() {
         <h2 style={{ color: "#0B2B4A" }}>
           Adiantamentos e Outros Valores Recebidos
         </h2>
-        <AdiantamentosForm />
+        <AdiantamentosForm
+          valorBase13={decimoFeriasData.valorBase13}
+          valorDiario13={arredondarPadrao(
+            arredondarPadrao(decimoFeriasData.valorBase13 / 12) /
+            diasNoMes(decimoFeriasData.mesRef13)
+          )}
+        />
       </div>
 
       {/* Descontos */}
