@@ -8,7 +8,7 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
   // --- 13º Salário ---
   const valorMensal13 = arredondarPadrao(valorBase13 / 12);
   const diasMes13 = diasNoMes(mesRef13);
-  const valorDiario13 = arredondarPadrao(valorMensal13 / diasMes13);
+  const valorDiario13 = arredondarPadrao(valorBase13 / diasMes13);
 
   // --- Férias ---
   const valorBaseMensal = arredondarPadrao(valorBaseFerias / 12);
