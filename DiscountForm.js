@@ -33,7 +33,13 @@ function formatarPercentualFinal(digitos) {
   return "";
 }
 
-function DiscountForm({ totalVantagens, totalBasePrevidencia, setTotalDescontos }) {
+function DiscountForm({
+  totalVantagens,
+  totalBasePrevidencia,
+  totalPeriodosAquisitivos,
+  totalAdiantamentos,
+  setTotalDescontos
+}) {
   const [contrib, setContrib] = React.useState("");
 
   const [aliquota, setAliquota] = React.useState("");
@@ -140,8 +146,26 @@ function DiscountForm({ totalVantagens, totalBasePrevidencia, setTotalDescontos 
     }
   }, [total, setTotalDescontos]);
 
+  // Total Bruto = Total do PeriodosAquisitivosForm.js - Total do AdiantamentosForm.js
+  const totalBruto = arredondarPadrao(totalPeriodosAquisitivos - totalAdiantamentos);
+
+  // Total Líquido = Total Bruto - Total dos descontos aplicados (Quadro1 deste formulário)
+  const totalLiquido = arredondarPadrao(totalBruto - total);
+
   return (
     <div>
+
+      {/* Total Bruto */}
+      <div style={{
+        marginBottom: "20px",
+        textAlign: "right",
+        fontWeight: "bold",
+        fontSize: "18px",
+        background: "#f0f0f0",
+        padding: "8px"
+      }}>
+        Total Bruto&nbsp;&nbsp;R$ {formatarNumeroParaMoeda(totalBruto)}
+      </div>
 
       {/* Contribuição Previdenciária */}
       <label style={ESTILOS.label}>Contribuição Previdenciária:</label><br />
@@ -182,7 +206,7 @@ function DiscountForm({ totalVantagens, totalBasePrevidencia, setTotalDescontos 
       {/* Imposto de Renda */}
       <div style={{ marginTop: "20px" }}>
         <label style={ESTILOS.label}>
-<a           
+          
             href="https://www27.receita.fazenda.gov.br/simulador-irpf/"
             target="_blank"
             rel="noreferrer"
@@ -280,6 +304,18 @@ function DiscountForm({ totalVantagens, totalBasePrevidencia, setTotalDescontos 
         >
           Total: R$ {total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
         </div>
+      </div>
+
+      {/* Total Líquido */}
+      <div style={{
+        marginTop: "20px",
+        textAlign: "right",
+        fontWeight: "bold",
+        fontSize: "18px",
+        background: "#f0f0f0",
+        padding: "8px"
+      }}>
+        Total Líquido&nbsp;&nbsp;R$ {formatarNumeroParaMoeda(totalLiquido)}
       </div>
     </div>
   );
