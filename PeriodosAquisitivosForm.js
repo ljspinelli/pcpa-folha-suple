@@ -41,8 +41,15 @@ function PeriodosAquisitivosForm({
 
   const proximoIdRef = React.useRef(1);
 
-  const avos = calcularAvosPeriodo(dataInicial, dataFinal);
+  // 13º Salário conta por mês civil (calendário); Férias conta por
+  // blocos de 30 dias corridos a partir da data inicial — são regras
+  // diferentes por lei, por isso duas funções distintas.
+  const avos13 = calcularAvosPeriodo(dataInicial, dataFinal);
+  const avosFerias = calcularAvosFerias(dataInicial, dataFinal);
   const dias = diasEntreDatas(dataInicial, dataFinal);
+
+  // Avos exibido na linha/campo depende do tipo de vantagem selecionada
+  const avos = selecionarVantagem.startsWith("13ª") ? avos13 : avosFerias;
 
   // Determina se o Campo5 (Valor) é calculado automaticamente com base
   // na vantagem selecionada, ou se fica livre para digitação manual.
@@ -51,15 +58,15 @@ function PeriodosAquisitivosForm({
       case "13ª Salário Integral":
         return arredondarPadrao(valorMensal13 * 12);
       case "13ª Salário Proporcional":
-        return arredondarPadrao(valorMensal13 * avos);
+        return arredondarPadrao(valorMensal13 * avos13);
       case "1/3 de Férias Indenizadas Integral":
         return valorTotalTerco;
       case "1/3 de Férias Indenizadas Proporcional":
-        return arredondarPadrao(valorMensalDoTerco * avos);
-     case "Férias Indenizadas Integral":
+        return arredondarPadrao(valorMensalDoTerco * avosFerias);
+      case "Férias Indenizadas Integral":
         return valorTotalTerco;
       case "Férias Indenizadas Proporcional":
-        return arredondarPadrao(valorMensalDoTerco * avos);
+        return arredondarPadrao(valorMensalDoTerco * avosFerias);
       default:
         return null; // sem regra: campo livre para digitação manual
     }
