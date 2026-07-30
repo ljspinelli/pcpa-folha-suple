@@ -27,7 +27,8 @@ function PeriodosAquisitivosForm({
   valorMensal13,
   valorBaseFerias,
   valorTotalTerco,
-  valorMensalDoTerco
+  valorMensalDoTerco,
+  onTotalChange
 }) {
   const [selecionarVantagem, setSelecionarVantagem] = React.useState("");
   const [dataInicial, setDataInicial] = React.useState("");
