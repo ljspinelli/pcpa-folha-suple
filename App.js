@@ -2,6 +2,8 @@ function App() {
   const [totalVantagens, setTotalVantagens] = React.useState(0);
   const [totalDescontos, setTotalDescontos] = React.useState(0);
   const [totalBasePrevidencia, setTotalBasePrevidencia] = React.useState(0);
+  const [totalPeriodosAquisitivos, setTotalPeriodosAquisitivos] = React.useState(0);
+  const [totalAdiantamentos, setTotalAdiantamentos] = React.useState(0);
   const [decimoFeriasData, setDecimoFeriasData] = React.useState({
     valorBase13: 0,
     mesRef13: "",
@@ -80,6 +82,7 @@ function App() {
           mesRef13={decimoFeriasData.mesRef13}
           valorBaseFerias={decimoFeriasData.valorBaseFerias}
           mesRefFerias={decimoFeriasData.mesRefFerias}
+          onTotalPeriodosChange={setTotalPeriodosAquisitivos}
         />
       </div>
 
@@ -102,10 +105,10 @@ function App() {
             decimoFeriasData.valorBase13 /
             diasNoMes(decimoFeriasData.mesRef13)
           )}
+          onTotalChange={setTotalAdiantamentos}
         />
       </div>
 
-      {/* Descontos */}
       {/* Descontos */}
       <div
         style={{
@@ -122,6 +125,8 @@ function App() {
         <DiscountForm
           totalVantagens={totalVantagens}
           totalBasePrevidencia={totalBasePrevidencia}
+          totalPeriodosAquisitivos={totalPeriodosAquisitivos}
+          totalAdiantamentos={totalAdiantamentos}
           setTotalDescontos={setTotalDescontos}
         />
       </div>
