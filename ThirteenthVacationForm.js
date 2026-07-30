@@ -4,7 +4,7 @@
 // valor mensal e valor diário proporcional.
 // ============================
 
-function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRefFerias }) {
+function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRefFerias, onTotalPeriodosChange }) {
   // --- 13º Salário ---
   const valorMensal13 = arredondarPadrao(valorBase13 / 12);
   const diasMes13 = diasNoMes(mesRef13);
@@ -80,43 +80,4 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
 
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginTop: "10px" }}>
             <div style={{ flex: "1", minWidth: "140px" }}>
-              <label style={ESTILOS.label}>Valor Base Mensal do 1/3:</label><br />
-              <input
-                style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
-                value={formatarNumeroParaMoeda(valorBaseMensalDoTerco)}
-                readOnly
-              />
-            </div>
-
-            <div style={{ flex: "1", minWidth: "140px" }}>
-              <label style={ESTILOS.label}>Valor Mensal do Avo de Férias:</label><br />
-              <input
-                style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
-                value={formatarNumeroParaMoeda(valorMensalDoAvo)}
-                readOnly
-              />
-            </div>
-          </div>
-
-          <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Valor 1/3 de Férias:</label><br />
-            <input
-              style={ESTILOS.inputSomenteLeitura}
-              value={formatarNumeroParaMoeda(valorTercoFerias)}
-              readOnly
-            />
-          </div>
-        </div>
-
-      </div>
-
-      <PeriodosAquisitivosForm
-        valorMensal13={valorMensal13}
-        valorBaseFerias={valorBaseFerias}
-        valorTotalTerco={valorTercoFerias}
-        valorMensalDoTerco={valorMensalDoAvo}
-        onTotalChange={onTotalPeriodosChange}
-      />
-    </div>
-  );
-}
+              <label style={ESTILOS.label}>Valor Base Mensal
