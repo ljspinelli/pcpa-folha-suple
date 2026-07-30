@@ -154,6 +154,14 @@ function PeriodosAquisitivosForm({
 
   const total = lista.reduce((acc, item) => acc + item.valor, 0);
 
+  // Repassa o total para cima (ex.: uso no cálculo de Total Bruto do
+  // DiscountForm.js)
+  React.useEffect(() => {
+    if (typeof onTotalChange === "function") {
+      onTotalChange(total);
+    }
+  }, [total, onTotalChange]);
+
   return (
     <div style={{ ...ESTILOS.containerTabela, marginTop: "20px" }}>
       <h3 style={{ color: "#0B2B4A" }}>Períodos Aquisitivos</h3>
