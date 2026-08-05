@@ -99,7 +99,7 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
           </div>
 
           <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Valor 1/3 de Férias:</label><br />
+            <label style={ESTILOS.label}>Valor Base + 1/3 de Férias:</label><br />
             <input
               style={ESTILOS.inputSomenteLeitura}
               value={formatarNumeroParaMoeda(valorTercoFerias)}
