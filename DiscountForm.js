@@ -46,33 +46,37 @@ function DiscountForm({
   totalBasePrevidencia,
   totalPeriodosAquisitivos,
   totalAdiantamentos,
+  listaPeriodosAquisitivos,
   setTotalDescontos
 }) {
   const [contrib, setContrib] = React.useState("");
-  const [imposto, setImposto] = React.useState("0658 - Imposto de Renda - IRRF");
+  const [imposto, setImposto] = React.useState("");
 
   const [aliquota, setAliquota] = React.useState("");
   const [aliquotaRaw, setAliquotaRaw] = React.useState("");
 
+  const [valorBasePrevidenciaTexto, setValorBasePrevidenciaTexto] = React.useState("");
   const [valorCalc, setValorCalc] = React.useState("");
 
   const [aliquotaIR, setAliquotaIR] = React.useState("");
   const [aliquotaIRRaw, setAliquotaIRRaw] = React.useState("");
 
+  const [valorBaseIRTexto, setValorBaseIRTexto] = React.useState("");
   const [valorIR, setValorIR] = React.useState("");
 
   const [lista, setLista] = React.useState([]);
 
-  // Cálculo do valor previdenciário
-  // Usa totalBasePrevidencia (exclui a rubrica 0291, que não sofre
-  // incidência de desconto previdenciário), não o totalVantagens geral.
+  // Cálculo do Valor Previdência = Alíquota × Valor Base Previdência
+  // (campo local, escolhido de uma linha do Períodos Aquisitivos ou
+  // digitado manualmente) — o campo permanece editável mesmo assim.
   React.useEffect(() => {
     if (aliquota.includes(",")) {
       const perc = Number(
         aliquota.replace("%", "").replace(",", ".")
       ) / 100;
 
-      const calc = totalBasePrevidencia * perc;
+      const base = converterMoedaParaNumero(valorBasePrevidenciaTexto);
+      const calc = base * perc;
 
       setValorCalc(
         calc.toLocaleString("pt-BR", {
@@ -83,7 +87,29 @@ function DiscountForm({
     } else {
       setValorCalc("");
     }
-  }, [aliquota, totalBasePrevidencia]);
+  }, [aliquota, valorBasePrevidenciaTexto]);
+
+  // Cálculo do Valor IR = Alíquota IR × Valor Base IR — o campo
+  // permanece editável mesmo assim.
+  React.useEffect(() => {
+    if (aliquotaIR.includes(",")) {
+      const perc = Number(
+        aliquotaIR.replace("%", "").replace(",", ".")
+      ) / 100;
+
+      const base = converterMoedaParaNumero(valorBaseIRTexto);
+      const calc = base * perc;
+
+      setValorIR(
+        calc.toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })
+      );
+    } else {
+      setValorIR("");
+    }
+  }, [aliquotaIR, valorBaseIRTexto]);
 
   // Digitação fluída da alíquota
   function onAliquotaChange(e) {
@@ -207,13 +233,32 @@ function DiscountForm({
             />
           </div>
 
-          {/* Valor Previdenciário */}
+          {/* Valor Base Previdência */}
           <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Valor:</label><br />
+            <label style={ESTILOS.label}>Valor Base Previdência:</label><br />
             <input
-              style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+              list="opcoes-valor-base-previdencia"
+              style={{ ...ESTILOS.input, width: "100%" }}
+              value={valorBasePrevidenciaTexto}
+              onChange={e => setValorBasePrevidenciaTexto(mascaraMoeda(e.target.value))}
+              placeholder="0,00"
+            />
+            <datalist id="opcoes-valor-base-previdencia">
+              {listaPeriodosAquisitivos && listaPeriodosAquisitivos.map((item, i) => (
+                <option key={i} value={formatarNumeroParaMoeda(item.valor)}>
+                  {item.selecionarVantagem} — {formatarNumeroParaMoeda(item.valor)}
+                </option>
+              ))}
+            </datalist>
+          </div>
+
+          {/* Valor Previdência */}
+          <div style={{ marginTop: "10px" }}>
+            <label style={ESTILOS.label}>Valor Previdência:</label><br />
+            <input
+              style={{ ...ESTILOS.input, width: "100%" }}
               value={valorCalc}
-              readOnly
+              onChange={e => setValorCalc(formatarMoedaDigitacao(e.target.value))}
               placeholder="0,00"
             />
           </div>
@@ -245,6 +290,25 @@ function DiscountForm({
               onBlur={onAliquotaIRBlur}
               placeholder="00,00%"
             />
+          </div>
+
+          {/* Valor Base IR */}
+          <div style={{ marginTop: "10px" }}>
+            <label style={ESTILOS.label}>Valor Base IR:</label><br />
+            <input
+              list="opcoes-valor-base-ir"
+              style={{ ...ESTILOS.input, width: "100%" }}
+              value={valorBaseIRTexto}
+              onChange={e => setValorBaseIRTexto(mascaraMoeda(e.target.value))}
+              placeholder="0,00"
+            />
+            <datalist id="opcoes-valor-base-ir">
+              {listaPeriodosAquisitivos && listaPeriodosAquisitivos.map((item, i) => (
+                <option key={i} value={formatarNumeroParaMoeda(item.valor)}>
+                  {item.selecionarVantagem} — {formatarNumeroParaMoeda(item.valor)}
+                </option>
+              ))}
+            </datalist>
           </div>
 
           {/* Valor IR */}
