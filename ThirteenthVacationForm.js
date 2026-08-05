@@ -4,7 +4,7 @@
 // valor mensal e valor diário proporcional.
 // ============================
 
-function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRefFerias, onTotalPeriodosChange }) {
+function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRefFerias, onTotalPeriodosChange, onListaPeriodosChange }) {
   // --- 13º Salário ---
   const valorMensal13 = arredondarPadrao(valorBase13 / 12);
   const diasMes13 = diasNoMes(mesRef13);
@@ -116,6 +116,7 @@ function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRef
         valorTotalTerco={valorTercoFerias}
         valorMensalDoTerco={valorMensalDoAvo}
         onTotalChange={onTotalPeriodosChange}
+        onListaChange={onListaPeriodosChange}
       />
     </div>
   );
