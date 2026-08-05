@@ -6,6 +6,14 @@ const contribuicoes = [
   "0638 - FUNPREV Limite RPPS"
 ];
 
+// Lista de opções de Imposto de Renda
+const opcoesImpostoRenda = [
+  "0658 - Imposto de Renda - IRRF",
+  "RRA 13º Salario Proporcional",
+  "Isento de IR - Ato Declaratório Interpretativo SRF nº 5/2005",
+  "Imposto de Renda Férias - Ato Declaratório Interpretativo SRF nº 14/2005"
+];
+
 // Máscara fluída de moeda (sem NaN)
 function formatarMoedaDigitacao(valor) {
   const digitos = valor.replace(/\D/g, "");
@@ -41,6 +49,7 @@ function DiscountForm({
   setTotalDescontos
 }) {
   const [contrib, setContrib] = React.useState("");
+  const [imposto, setImposto] = React.useState("0658 - Imposto de Renda - IRRF");
 
   const [aliquota, setAliquota] = React.useState("");
   const [aliquotaRaw, setAliquotaRaw] = React.useState("");
@@ -114,7 +123,7 @@ function DiscountForm({
     };
 
     const linha2 = {
-      rubrica: "0658 - Imposto de Renda - IRRF",
+      rubrica: imposto,
       aliquota: aliquotaIR,
       valor: valorIR
     };
@@ -173,16 +182,18 @@ function DiscountForm({
         {/* Coluna esquerda: Contribuição Previdenciária */}
         <div style={{ flex: "1", minWidth: "260px" }}>
           <label style={ESTILOS.label}>Contribuição Previdenciária:</label><br />
-          <select
-            style={{ ...ESTILOS.select, width: "100%" }}
+          <input
+            list="opcoes-contribuicao"
+            style={{ ...ESTILOS.input, width: "100%" }}
             value={contrib}
             onChange={e => setContrib(e.target.value)}
-          >
-            <option value="">Selecione...</option>
+            placeholder="Digite ou selecione..."
+          />
+          <datalist id="opcoes-contribuicao">
             {contribuicoes.map((c, i) => (
-              <option key={i} value={c}>{c}</option>
+              <option key={i} value={c} />
             ))}
-          </select>
+          </datalist>
 
           {/* Alíquota */}
           <div style={{ marginTop: "10px" }}>
@@ -212,10 +223,17 @@ function DiscountForm({
         <div style={{ flex: "1", minWidth: "260px" }}>
           <label style={ESTILOS.label}><a href="https://www27.receita.fazenda.gov.br/simulador-irpf/" target="_blank" rel="noreferrer">Imposto de Renda:</a></label><br />
           <input
-            style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
-            value="0658 - Imposto de Renda - IRRF"
-            readOnly
+            list="opcoes-imposto-renda"
+            style={{ ...ESTILOS.input, width: "100%" }}
+            value={imposto}
+            onChange={e => setImposto(e.target.value)}
+            placeholder="Digite ou selecione..."
           />
+          <datalist id="opcoes-imposto-renda">
+            {opcoesImpostoRenda.map((op, i) => (
+              <option key={i} value={op} />
+            ))}
+          </datalist>
 
           {/* Alíquota IR */}
           <div style={{ marginTop: "10px" }}>
