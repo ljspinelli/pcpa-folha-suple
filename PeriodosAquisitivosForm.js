@@ -28,7 +28,8 @@ function PeriodosAquisitivosForm({
   valorBaseFerias,
   valorTotalTerco,
   valorMensalDoTerco,
-  onTotalChange
+  onTotalChange,
+  onListaChange
 }) {
   const [selecionarVantagem, setSelecionarVantagem] = React.useState("");
   const [dataInicial, setDataInicial] = React.useState("");
@@ -161,6 +162,14 @@ function PeriodosAquisitivosForm({
       onTotalChange(total);
     }
   }, [total, onTotalChange]);
+
+  // Repassa a lista de linhas para cima (ex.: uso no DiscountForm.js
+  // para selecionar Valor Base Previdência / Valor Base IR)
+  React.useEffect(() => {
+    if (typeof onListaChange === "function") {
+      onListaChange(lista);
+    }
+  }, [lista, onListaChange]);
 
   return (
     <div style={{ ...ESTILOS.containerTabela, marginTop: "20px" }}>
