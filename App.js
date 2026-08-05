@@ -3,6 +3,7 @@ function App() {
   const [totalDescontos, setTotalDescontos] = React.useState(0);
   const [totalBasePrevidencia, setTotalBasePrevidencia] = React.useState(0);
   const [totalPeriodosAquisitivos, setTotalPeriodosAquisitivos] = React.useState(0);
+  const [listaPeriodosAquisitivos, setListaPeriodosAquisitivos] = React.useState([]);
   const [totalAdiantamentos, setTotalAdiantamentos] = React.useState(0);
   const [decimoFeriasData, setDecimoFeriasData] = React.useState({
     valorBase13: 0,
@@ -83,6 +84,7 @@ function App() {
           valorBaseFerias={decimoFeriasData.valorBaseFerias}
           mesRefFerias={decimoFeriasData.mesRefFerias}
           onTotalPeriodosChange={setTotalPeriodosAquisitivos}
+          onListaPeriodosChange={setListaPeriodosAquisitivos}
         />
       </div>
 
@@ -126,6 +128,7 @@ function App() {
           totalVantagens={totalVantagens}
           totalBasePrevidencia={totalBasePrevidencia}
           totalPeriodosAquisitivos={totalPeriodosAquisitivos}
+          listaPeriodosAquisitivos={listaPeriodosAquisitivos}
           totalAdiantamentos={totalAdiantamentos}
           setTotalDescontos={setTotalDescontos}
         />
