@@ -58,19 +58,19 @@ function PeriodosAquisitivosForm({
   function calcularValorAutomatico() {
     switch (selecionarVantagem) {
       case "13ª Salário Integral":
-        return arredondarPadrao(valorMensal13 * 12);
+        return valorMensal13 * 12;
       case "13ª Salário Proporcional":
-        return arredondarPadrao(valorMensal13 * avos13);
+        return valorMensal13 * avos13;
       case "1/3 de Férias Indenizadas Integral":
         return valorTotalTerco;
       case "1/3 de Férias Indenizadas Proporcional":
-        return arredondarPadrao(valorMensalDoTerco * avosFerias);
+        return valorMensalDoTerco * avosFerias;
       case "Férias Indenizadas Integral":
         return valorTotalTerco;
       case "Férias Indenizadas Proporcional":
-        return arredondarPadrao(valorMensalDoTerco * avosFerias);
+        return valorMensalDoTerco * avosFerias;
       default:
-        return null; // sem regra: campo livre para digitação manual
+        return null;
     }
   }
 
