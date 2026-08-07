@@ -5,16 +5,19 @@
 // ============================
 
 function ThirteenthVacationForm({ valorBase13, mesRef13, valorBaseFerias, mesRefFerias, onTotalPeriodosChange, onListaPeriodosChange }) {
-  // --- 13º Salário ---
-  const valorMensal13 = arredondarPadrao(valorBase13 * 0.0833333333333333);
+ // --- 13º Salário ---
+  // Cálculos mantidos com todas as casas decimais (sem arredondar em
+  // cascata) para evitar divergência com órgãos de controle. O
+  // arredondamento acontece só na hora de EXIBIR (formatarNumeroParaMoeda).
+  const valorMensal13 = valorBase13 / 12;
   const diasMes13 = diasNoMes(mesRef13);
-  const valorDiario13 = arredondarPadrao(valorBase13 / diasMes13);
+  const valorDiario13 = valorBase13 / diasMes13;
 
   // --- Férias ---
-  const valorBaseMensal = arredondarPadrao(valorBaseFerias * 0.0833333333333333);
-  const valorBaseMensalDoTerco = arredondarPadrao(valorBaseMensal * 0.3333333333333333);
-  const valorMensalDoAvo = arredondarPadrao(valorBaseMensal + valorBaseMensalDoTerco);
-  const valorTercoFerias = arredondarPadrao(valorMensalDoAvo * 12);
+  const valorBaseMensal = valorBaseFerias / 12;
+  const valorBaseMensalDoTerco = valorBaseMensal * 0.3333;
+  const valorMensalDoAvo = valorBaseMensal + valorBaseMensalDoTerco;
+  const valorTercoFerias = valorMensalDoAvo * 12;
 
   return (
     <div style={ESTILOS.containerPrincipal}>
