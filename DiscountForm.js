@@ -57,18 +57,22 @@ function DiscountForm({
 
   const [valorBasePrevidenciaTexto, setValorBasePrevidenciaTexto] = React.useState("");
   const [valorCalc, setValorCalc] = React.useState("");
+  const [valorCalcNumerico, setValorCalcNumerico] = React.useState(0);
 
   const [aliquotaIR, setAliquotaIR] = React.useState("");
   const [aliquotaIRRaw, setAliquotaIRRaw] = React.useState("");
 
   const [valorBaseIRTexto, setValorBaseIRTexto] = React.useState("");
   const [valorIR, setValorIR] = React.useState("");
+  const [valorIRNumerico, setValorIRNumerico] = React.useState(0);
 
   const [lista, setLista] = React.useState([]);
 
   // Cálculo do Valor Previdência = Alíquota × Valor Base Previdência
   // (campo local, escolhido de uma linha do Períodos Aquisitivos ou
   // digitado manualmente) — o campo permanece editável mesmo assim.
+  // valorCalcNumerico guarda o valor com TODAS as casas decimais (usado
+  // no cálculo real); valorCalc é só o texto formatado exibido no campo.
   React.useEffect(() => {
     if (aliquota.includes(",")) {
       const perc = Number(
@@ -78,6 +82,7 @@ function DiscountForm({
       const base = converterMoedaParaNumero(valorBasePrevidenciaTexto);
       const calc = base * perc;
 
+      setValorCalcNumerico(calc);
       setValorCalc(
         calc.toLocaleString("pt-BR", {
           minimumFractionDigits: 2,
@@ -85,12 +90,14 @@ function DiscountForm({
         })
       );
     } else {
+      setValorCalcNumerico(0);
       setValorCalc("");
     }
   }, [aliquota, valorBasePrevidenciaTexto]);
 
   // Cálculo do Valor IR = Alíquota IR × Valor Base IR — o campo
-  // permanece editável mesmo assim.
+  // permanece editável mesmo assim. valorIRNumerico guarda o valor com
+  // TODAS as casas decimais (usado no cálculo real).
   React.useEffect(() => {
     if (aliquotaIR.includes(",")) {
       const perc = Number(
@@ -100,6 +107,7 @@ function DiscountForm({
       const base = converterMoedaParaNumero(valorBaseIRTexto);
       const calc = base * perc;
 
+      setValorIRNumerico(calc);
       setValorIR(
         calc.toLocaleString("pt-BR", {
           minimumFractionDigits: 2,
@@ -107,6 +115,7 @@ function DiscountForm({
         })
       );
     } else {
+      setValorIRNumerico(0);
       setValorIR("");
     }
   }, [aliquotaIR, valorBaseIRTexto]);
@@ -133,10 +142,14 @@ function DiscountForm({
     setAliquotaIR(formatarPercentualFinal(aliquotaIRRaw));
   }
 
-  // Valor IR — máscara fluída sem NaN
+  // Valor IR — máscara fluída sem NaN. Ao digitar manualmente, guarda
+  // também o valor numérico correspondente (mesma precisão do texto,
+  // já que aqui é o próprio usuário digitando 2 casas decimais).
   function onValorIRChange(e) {
     const texto = e.target.value;
-    setValorIR(formatarMoedaDigitacao(texto));
+    const formatado = formatarMoedaDigitacao(texto);
+    setValorIR(formatado);
+    setValorIRNumerico(converterMoedaParaNumero(formatado));
   }
 
   function aplicarDescontos() {
@@ -145,13 +158,13 @@ function DiscountForm({
     const linha1 = {
       rubrica: contrib,
       aliquota,
-      valor: valorCalc
+      valor: valorCalcNumerico
     };
 
     const linha2 = {
       rubrica: imposto,
       aliquota: aliquotaIR,
-      valor: valorIR
+      valor: valorIRNumerico
     };
 
     // Atualiza a linha se a rubrica já existir na lista, senão adiciona.
@@ -168,11 +181,8 @@ function DiscountForm({
     setLista(prev => prev.filter(item => item.rubrica !== rubrica));
   }
 
-  // Total dos descontos
-  const total = lista.reduce((acc, item) => {
-    const v = Number(item.valor.replace(/\./g, "").replace(",", "."));
-    return acc + (isNaN(v) ? 0 : v);
-  }, 0);
+  // Total dos descontos (valores já numéricos, com precisão total)
+  const total = lista.reduce((acc, item) => acc + item.valor, 0);
 
   // 🔥 CORREÇÃO CRÍTICA — envia o total para o App.js
   React.useEffect(() => {
@@ -182,10 +192,11 @@ function DiscountForm({
   }, [total, setTotalDescontos]);
 
   // Total Bruto = Total do PeriodosAquisitivosForm.js - Total do AdiantamentosForm.js
-  const totalBruto = arredondarPadrao(totalPeriodosAquisitivos - totalAdiantamentos);
+  // (mantido sem arredondar aqui — só na exibição)
+  const totalBruto = totalPeriodosAquisitivos - totalAdiantamentos;
 
   // Total Líquido = Total Bruto - Total dos descontos aplicados (Quadro1 deste formulário)
-  const totalLiquido = arredondarPadrao(totalBruto - total);
+  const totalLiquido = totalBruto - total;
 
   return (
     <div>
@@ -258,7 +269,11 @@ function DiscountForm({
             <input
               style={{ ...ESTILOS.input, width: "100%" }}
               value={valorCalc}
-              onChange={e => setValorCalc(formatarMoedaDigitacao(e.target.value))}
+              onChange={e => {
+                const formatado = formatarMoedaDigitacao(e.target.value);
+                setValorCalc(formatado);
+                setValorCalcNumerico(converterMoedaParaNumero(formatado));
+              }}
               placeholder="0,00"
             />
           </div>
@@ -355,7 +370,7 @@ function DiscountForm({
               <tr key={item.rubrica}>
                 <td style={{ padding: "8px" }}>{item.rubrica}</td>
                 <td style={{ padding: "8px" }}>{item.aliquota}</td>
-                <td style={{ padding: "8px", textAlign: "right" }}>{item.valor}</td>
+                <td style={{ padding: "8px", textAlign: "right" }}>{formatarNumeroParaMoeda(item.valor)}</td>
                 <td style={{ padding: "8px", textAlign: "center" }}>
                   <button
                     onClick={() => removerDesconto(item.rubrica)}
