@@ -40,11 +40,11 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange }) {
   function calcularValorAutomatico() {
     switch (selecionarVantagem) {
       case "Adiantamento de 13º Salário":
-        return arredondarPadrao(valorBase13 / 2);
+        return valorBase13 / 2;
       case "Dias Não Trabalhados":
-        return arredondarPadrao(valorDiario13 * (dias || 0));
+        return valorDiario13 * (dias || 0);
       default:
-        return null; // sem regra: campo livre para digitação manual
+        return null;
     }
   }
 
@@ -84,7 +84,10 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange }) {
   function handleInserir() {
     if (!podeInserir) return;
 
-    const valor = converterMoedaParaNumero(valorTexto);
+    // Quando o valor vem de fórmula, usa o número com precisão total
+    // (valorAutomatico) em vez de reconverter do texto já arredondado
+    // que aparece na tela — evita perder casas decimais no registro.
+    const valor = ehValorCalculado ? valorAutomatico : converterMoedaParaNumero(valorTexto);
 
     const registro = {
       selecionarVantagem,
