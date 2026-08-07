@@ -103,10 +103,10 @@ function App() {
         </h2>
         <AdiantamentosForm
           valorBase13={decimoFeriasData.valorBase13}
-          valorDiario13={arredondarPadrao(
+          valorDiario13={
             decimoFeriasData.valorBase13 /
             diasNoMes(decimoFeriasData.mesRef13)
-          )}
+          }
           onTotalChange={setTotalAdiantamentos}
         />
       </div>
