@@ -110,7 +110,10 @@ function PeriodosAquisitivosForm({
   function handleInserir() {
     if (!podeInserir) return;
 
-    const valor = converterMoedaParaNumero(valorTexto);
+    // Quando o valor vem de fórmula, usa o número com precisão total
+    // (valorAutomatico) em vez de reconverter do texto já arredondado
+    // que aparece na tela — evita perder casas decimais no registro.
+    const valor = ehValorCalculado ? valorAutomatico : converterMoedaParaNumero(valorTexto);
 
     const registro = {
       selecionarVantagem,
