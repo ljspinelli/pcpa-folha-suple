@@ -26,8 +26,8 @@ const OPCOES_VANTAGEM_PERIODO = [
 function PeriodosAquisitivosForm({
   valorMensal13,
   valorBaseFerias,
-  valorTotalTerco,
-  valorMensalDoTerco,
+  valorBaseMensal,
+  valorBaseMensalDoTerco,
   onTotalChange,
   onListaChange
 }) {
@@ -55,6 +55,8 @@ function PeriodosAquisitivosForm({
 
   // Determina se o Campo5 (Valor) é calculado automaticamente com base
   // na vantagem selecionada, ou se fica livre para digitação manual.
+  // Mantido com todas as casas decimais (sem arredondar aqui) — o
+  // arredondamento só acontece na exibição (formatarNumeroParaMoeda).
   function calcularValorAutomatico() {
     switch (selecionarVantagem) {
       case "13ª Salário Integral":
@@ -62,13 +64,13 @@ function PeriodosAquisitivosForm({
       case "13ª Salário Proporcional":
         return valorMensal13 * avos13;
       case "1/3 de Férias Indenizadas Integral":
-        return valorTotalTerco;
+        return valorBaseMensalDoTerco * 12;
       case "1/3 de Férias Indenizadas Proporcional":
-        return valorMensalDoTerco * avosFerias;
+        return valorBaseMensalDoTerco * avosFerias;
       case "Férias Indenizadas Integral":
-        return valorTotalTerco;
+        return valorBaseMensal * 12;
       case "Férias Indenizadas Proporcional":
-        return valorMensalDoTerco * avosFerias;
+        return valorBaseMensal * avosFerias;
       default:
         return null;
     }
