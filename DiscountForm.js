@@ -42,12 +42,10 @@ function formatarPercentualFinal(digitos) {
 }
 
 function DiscountForm({
-  totalVantagens,
   totalBasePrevidencia,
   totalPeriodosAquisitivos,
   totalAdiantamentos,
-  listaPeriodosAquisitivos,
-  setTotalDescontos
+  listaPeriodosAquisitivos
 }) {
   const [contrib, setContrib] = React.useState("");
   const [imposto, setImposto] = React.useState("");
