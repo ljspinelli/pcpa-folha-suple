@@ -182,13 +182,6 @@ function DiscountForm({
   // Total dos descontos (valores já numéricos, com precisão total)
   const total = lista.reduce((acc, item) => acc + item.valor, 0);
 
-  // 🔥 CORREÇÃO CRÍTICA — envia o total para o App.js
-  React.useEffect(() => {
-    if (typeof setTotalDescontos === "function") {
-      setTotalDescontos(total);
-    }
-  }, [total, setTotalDescontos]);
-
   // Total Bruto = Total do PeriodosAquisitivosForm.js - Total do AdiantamentosForm.js
   // (mantido sem arredondar aqui — só na exibição)
   const totalBruto = totalPeriodosAquisitivos - totalAdiantamentos;
