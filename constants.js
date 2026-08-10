@@ -74,6 +74,7 @@ const RUBRICAS_POR_ABA = {
     { codigo: "0031", nome: "Gratificação de Titularidade" },
     { codigo: "0040", nome: "Gratificação de Risco de Vida" },
     { codigo: "0047", nome: "Adicional de Insalubridade" },
+    { codigo: "0052", nome: "Gratificação de Localidade Especial" },
     { codigo: "0054", nome: "Gratificação pela Escolaridade" },
     { codigo: "0056", nome: "Adicional de Curso de Especialização" },
     { codigo: "0070", nome: "Gratificação de Polícia Judiciária" },
