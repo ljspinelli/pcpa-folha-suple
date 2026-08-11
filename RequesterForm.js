@@ -21,6 +21,30 @@ function mascaraCPF(texto) {
   return resultado;
 }
 
+// Valida o CPF pelo algoritmo oficial dos dígitos verificadores
+// (módulo 11). Recebe o CPF formatado ou só os dígitos.
+function validarCPF(cpfTexto) {
+  const digitos = cpfTexto.replace(/\D/g, "");
+  if (digitos.length !== 11) return false;
+
+  // Rejeita sequências óbvias inválidas (000.000.000-00, 111.111.111-11, etc.)
+  if (/^(\d)\1{10}$/.test(digitos)) return false;
+
+  let soma = 0;
+  for (let i = 0; i < 9; i++) soma += Number(digitos[i]) * (10 - i);
+  let resto = soma % 11;
+  const dv1 = resto < 2 ? 0 : 11 - resto;
+  if (dv1 !== Number(digitos[9])) return false;
+
+  soma = 0;
+  for (let i = 0; i < 10; i++) soma += Number(digitos[i]) * (11 - i);
+  resto = soma % 11;
+  const dv2 = resto < 2 ? 0 : 11 - resto;
+  if (dv2 !== Number(digitos[10])) return false;
+
+  return true;
+}
+
 // Máscara Matrícula: xxxxxxxxxxxx/xx
 function mascaraMatricula(texto) {
   let digitos = texto.replace(/\D/g, "").slice(0, 14);
@@ -95,11 +119,21 @@ function RequesterForm() {
       <div style={{ marginTop: "10px" }}>
         <label style={ESTILOS.label}>CPF:</label><br />
         <input
-          style={ESTILOS.input}
+          style={{
+            ...ESTILOS.input,
+            ...(cpf.length === 14 && !validarCPF(cpf)
+              ? { border: "1px solid #b00020" }
+              : {})
+          }}
           value={cpf}
           onChange={e => setCpf(mascaraCPF(e.target.value))}
           placeholder="xxx.xxx.xxx-xx"
         />
+        {cpf.length === 14 && !validarCPF(cpf) && (
+          <div style={{ color: "#b00020", fontSize: "13px", marginTop: "4px" }}>
+            CPF inválido — confira os números digitados.
+          </div>
+        )}
       </div>
 
       {/* Matrícula */}
