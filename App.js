@@ -3,6 +3,14 @@ function App() {
   const [totalPeriodosAquisitivos, setTotalPeriodosAquisitivos] = React.useState(0);
   const [listaPeriodosAquisitivos, setListaPeriodosAquisitivos] = React.useState([]);
   const [totalAdiantamentos, setTotalAdiantamentos] = React.useState(0);
+  const [pdfData, setPdfData] = React.useState({
+    abaReferencia: "",
+    numeroFolha: "",
+    redutorConstitucional: 0,
+    nomeAssinante: "",
+    cargoAssinante: "",
+    matriculaAssinante: ""
+  });
   const [decimoFeriasData, setDecimoFeriasData] = React.useState({
     valorBase13: 0,
     mesRef13: "",
