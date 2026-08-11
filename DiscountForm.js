@@ -42,7 +42,6 @@ function formatarPercentualFinal(digitos) {
 }
 
 function DiscountForm({
-  totalBasePrevidencia,
   totalPeriodosAquisitivos,
   totalAdiantamentos,
   listaPeriodosAquisitivos
