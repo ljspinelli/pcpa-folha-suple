@@ -137,6 +137,22 @@ function App() {
         />
       </div>
 
+      {/* Dados para Emissão do PDF */}
+      <div
+        style={{
+          background: "#ffffff",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+          marginBottom: "20px"
+        }}
+      >
+        <h2 style={{ color: "#0B2B4A" }}>
+          Dados para Emissão do PDF
+        </h2>
+        <PdfDataForm onDadosChange={setPdfData} />
+      </div>
+
     </PageLayout>
   );
 }
