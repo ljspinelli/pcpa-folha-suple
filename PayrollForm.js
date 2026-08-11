@@ -1,100 +1,145 @@
 // ============================
-// COMPONENTE: PayrollForm (refatorado)
+// COMPONENTE: PayrollForm (sem abas — lista única de rubricas)
+// Um valor por rubrica, usado para compor várias "Bases" diferentes
+// (Dias Trabalhados, Férias, 13º, Pecúnia, Auxílio Funeral, ATS,
+// Auxílio Doença, além de IR/RPPS/INSS) simultaneamente.
 // ============================
 
-function PayrollForm({ onTotalChange, onDecimoFeriasChange, onBasePrevidenciaChange }) {
-  const [abaAtiva, setAbaAtiva] = React.useState("dias");
-  const [bases, setBases] = React.useState({
-    dias: "",
-    ferias: "",
-    decimo: "",
-    pecunia: "",
-    auxilioFuneral: "",
-    ats: "",
-    auxilioDoenca: ""
-  });
-  const [valores, setValores] = React.useState({
-    dias: {},
-    ferias: {},
-    decimo: {},
-    pecunia: {},
-    auxilioFuneral: {},
-    ats: {},
-    auxilioDoenca: {}
-  });
+function PayrollForm({ onDadosChange }) {
+  const [mesRef, setMesRef] = React.useState("");
+  const [valores, setValores] = React.useState({});
 
-  const handleSetBase = (abaId, novoValor) => {
-    setBases(prev => ({
-      ...prev,
-      [abaId]: novoValor
-    }));
-  };
-
-  const handleSetValores = (abaId, novoValores) => {
+  function handleChangeValor(codigo, novoValor) {
+    const valorFormatado = mascaraMoeda(novoValor);
     setValores(prev => ({
       ...prev,
-      [abaId]: novoValores
+      [codigo]: valorFormatado
     }));
-  };
+  }
 
- // Rubrica que não sofre incidência de desconto previdenciário
-  // (0291 - Gratificação de Representação Lei 9853/2023)
-  const RUBRICA_EXCLUIDA_PREVIDENCIA = "0291";
+  const total = calcularTotal(valores);
 
-  // 🔥 CORREÇÃO CRÍTICA — soma os valores de TODAS as abas
-  // (não só a aba ativa) e envia o total para o App.js
+  const valorBaseDias = calcularBaseCalculo(valores, CODIGOS_BASE_DIAS);
+  const valorBaseFerias = calcularBaseCalculo(valores, CODIGOS_BASE_FERIAS);
+  const valorBase13 = calcularBaseCalculo(valores, CODIGOS_BASE_DECIMO);
+  const valorBasePecunia = calcularBaseCalculo(valores, CODIGOS_BASE_PECUNIA);
+  const valorBaseAuxilioFuneral = calcularBaseCalculo(valores, CODIGOS_BASE_AUXILIO_FUNERAL);
+  const valorBaseATS = calcularBaseCalculo(valores, CODIGOS_BASE_ATS);
+  const valorBaseAuxilioDoenca = calcularBaseCalculo(valores, CODIGOS_BASE_AUXILIO_DOENCA);
+
+  const valorBaseIR = calcularBaseCalculo(valores, CODIGOS_BASE_IR);
+  const valorBaseRPPS = calcularBaseCalculo(valores, CODIGOS_BASE_RPPS);
+  const valorBaseINSS = calcularBaseCalculo(valores, CODIGOS_BASE_INSS);
+
+  // Repassa tudo para cima: valores brutos + mês de referência (para
+  // uso no PDF) e todas as bases calculadas (para uso no Cálculo de
+  // 13º/Férias, Adiantamentos, etc.)
   React.useEffect(() => {
-    const totalGeral = ABAS_INFO.reduce((acc, aba) => {
-      return acc + calcularTotal(valores[aba.id] || {});
-    }, 0);
-
-    if (typeof onTotalChange === "function") {
-      onTotalChange(totalGeral);
-    }
-
-    // Base específica para o cálculo do desconto previdenciário,
-    // excluindo a rubrica 0291 em todas as abas onde ela aparece
-    const totalBasePrevidencia = ABAS_INFO.reduce((acc, aba) => {
-      const valoresAba = { ...(valores[aba.id] || {}) };
-      delete valoresAba[RUBRICA_EXCLUIDA_PREVIDENCIA];
-      return acc + calcularTotal(valoresAba);
-    }, 0);
-
-    if (typeof onBasePrevidenciaChange === "function") {
-      onBasePrevidenciaChange(totalBasePrevidencia);
-    }
-  }, [valores, onTotalChange, onBasePrevidenciaChange]);
-
-  // Repassa para o App.js o Valor Base (soma das rubricas da aba) e o
-  // mês/ano de referência do 13º e das Férias, para o quadro de cálculo
-  // de avos (ThirteenthVacationForm).
-  React.useEffect(() => {
-    if (typeof onDecimoFeriasChange === "function") {
-      onDecimoFeriasChange({
-        valorBase13: calcularTotal(valores.decimo || {}),
-        mesRef13: bases.decimo,
-        valorBaseFerias: calcularTotal(valores.ferias || {}),
-        mesRefFerias: bases.ferias
+    if (typeof onDadosChange === "function") {
+      onDadosChange({
+        mesRef,
+        valores,
+        valorBaseDias,
+        valorBaseFerias,
+        valorBase13,
+        valorBasePecunia,
+        valorBaseAuxilioFuneral,
+        valorBaseATS,
+        valorBaseAuxilioDoenca,
+        valorBaseIR,
+        valorBaseRPPS,
+        valorBaseINSS
       });
     }
-  }, [valores, bases, onDecimoFeriasChange]);
+  }, [mesRef, valores, onDadosChange]);
 
   return (
     <div style={ESTILOS.containerPrincipal}>
-      <AbaTabs abaAtiva={abaAtiva} setAbaAtiva={setAbaAtiva} />
 
-      {ABAS_INFO.map(aba => (
-        abaAtiva === aba.id && (
-          <TabContent
-            key={aba.id}
-            abaId={aba.id}
-            baseValue={bases[aba.id]}
-            setBaseValue={(v) => handleSetBase(aba.id, v)}
-            valoresData={valores[aba.id]}
-            setValoresData={(v) => handleSetValores(aba.id, v)}
-          />
-        )
-      ))}
+      {/* Base da Composição da Remuneração */}
+      <div style={{ marginBottom: "20px" }}>
+        <label style={ESTILOS.label}>Base da Composição da Remuneração:</label>
+        <br />
+        <input
+          style={ESTILOS.input}
+          value={mesRef}
+          onChange={e => setMesRef(formatarMesRef(e.target.value))}
+          placeholder="Abr/2020"
+        />
+      </div>
+
+      <div style={ESTILOS.containerTabela}>
+        {/* Lista única de rubricas */}
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "#f0f0f0" }}>
+              <th style={{ padding: "8px", textAlign: "left" }}>Descrição da Rubrica</th>
+              <th style={{ padding: "8px", textAlign: "right" }}>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RUBRICAS_FIXAS.map(rub => (
+              <tr key={rub.codigo}>
+                <td style={{ padding: "8px" }}>
+                  {rub.codigo} - {rub.nome}
+                </td>
+                <td style={{ padding: "8px", textAlign: "right" }}>
+                  <input
+                    style={{ ...ESTILOS.inputTabela, width: "180px" }}
+                    value={valores[rub.codigo] || ""}
+                    onChange={e => handleChangeValor(rub.codigo, e.target.value)}
+                    placeholder=""
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Total geral */}
+        <div style={ESTILOS.totalGeral}>
+          Total: R$ {formatarNumeroParaMoeda(total)}
+        </div>
+
+        {/* Bases calculadas — duas colunas */}
+        <div style={{ display: "flex", gap: "40px", flexWrap: "wrap", marginTop: "15px" }}>
+          <div style={{ flex: "1", minWidth: "280px" }}>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base Dias Trabalhados: R$ {formatarNumeroParaMoeda(valorBaseDias)}
+            </div>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base Férias Indenizadas: R$ {formatarNumeroParaMoeda(valorBaseFerias)}
+            </div>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base 13° Salário: R$ {formatarNumeroParaMoeda(valorBase13)}
+            </div>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base Pecúnia: R$ {formatarNumeroParaMoeda(valorBasePecunia)}
+            </div>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base Auxilio Funeral: R$ {formatarNumeroParaMoeda(valorBaseAuxilioFuneral)}
+            </div>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base Adicional de Tempo de Serviço: R$ {formatarNumeroParaMoeda(valorBaseATS)}
+            </div>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base Auxílio Doença: R$ {formatarNumeroParaMoeda(valorBaseAuxilioDoenca)}
+            </div>
+          </div>
+
+          <div style={{ flex: "1", minWidth: "280px" }}>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base IR: R$ {formatarNumeroParaMoeda(valorBaseIR)}
+            </div>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base Previdência RPPS: R$ {formatarNumeroParaMoeda(valorBaseRPPS)}
+            </div>
+            <div style={ESTILOS.baseCalculo}>
+              Valor Base Previdência INSS: R$ {formatarNumeroParaMoeda(valorBaseINSS)}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
