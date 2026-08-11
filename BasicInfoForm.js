@@ -24,6 +24,26 @@ function mascaraData(texto) {
     if (a < 1900 || a > 2100) ano = "";
   }
 
+  // Quando a data está completa, valida a combinação real do
+  // calendário (evita datas como 31/02/2023 ou 31/04/2023, que
+  // passariam pelas validações de intervalo acima mas não existem).
+  if (dia.length === 2 && mes.length === 2 && ano.length === 4) {
+    const diaNum = Number(dia);
+    const mesNum = Number(mes);
+    const anoNum = Number(ano);
+    const dataTeste = new Date(anoNum, mesNum - 1, diaNum);
+    const dataValida =
+      dataTeste.getFullYear() === anoNum &&
+      dataTeste.getMonth() === mesNum - 1 &&
+      dataTeste.getDate() === diaNum;
+
+    if (!dataValida) {
+      dia = "";
+      mes = "";
+      ano = "";
+    }
+  }
+
   let resultado = "";
   if (dia) resultado = dia;
   if (mes) resultado += "/" + mes;
