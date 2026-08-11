@@ -1,5 +1,4 @@
 function App() {
-  const [totalBasePrevidencia, setTotalBasePrevidencia] = React.useState(0);
   const [totalPeriodosAquisitivos, setTotalPeriodosAquisitivos] = React.useState(0);
   const [listaPeriodosAquisitivos, setListaPeriodosAquisitivos] = React.useState([]);
   const [totalAdiantamentos, setTotalAdiantamentos] = React.useState(0);
@@ -11,11 +10,19 @@ function App() {
     cargoAssinante: "",
     matriculaAssinante: ""
   });
-  const [decimoFeriasData, setDecimoFeriasData] = React.useState({
-    valorBase13: 0,
-    mesRef13: "",
+  const [dadosFolha, setDadosFolha] = React.useState({
+    mesRef: "",
+    valores: {},
+    valorBaseDias: 0,
     valorBaseFerias: 0,
-    mesRefFerias: ""
+    valorBase13: 0,
+    valorBasePecunia: 0,
+    valorBaseAuxilioFuneral: 0,
+    valorBaseATS: 0,
+    valorBaseAuxilioDoenca: 0,
+    valorBaseIR: 0,
+    valorBaseRPPS: 0,
+    valorBaseINSS: 0
   });
 
   return (
@@ -65,8 +72,7 @@ function App() {
           Composição da Remuneração – Vantagens
         </h2>
         <PayrollForm
-          onDecimoFeriasChange={setDecimoFeriasData}
-          onBasePrevidenciaChange={setTotalBasePrevidencia}
+          onDadosChange={setDadosFolha}
         />
       </div>
 
@@ -84,10 +90,10 @@ function App() {
           Cálculo de 13º e Férias
         </h2>
         <ThirteenthVacationForm
-          valorBase13={decimoFeriasData.valorBase13}
-          mesRef13={decimoFeriasData.mesRef13}
-          valorBaseFerias={decimoFeriasData.valorBaseFerias}
-          mesRefFerias={decimoFeriasData.mesRefFerias}
+          valorBase13={dadosFolha.valorBase13}
+          mesRef13={dadosFolha.mesRef}
+          valorBaseFerias={dadosFolha.valorBaseFerias}
+          mesRefFerias={dadosFolha.mesRef}
           onTotalPeriodosChange={setTotalPeriodosAquisitivos}
           onListaPeriodosChange={setListaPeriodosAquisitivos}
         />
@@ -107,10 +113,10 @@ function App() {
           Adiantamentos e Outros Valores Recebidos
         </h2>
         <AdiantamentosForm
-          valorBase13={decimoFeriasData.valorBase13}
+          valorBase13={dadosFolha.valorBase13}
           valorDiario13={
-            decimoFeriasData.valorBase13 /
-            diasNoMes(decimoFeriasData.mesRef13)
+            dadosFolha.valorBase13 /
+            diasNoMes(dadosFolha.mesRef)
           }
           onTotalChange={setTotalAdiantamentos}
         />
@@ -130,7 +136,6 @@ function App() {
           Descontos e Retenções
         </h2>
         <DiscountForm
-          totalBasePrevidencia={totalBasePrevidencia}
           totalPeriodosAquisitivos={totalPeriodosAquisitivos}
           listaPeriodosAquisitivos={listaPeriodosAquisitivos}
           totalAdiantamentos={totalAdiantamentos}
