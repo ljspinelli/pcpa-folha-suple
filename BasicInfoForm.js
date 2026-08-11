@@ -81,6 +81,17 @@ function BasicInfoForm() {
     "Destituição"
   ];
 
+  // Validação cruzada: Data de Encerramento não pode ser anterior à
+  // Data da Posse. Só avalia quando as duas datas estão completas.
+  let encerramentoAnteriorAPosse = false;
+  if (posse.length === 10 && encerramento.length === 10) {
+    const dataPosse = parseDataBR(posse);
+    const dataEncerramento = parseDataBR(encerramento);
+    if (dataPosse && dataEncerramento && dataEncerramento < dataPosse) {
+      encerramentoAnteriorAPosse = true;
+    }
+  }
+
   return (
     <div>
 
@@ -112,11 +123,19 @@ function BasicInfoForm() {
       <div style={{ marginTop: "10px" }}>
         <label style={ESTILOS.label}>Data de Encerramento de Vínculo:</label><br />
         <input
-          style={ESTILOS.input}
+          style={{
+            ...ESTILOS.input,
+            ...(encerramentoAnteriorAPosse ? { border: "1px solid #b00020" } : {})
+          }}
           value={encerramento}
           onChange={e => setEncerramento(mascaraData(e.target.value))}
           placeholder="DD/MM/AAAA"
         />
+        {encerramentoAnteriorAPosse && (
+          <div style={{ color: "#b00020", fontSize: "13px", marginTop: "4px" }}>
+            A Data de Encerramento não pode ser anterior à Data da Posse.
+          </div>
+        )}
       </div>
 
       {/* Motivo de Encerramento */}
