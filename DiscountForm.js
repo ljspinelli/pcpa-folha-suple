@@ -189,6 +189,13 @@ function DiscountForm({
   // Total Líquido = Total Bruto - Total dos descontos aplicados (Quadro1 deste formulário)
   const totalLiquido = totalBruto - total;
 
+  // Repassa lista de descontos aplicados e os totais para cima (uso no PDF)
+  React.useEffect(() => {
+    if (typeof onDadosChange === "function") {
+      onDadosChange({ lista, total, totalBruto, totalLiquido });
+    }
+  }, [lista, total, totalBruto, totalLiquido, onDadosChange]);
+
   return (
     <div>
 
