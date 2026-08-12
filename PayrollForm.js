@@ -152,7 +152,4 @@ function PayrollForm({ onDadosChange }) {
       </div>
     </div>
   );
-      </div>
-    </div>
-  );
 }
