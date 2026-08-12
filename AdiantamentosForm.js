@@ -143,6 +143,13 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
     }
   }, [total, onTotalChange]);
 
+  // Repassa a lista completa para cima (uso no PDF)
+  React.useEffect(() => {
+    if (typeof onListaChange === "function") {
+      onListaChange(lista);
+    }
+  }, [lista, onListaChange]);
+
   return (
     <div style={ESTILOS.containerPrincipal}>
 
