@@ -8,6 +8,7 @@
 function PayrollForm({ onDadosChange }) {
   const [mesRef, setMesRef] = React.useState("");
   const [valores, setValores] = React.useState({});
+  const [redutorConstitucionalTexto, setRedutorConstitucionalTexto] = React.useState("");
 
   function handleChangeValor(codigo, novoValor) {
     const valorFormatado = mascaraMoeda(novoValor);
@@ -31,6 +32,8 @@ function PayrollForm({ onDadosChange }) {
   const valorBaseRPPS = calcularBaseCalculo(valores, CODIGOS_BASE_RPPS);
   const valorBaseINSS = calcularBaseCalculo(valores, CODIGOS_BASE_INSS);
 
+  const redutorConstitucional = converterMoedaParaNumero(redutorConstitucionalTexto);
+
   // Repassa tudo para cima: valores brutos + mês de referência (para
   // uso no PDF) e todas as bases calculadas (para uso no Cálculo de
   // 13º/Férias, Adiantamentos, etc.)
@@ -48,10 +51,11 @@ function PayrollForm({ onDadosChange }) {
         valorBaseAuxilioDoenca,
         valorBaseIR,
         valorBaseRPPS,
-        valorBaseINSS
+        valorBaseINSS,
+        redutorConstitucional
       });
     }
-  }, [mesRef, valores, onDadosChange]);
+  }, [mesRef, valores, redutorConstitucionalTexto, onDadosChange]);
 
   return (
     <div style={ESTILOS.containerPrincipal}>
@@ -146,6 +150,15 @@ function PayrollForm({ onDadosChange }) {
             <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
               <span>Valor Base Previdência INSS:</span>
               <span>R$ {formatarNumeroParaMoeda(valorBaseINSS)}</span>
+            </div>
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", alignItems: "center", textAlign: "left" }}>
+              <span style={{ fontWeight: "bold" }}>Valor do Redutor Constitucional</span>
+              <input
+                style={{ ...ESTILOS.inputTabela, width: "160px" }}
+                value={redutorConstitucionalTexto}
+                onChange={e => setRedutorConstitucionalTexto(mascaraMoeda(e.target.value))}
+                placeholder="0,00"
+              />
             </div>
           </div>
         </div>
