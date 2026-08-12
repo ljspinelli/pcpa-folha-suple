@@ -168,6 +168,17 @@ function App() {
           Dados para Emissão do PDF
         </h2>
         <PdfDataForm onDadosChange={setPdfData} />
+        <GerarPdfButton
+          dadosRequerente={dadosRequerente}
+          dadosVinculo={dadosVinculo}
+          dadosFolha={dadosFolha}
+          listaPeriodosAquisitivos={listaPeriodosAquisitivos}
+          totalPeriodosAquisitivos={totalPeriodosAquisitivos}
+          listaAdiantamentos={listaAdiantamentos}
+          totalAdiantamentos={totalAdiantamentos}
+          dadosDescontos={dadosDescontos}
+          pdfData={pdfData}
+        />
       </div>
 
     </PageLayout>
