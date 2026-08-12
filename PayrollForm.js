@@ -101,44 +101,57 @@ function PayrollForm({ onDadosChange }) {
           Total: R$ {formatarNumeroParaMoeda(total)}
         </div>
 
-        {/* Bases calculadas — duas colunas */}
+        {/* Bases calculadas — duas colunas, rótulo à esquerda e valor à direita */}
         <div style={{ display: "flex", gap: "40px", flexWrap: "wrap", marginTop: "15px" }}>
           <div style={{ flex: "1", minWidth: "280px" }}>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base Dias Trabalhados: R$ {formatarNumeroParaMoeda(valorBaseDias)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base Dias Trabalhados:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBaseDias)}</span>
             </div>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base Férias Indenizadas: R$ {formatarNumeroParaMoeda(valorBaseFerias)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base Férias Indenizadas:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBaseFerias)}</span>
             </div>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base 13° Salário: R$ {formatarNumeroParaMoeda(valorBase13)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base 13° Salário:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBase13)}</span>
             </div>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base Pecúnia: R$ {formatarNumeroParaMoeda(valorBasePecunia)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base Pecúnia:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBasePecunia)}</span>
             </div>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base Auxilio Funeral: R$ {formatarNumeroParaMoeda(valorBaseAuxilioFuneral)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base Auxilio Funeral:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBaseAuxilioFuneral)}</span>
             </div>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base Adicional de Tempo de Serviço: R$ {formatarNumeroParaMoeda(valorBaseATS)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base ATS:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBaseATS)}</span>
             </div>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base Auxílio Doença: R$ {formatarNumeroParaMoeda(valorBaseAuxilioDoenca)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base Auxílio Doença:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBaseAuxilioDoenca)}</span>
             </div>
           </div>
 
           <div style={{ flex: "1", minWidth: "280px" }}>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base IR: R$ {formatarNumeroParaMoeda(valorBaseIR)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base IR:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBaseIR)}</span>
             </div>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base Previdência RPPS: R$ {formatarNumeroParaMoeda(valorBaseRPPS)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base Previdência RPPS:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBaseRPPS)}</span>
             </div>
-            <div style={ESTILOS.baseCalculo}>
-              Valor Base Previdência INSS: R$ {formatarNumeroParaMoeda(valorBaseINSS)}
+            <div style={{ ...ESTILOS.baseCalculo, display: "flex", justifyContent: "space-between", textAlign: "left" }}>
+              <span>Valor Base Previdência INSS:</span>
+              <span>R$ {formatarNumeroParaMoeda(valorBaseINSS)}</span>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
       </div>
     </div>
   );
