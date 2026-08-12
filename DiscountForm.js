@@ -44,7 +44,8 @@ function formatarPercentualFinal(digitos) {
 function DiscountForm({
   totalPeriodosAquisitivos,
   totalAdiantamentos,
-  listaPeriodosAquisitivos
+  listaPeriodosAquisitivos,
+  onDadosChange
 }) {
   const [contrib, setContrib] = React.useState("");
   const [imposto, setImposto] = React.useState("");
