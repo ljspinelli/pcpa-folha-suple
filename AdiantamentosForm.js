@@ -18,7 +18,7 @@ const OPCOES_VANTAGEM_ADIANTAMENTO = [
   "Auxilio Transporte Proporcional"
 ];
 
-function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange }) {
+function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaChange }) {
   const [selecionarVantagem, setSelecionarVantagem] = React.useState("");
   const [dataInicial, setDataInicial] = React.useState("");
   const [dataFinal, setDataFinal] = React.useState("");
