@@ -15,7 +15,6 @@ function App() {
   const [pdfData, setPdfData] = React.useState({
     abaReferencia: "",
     numeroFolha: "",
-    redutorConstitucional: 0,
     nomeAssinante: "",
     cargoAssinante: "",
     matriculaAssinante: ""
@@ -32,7 +31,8 @@ function App() {
     valorBaseAuxilioDoenca: 0,
     valorBaseIR: 0,
     valorBaseRPPS: 0,
-    valorBaseINSS: 0
+    valorBaseINSS: 0,
+    redutorConstitucional: 0
   });
 
   return (
