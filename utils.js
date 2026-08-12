@@ -163,3 +163,79 @@ function calcularAvosFerias(dataInicialTexto, dataFinalTexto) {
 
   return Math.min(avos, 12);
 }
+// Converte um valor em reais para texto por extenso em português
+// (ex: 1500.50 -> "mil e quinhentos reais e cinquenta centavos"),
+// usado na frase final do PDF da Folha Suplementar.
+function numeroPorExtenso(valor) {
+  const UNIDADES = ["", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove"];
+  const DEZ_A_DEZENOVE = ["dez", "onze", "doze", "treze", "quatorze", "quinze", "dezesseis", "dezessete", "dezoito", "dezenove"];
+  const DEZENAS = ["", "", "vinte", "trinta", "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa"];
+  const CENTENAS = ["", "cento", "duzentos", "trezentos", "quatrocentos", "quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos"];
+
+  function trescentos(n) {
+    if (n === 0) return "";
+    if (n === 100) return "cem";
+    const partes = [];
+    const c = Math.floor(n / 100);
+    const resto = n % 100;
+    if (c > 0) partes.push(CENTENAS[c]);
+    if (resto > 0) {
+      if (resto < 10) partes.push(UNIDADES[resto]);
+      else if (resto < 20) partes.push(DEZ_A_DEZENOVE[resto - 10]);
+      else {
+        const d = Math.floor(resto / 10);
+        const u = resto % 10;
+        partes.push(u === 0 ? DEZENAS[d] : DEZENAS[d] + " e " + UNIDADES[u]);
+      }
+    }
+    return partes.join(" e ");
+  }
+
+  function grupoComEscala(n, singular, plural) {
+    if (n === 1) return "um " + singular;
+    return trescentos(n) + " " + plural;
+  }
+
+  function inteiroPorExtenso(n) {
+    if (n === 0) return "zero";
+
+    const milhoes = Math.floor(n / 1000000);
+    const milhares = Math.floor((n % 1000000) / 1000);
+    const centenas = n % 1000;
+
+    const partes = [];
+    if (milhoes > 0) partes.push(grupoComEscala(milhoes, "milhão", "milhões"));
+    if (milhares > 0) {
+      partes.push(milhares === 1 ? "mil" : trescentos(milhares) + " mil");
+    }
+    if (centenas > 0) partes.push(trescentos(centenas));
+
+    if (partes.length === 1) return partes[0];
+
+    const ultimo = partes[partes.length - 1];
+    const resto = partes.slice(0, -1);
+    return resto.join(", ") + " e " + ultimo;
+  }
+
+  const valorArred = Math.round(valor * 100) / 100;
+  const inteiro = Math.floor(valorArred);
+  const centavos = Math.round((valorArred - inteiro) * 100);
+
+  // "um milhão de reais" / "dois milhões de reais" (com "de") quando o
+  // valor é um múltiplo exato de milhão, sem milhares/centenas depois
+  const ehMultiploDeMilhao = inteiro >= 1000000 && inteiro % 1000000 === 0;
+
+  let reaisTexto;
+  if (inteiro === 1) {
+    reaisTexto = "um real";
+  } else if (ehMultiploDeMilhao) {
+    reaisTexto = inteiroPorExtenso(inteiro) + " de reais";
+  } else {
+    reaisTexto = inteiroPorExtenso(inteiro) + " reais";
+  }
+
+  if (centavos === 0) return reaisTexto;
+
+  const centavosTexto = centavos === 1 ? "um centavo" : inteiroPorExtenso(centavos) + " centavos";
+  return reaisTexto + " e " + centavosTexto;
+}
