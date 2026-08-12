@@ -78,7 +78,7 @@ function mascaraTextoLivre(texto) {
   return texto.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,;:!?()\-]/g, "");
 }
 
-function RequesterForm() {
+function RequesterForm({ onDadosChange }) {
   const [nome, setNome] = React.useState("");
   const [cpf, setCpf] = React.useState("");
   const [matricula, setMatricula] = React.useState("");
@@ -86,6 +86,13 @@ function RequesterForm() {
   const [pae, setPae] = React.useState("");
   const [interessado, setInteressado] = React.useState("");
   const [assunto, setAssunto] = React.useState("");
+
+  // Repassa os dados do requerente para cima (uso no PDF)
+  React.useEffect(() => {
+    if (typeof onDadosChange === "function") {
+      onDadosChange({ nome, cpf, matricula, cargo, pae, interessado, assunto });
+    }
+  }, [nome, cpf, matricula, cargo, pae, interessado, assunto, onDadosChange]);
 
 
   const cargos = [
