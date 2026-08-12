@@ -2,6 +2,16 @@ function App() {
   const [totalPeriodosAquisitivos, setTotalPeriodosAquisitivos] = React.useState(0);
   const [listaPeriodosAquisitivos, setListaPeriodosAquisitivos] = React.useState([]);
   const [totalAdiantamentos, setTotalAdiantamentos] = React.useState(0);
+  const [listaAdiantamentos, setListaAdiantamentos] = React.useState([]);
+  const [dadosRequerente, setDadosRequerente] = React.useState({
+    nome: "", cpf: "", matricula: "", cargo: "", pae: "", interessado: "", assunto: ""
+  });
+  const [dadosVinculo, setDadosVinculo] = React.useState({
+    posse: "", motivoPosse: "", encerramento: "", motivoEncerramento: ""
+  });
+  const [dadosDescontos, setDadosDescontos] = React.useState({
+    lista: [], total: 0, totalBruto: 0, totalLiquido: 0
+  });
   const [pdfData, setPdfData] = React.useState({
     abaReferencia: "",
     numeroFolha: "",
@@ -39,7 +49,7 @@ function App() {
         }}
       >
         <h2 style={{ color: "#0B2B4A" }}>Identificação do Requerente</h2>
-        <RequesterForm />
+        <RequesterForm onDadosChange={setDadosRequerente} />
       </div>
 
       {/* Informações Preliminares */}
@@ -55,7 +65,7 @@ function App() {
         <h2 style={{ color: "#0B2B4A" }}>
           Informações Preliminares para Base de Cálculo
         </h2>
-        <BasicInfoForm />
+        <BasicInfoForm onDadosChange={setDadosVinculo} />
       </div>
 
       {/* Vantagens */}
@@ -119,6 +129,7 @@ function App() {
             diasNoMes(dadosFolha.mesRef)
           }
           onTotalChange={setTotalAdiantamentos}
+          onListaChange={setListaAdiantamentos}
         />
       </div>
 
@@ -139,6 +150,7 @@ function App() {
           totalPeriodosAquisitivos={totalPeriodosAquisitivos}
           listaPeriodosAquisitivos={listaPeriodosAquisitivos}
           totalAdiantamentos={totalAdiantamentos}
+          onDadosChange={setDadosDescontos}
         />
       </div>
 
