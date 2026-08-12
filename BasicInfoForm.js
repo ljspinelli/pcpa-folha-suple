@@ -52,11 +52,18 @@ function mascaraData(texto) {
   return resultado;
 }
 
-function BasicInfoForm() {
+function BasicInfoForm({ onDadosChange }) {
   const [posse, setPosse] = React.useState("");
   const [motivoPosse, setMotivoPosse] = React.useState("");
   const [encerramento, setEncerramento] = React.useState("");
   const [motivoEncerramento, setMotivoEncerramento] = React.useState("");
+
+  // Repassa os dados de vínculo para cima (uso no PDF)
+  React.useEffect(() => {
+    if (typeof onDadosChange === "function") {
+      onDadosChange({ posse, motivoPosse, encerramento, motivoEncerramento });
+    }
+  }, [posse, motivoPosse, encerramento, motivoEncerramento, onDadosChange]);
 
   const motivosPosse = [
     "Nomeação por Concurso Publico",
