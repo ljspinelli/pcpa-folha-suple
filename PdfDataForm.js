@@ -7,7 +7,6 @@
 function PdfDataForm({ onDadosChange }) {
   const [abaReferencia, setAbaReferencia] = React.useState("");
   const [numeroFolha, setNumeroFolha] = React.useState("");
-  const [redutorConstitucionalTexto, setRedutorConstitucionalTexto] = React.useState("");
   const [nomeAssinante, setNomeAssinante] = React.useState("");
   const [cargoAssinante, setCargoAssinante] = React.useState("");
   const [matriculaAssinante, setMatriculaAssinante] = React.useState("");
@@ -18,13 +17,12 @@ function PdfDataForm({ onDadosChange }) {
       onDadosChange({
         abaReferencia,
         numeroFolha,
-        redutorConstitucional: converterMoedaParaNumero(redutorConstitucionalTexto),
         nomeAssinante,
         cargoAssinante,
         matriculaAssinante
       });
     }
-  }, [abaReferencia, numeroFolha, redutorConstitucionalTexto, nomeAssinante, cargoAssinante, matriculaAssinante, onDadosChange]);
+  }, [abaReferencia, numeroFolha, nomeAssinante, cargoAssinante, matriculaAssinante, onDadosChange]);
 
   return (
     <div style={ESTILOS.containerPrincipal}>
@@ -54,17 +52,6 @@ function PdfDataForm({ onDadosChange }) {
             placeholder="059/2025"
           />
         </div>
-      </div>
-
-      {/* Linha 2: Redutor Constitucional */}
-      <div style={{ marginTop: "15px" }}>
-        <label style={ESTILOS.label}>Base de Cálculo Limite do Redutor Constitucional:</label><br />
-        <input
-          style={{ ...ESTILOS.input, width: "100%", maxWidth: "300px" }}
-          value={redutorConstitucionalTexto}
-          onChange={e => setRedutorConstitucionalTexto(mascaraMoeda(e.target.value))}
-          placeholder="0,00"
-        />
       </div>
 
       {/* Linha 3: Dados de quem assina */}
