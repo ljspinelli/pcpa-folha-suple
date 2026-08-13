@@ -88,11 +88,7 @@ function PeriodosAquisitivosForm({
     }
   }, [ehValorCalculado, valorAutomatico]);
 
-  limparCampos();
-
-    // Reseleciona o Campo1 pra agilizar o próximo lançamento
-    if (inputVantagemRef.current) inputVantagemRef.current.focus();
-  }
+  function limparCampos() {
     setSelecionarVantagem("");
     setDataInicial("");
     setDataFinal("");
@@ -142,6 +138,9 @@ function PeriodosAquisitivosForm({
     }
 
     limparCampos();
+
+    // Reseleciona o Campo1 pra agilizar o próximo lançamento
+    if (inputVantagemRef.current) inputVantagemRef.current.focus();
   }
 
   function handleEditar() {
