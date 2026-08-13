@@ -81,20 +81,12 @@ function GerarPdfButton({
       );
     }
 
-    function linhaTotal(rotulo, valor) {
-      doc.setFontSize(10);
-      doc.setFont(undefined, "bold");
-      doc.text(`${rotulo} R$ ${formatarNumeroParaMoeda(valor)}`, margemEsq + larguraUtil, y, { align: "right" });
-      y += 7;
-      doc.setFont(undefined, "normal");
-    }
-
-    // Faixa cinza de largura total, com rótulo à esquerda e valor à
-    // direita — mesmo padrão visual já usado nos totais da tela
-    // (PayrollForm.js, DiscountForm.js).
-    function faixaCinza(rotulo, valor, tom) {
+    // Barra de total, largura cheia, mesmo tom de cinza e mesma fonte
+    // em TODO o documento (cabeçalhos de tabela usam 230/230/230; esta
+    // barra usa 200/200/200 — os dois únicos tons usados no PDF inteiro).
+    function faixaCinza(rotulo, valor) {
       const altura = 7;
-      doc.setFillColor(tom, tom, tom);
+      doc.setFillColor(200, 200, 200);
       doc.rect(margemEsq, y - 5, larguraUtil, altura, "F");
       doc.setFontSize(10);
       doc.setFont(undefined, "bold");
@@ -158,14 +150,14 @@ function GerarPdfButton({
       foot: [["TOTAL", formatarNumeroParaMoeda(valorBaseAba)]],
       theme: "grid",
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
-      footStyles: { fillColor: [190, 190, 190], textColor: 0, fontStyle: "bold", fontSize: 10 },
+      footStyles: { fillColor: [200, 200, 200], textColor: 0, fontStyle: "bold", fontSize: 10 },
       styles: { fontSize: 9 },
       columnStyles: { 1: { halign: "right", cellWidth: 35 } }
     });
     y = doc.lastAutoTable.finalY + 6;
 
-    faixaCinza("VALOR LIMITE DO REDUTOR CONSTITUCIONAL", dadosFolha.redutorConstitucional, 190);
-    faixaCinza("VALOR BASE DA COMPOSIÇÃO DA REMUNERAÇÃO", valorBaseAba, 220);
+    faixaCinza("VALOR LIMITE DO REDUTOR CONSTITUCIONAL", dadosFolha.redutorConstitucional);
+    faixaCinza("VALOR BASE DA COMPOSIÇÃO DA REMUNERAÇÃO", valorBaseAba);
 
     y += 2;
 
@@ -191,7 +183,7 @@ function GerarPdfButton({
       columnStyles: { 1: { halign: "right", cellWidth: 35 } }
     });
     y = doc.lastAutoTable.finalY + 4;
-    linhaTotal("TOTAL DAS VANTAGENS", totalPeriodosAquisitivos);
+    faixaCinza("TOTAL DAS VANTAGENS", totalPeriodosAquisitivos);
 
     y += 2;
 
@@ -212,7 +204,7 @@ function GerarPdfButton({
       columnStyles: { 1: { halign: "right", cellWidth: 35 } }
     });
     y = doc.lastAutoTable.finalY + 4;
-    linhaTotal("TOTAL RECEBIDO A MAIOR", totalAdiantamentos);
+    faixaCinza("TOTAL RECEBIDO A MAIOR", totalAdiantamentos);
 
     y += 4;
 
@@ -223,7 +215,7 @@ function GerarPdfButton({
     y = 15;
     cabecalho();
 
-    linhaTotal("TOTAL BRUTO", dadosDescontos.totalBruto);
+    faixaCinza("TOTAL BRUTO", dadosDescontos.totalBruto);
     y += 2;
 
     doc.setFont(undefined, "bold");
@@ -249,8 +241,8 @@ function GerarPdfButton({
     });
     y = doc.lastAutoTable.finalY + 4;
 
-    linhaTotal("TOTAL DESCONTOS OBRIGATÓRIOS", dadosDescontos.total);
-    linhaTotal("TOTAL LÍQUIDO", dadosDescontos.totalLiquido);
+    faixaCinza("TOTAL DESCONTOS OBRIGATÓRIOS", dadosDescontos.total);
+    faixaCinza("TOTAL LÍQUIDO", dadosDescontos.totalLiquido);
 
     y += 15;
 
