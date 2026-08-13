@@ -89,16 +89,57 @@ function GerarPdfButton({
       doc.setFont(undefined, "normal");
     }
 
+    // Faixa cinza de largura total, com rótulo à esquerda e valor à
+    // direita — mesmo padrão visual já usado nos totais da tela
+    // (PayrollForm.js, DiscountForm.js).
+    function faixaCinza(rotulo, valor, tom) {
+      const altura = 7;
+      doc.setFillColor(tom, tom, tom);
+      doc.rect(margemEsq, y - 5, larguraUtil, altura, "F");
+      doc.setFontSize(10);
+      doc.setFont(undefined, "bold");
+      doc.setTextColor(0, 0, 0);
+      doc.text(rotulo, margemEsq + 2, y);
+      doc.text(`R$ ${formatarNumeroParaMoeda(valor)}`, margemEsq + larguraUtil - 2, y, { align: "right" });
+      y += altura + 3;
+      doc.setFont(undefined, "normal");
+    }
+
     // ==================== PÁGINA 1 ====================
     cabecalho();
 
+    // Dados do requerente (RequesterForm.js) + vínculo (BasicInfoForm.js),
+    // logo após o cabeçalho
+    doc.setFontSize(9);
+    const linhasInfo = [
+      `SERVIDOR(A): ${dadosRequerente.nome || "—"}`,
+      `MATRÍCULA: ${dadosRequerente.matricula || "—"}`,
+      `CPF: ${dadosRequerente.cpf || "—"}`,
+      `DATA DA POSSE: ${dadosVinculo.posse || "—"}`,
+      `MOTIVO DA POSSE: ${dadosVinculo.motivoPosse || "—"}`,
+      `FOLHA SUPLEMENTAR Nº ${pdfData.numeroFolha || "—"}`,
+      `Protocolo: ${dadosRequerente.pae || "—"}`,
+      `ASSUNTO: ${dadosRequerente.assunto || "—"}`,
+      `INTERESSADO(A): ${dadosRequerente.interessado || "—"}`,
+      `MOTIVO DE ENCERRAMENTO DE VÍNCULO: ${dadosVinculo.motivoEncerramento || "—"}`,
+      `DATA DE ENCERRAMENTO DE VÍNCULO: ${dadosVinculo.encerramento || "—"}`
+    ];
+    linhasInfo.forEach(linha => {
+      doc.text(linha, margemEsq, y);
+      y += 5;
+    });
+
+    y += 4;
+
+    // Quadro do PayrollForm.js: rubricas da aba de referência, com
+    // TOTAL dentro da própria tabela, seguido das faixas de Redutor
+    // Constitucional e Valor Base da Composição da Remuneração.
     doc.setFontSize(10);
     doc.setFont(undefined, "bold");
     doc.text(`BASE DA COMPOSIÇÃO DA REMUNERAÇÃO: ${dadosFolha.mesRef || "—"}`, margemEsq, y);
     y += 4;
     doc.setFont(undefined, "normal");
 
-    // Quadro de rubricas da aba de referência selecionada (só as preenchidas)
     const codigosAba = MAPA_ABA_CODIGOS[pdfData.abaReferencia] || [];
     const rubricasPreenchidas = RUBRICAS_FIXAS
       .filter(r => codigosAba.includes(r.codigo) && dadosFolha.valores[r.codigo])
@@ -107,22 +148,24 @@ function GerarPdfButton({
         formatarNumeroParaMoeda(converterMoedaParaNumero(dadosFolha.valores[r.codigo]))
       ]);
 
+    const valorBaseAba = dadosFolha[MAPA_ABA_CAMPO_TOTAL[pdfData.abaReferencia]] || 0;
+
     doc.autoTable({
       startY: y,
       margin: { left: margemEsq, right: margemEsq },
       head: [["DESCRIÇÃO DA RUBRICA", "VALOR"]],
       body: rubricasPreenchidas.length ? rubricasPreenchidas : [["—", "R$ 0,00"]],
+      foot: [["TOTAL", formatarNumeroParaMoeda(valorBaseAba)]],
       theme: "grid",
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
+      footStyles: { fillColor: [190, 190, 190], textColor: 0, fontStyle: "bold", fontSize: 10 },
       styles: { fontSize: 9 },
       columnStyles: { 1: { halign: "right", cellWidth: 35 } }
     });
-    y = doc.lastAutoTable.finalY + 4;
+    y = doc.lastAutoTable.finalY + 6;
 
-    const valorBaseAba = dadosFolha[MAPA_ABA_CAMPO_TOTAL[pdfData.abaReferencia]] || 0;
-    linhaTotal("TOTAL -", valorBaseAba);
-    linhaTotal("BASE DE CÁLCULO SOBRE A REMUNERAÇÃO", valorBaseAba);
-    linhaTotal("BASE DE CÁLCULO LIMITE DO REDUTOR CONSTITUCIONAL", dadosFolha.redutorConstitucional);
+    faixaCinza("VALOR LIMITE DO REDUTOR CONSTITUCIONAL", dadosFolha.redutorConstitucional, 190);
+    faixaCinza("VALOR BASE DA COMPOSIÇÃO DA REMUNERAÇÃO", valorBaseAba, 220);
 
     y += 2;
 
@@ -172,26 +215,6 @@ function GerarPdfButton({
     linhaTotal("TOTAL RECEBIDO A MAIOR", totalAdiantamentos);
 
     y += 4;
-
-    // Bloco de identificação
-    doc.setFontSize(9);
-    const linhasInfo = [
-      `SERVIDOR(A): ${dadosRequerente.nome || "—"}`,
-      `MATRÍCULA: ${dadosRequerente.matricula || "—"}`,
-      `CPF: ${dadosRequerente.cpf || "—"}`,
-      `DATA DA POSSE: ${dadosVinculo.posse || "—"}`,
-      `MOTIVO DA POSSE: ${dadosVinculo.motivoPosse || "—"}`,
-      `FOLHA SUPLEMENTAR Nº ${pdfData.numeroFolha || "—"}`,
-      `Protocolo: ${dadosRequerente.pae || "—"}`,
-      `ASSUNTO: ${dadosRequerente.assunto || "—"}`,
-      `INTERESSADO(A): ${dadosRequerente.interessado || "—"}`,
-      `MOTIVO DE ENCERRAMENTO DE VÍNCULO: ${dadosVinculo.motivoEncerramento || "—"}`,
-      `DATA DE ENCERRAMENTO DE VÍNCULO: ${dadosVinculo.encerramento || "—"}`
-    ];
-    linhasInfo.forEach(linha => {
-      doc.text(linha, margemEsq, y);
-      y += 5;
-    });
 
     rodapeEndereco();
 
