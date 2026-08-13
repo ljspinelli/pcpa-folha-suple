@@ -42,6 +42,7 @@ function PeriodosAquisitivosForm({
   const [editandoId, setEditandoId] = React.useState(null);
 
   const proximoIdRef = React.useRef(1);
+  const inputVantagemRef = React.useRef(null);
 
   // 13º Salário conta por mês civil (calendário); Férias conta por
   // blocos de 30 dias corridos a partir da data inicial — são regras
@@ -87,7 +88,11 @@ function PeriodosAquisitivosForm({
     }
   }, [ehValorCalculado, valorAutomatico]);
 
-  function limparCampos() {
+  limparCampos();
+
+    // Reseleciona o Campo1 pra agilizar o próximo lançamento
+    if (inputVantagemRef.current) inputVantagemRef.current.focus();
+  }
     setSelecionarVantagem("");
     setDataInicial("");
     setDataFinal("");
@@ -185,6 +190,7 @@ function PeriodosAquisitivosForm({
         <div style={{ flex: "2", minWidth: "220px" }}>
           <label style={ESTILOS.label}>Selecionar Vantagem:</label><br />
           <input
+            ref={inputVantagemRef}
             list="opcoes-vantagem-periodo"
             style={{ ...ESTILOS.input, width: "100%" }}
             value={selecionarVantagem}
