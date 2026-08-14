@@ -67,6 +67,7 @@ function BasicInfoForm({ onDadosChange }) {
 
   const motivosPosse = [
     "Nomeação por Concurso Publico",
+    "Contrato Temporário",
     "Livre Nomeação",
     "Promoção",
     "Reintegração",
@@ -86,6 +87,7 @@ function BasicInfoForm({ onDadosChange }) {
     "Falecimento",
     "Transferência",
     "Destituição"
+    "Distrato",
   ];
 
   // Validação cruzada: Data de Encerramento não pode ser anterior à
