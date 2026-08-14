@@ -107,14 +107,15 @@ function GerarPdfButton({
       `SERVIDOR(A): ${dadosRequerente.nome || "—"}`,
       `MATRÍCULA: ${dadosRequerente.matricula || "—"}`,
       `CPF: ${dadosRequerente.cpf || "—"}`,
-      `DATA DA POSSE: ${dadosVinculo.posse || "—"}`,
-      `MOTIVO DA POSSE: ${dadosVinculo.motivoPosse || "—"}`,
-      `FOLHA SUPLEMENTAR Nº ${pdfData.numeroFolha || "—"}`,
-      `Protocolo: ${dadosRequerente.pae || "—"}`,
+      `PROTOCOLO: ${dadosRequerente.pae || "—"}`,
       `ASSUNTO: ${dadosRequerente.assunto || "—"}`,
       `INTERESSADO(A): ${dadosRequerente.interessado || "—"}`,
+      `DATA DA POSSE: ${dadosVinculo.posse || "—"}`,
+      `MOTIVO DA POSSE: ${dadosVinculo.motivoPosse || "—"}`,
       `MOTIVO DE ENCERRAMENTO DE VÍNCULO: ${dadosVinculo.motivoEncerramento || "—"}`,
       `DATA DE ENCERRAMENTO DE VÍNCULO: ${dadosVinculo.encerramento || "—"}`
+
+      `FOLHA SUPLEMENTAR Nº ${pdfData.numeroFolha || "—"}`,
     ];
     linhasInfo.forEach(linha => {
       doc.text(linha, margemEsq, y);
