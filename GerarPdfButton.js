@@ -1,8 +1,8 @@
 // ============================
 // COMPONENTE: GerarPdfButton
-// Monta o PDF de duas páginas da Folha Suplementar, seguindo o
-// modelo oficial da PCPA, a partir de todos os dados já coletados
-// nos outros formulários.
+// Monta o PDF de duas (ou mais) páginas da Folha Suplementar,
+// seguindo o modelo oficial da PCPA, a partir de todos os dados já
+// coletados nos outros formulários.
 // ============================
 
 // Mapeia o id da "Aba de Referência" para a lista de códigos que
@@ -38,6 +38,14 @@ function dataAtualPorExtenso() {
   return `Belém (PA), ${hoje.getDate()} de ${MESES_EXTENSO[hoje.getMonth()]} de ${hoje.getFullYear()}`;
 }
 
+// Força o alinhamento à direita da coluna de VALOR em TODAS as
+// seções da tabela (cabeçalho, corpo e rodapé).
+function alinharColunaValorADireita(data, indiceColuna) {
+  if (data.column.index === indiceColuna) {
+    data.cell.styles.halign = "right";
+  }
+}
+
 function GerarPdfButton({
   dadosRequerente,
   dadosVinculo,
@@ -57,47 +65,31 @@ function GerarPdfButton({
     const larguraUtil = 182;
     const centro = margemEsq + larguraUtil / 2;
     const alturaPagina = doc.internal.pageSize.getHeight();
-    let y = 15;
+
+    // Espaço reservado no topo de CADA página pro cabeçalho — o
+    // conteúdo nunca começa antes disso, nem em páginas novas.
+    const margemTopoConteudo = 40;
+    let y = margemTopoConteudo;
 
     // Evita que um quadro comece perto demais do fim da página e
-    // acabe cortado — se não sobrar espaço mínimo razoável, pula
-    // para a próxima página antes de começar o bloco.
-    function novaPaginaSeNecessario(alturaMinima) {
-      if (y + alturaMinima > alturaPagina - 20) {
+    // acabe cortado — se não sobrar espaço suficiente pra ele
+    // inteiro, pula pra próxima página antes de começar o bloco.
+    function novaPaginaSeNecessario(alturaNecessaria) {
+      if (y + alturaNecessaria > alturaPagina - 20) {
         doc.addPage();
-        y = 15;
+        y = margemTopoConteudo;
       }
     }
 
-    function cabecalho() {
-      doc.setFontSize(11);
-      doc.setFont(undefined, "bold");
-      doc.text("POLICIA CIVIL DO ESTADO", centro, y, { align: "center" });
-      y += 5;
-      doc.text("DIRETORIA DE RECURSOS HUMANOS", centro, y, { align: "center" });
-      y += 5;
-      doc.text("COORDENADORIA DE DESENVOLVIMENTO DE PESSOAS", centro, y, { align: "center" });
-      y += 5;
-      doc.text("DIVISÃO DE PAGAMENTO DE PESSOAL", centro, y, { align: "center" });
-      y += 8;
-      doc.setFont(undefined, "normal");
-    }
-
-    function rodapeEndereco() {
-      doc.setFontSize(8);
-      doc.setFont(undefined, "normal");
-      doc.text(
-        "Av. Gov Magalhães Barata, 209 - Nazaré, Belém - PA, 66040-170",
-        centro,
-        290,
-        { align: "center" }
-      );
+    // Estimativa de altura de uma tabela (cabeçalho + linhas), usada
+    // pra decidir a quebra de página ANTES de imprimir o rótulo que
+    // vem acima dela — assim rótulo e tabela nunca ficam separados.
+    function alturaEstimadaTabela(numLinhas) {
+      return 7 + Math.max(numLinhas, 1) * 7;
     }
 
     // Barra de total, largura cheia, mesmo tom de cinza e mesma fonte
-    // em TODO o documento (cabeçalhos de tabela usam 230/230/230; esta
-    // barra usa 200/200/200 — os dois únicos tons usados no PDF inteiro).
-    // O valor sempre alinhado à direita.
+    // em TODO o documento. O valor sempre alinhado à direita.
     function faixaCinza(rotulo, valor) {
       novaPaginaSeNecessario(10);
       const altura = 7;
@@ -112,12 +104,11 @@ function GerarPdfButton({
       doc.setFont(undefined, "normal");
     }
 
-    // ==================== PÁGINA 1 ====================
-    cabecalho();
+    // ==================== CONTEÚDO ====================
 
     // "FOLHA SUPLEMENTAR Nº" — negrito, fonte maior, centralizada,
-    // com duas linhas de espaço após o cabeçalho.
-    y += 10;
+    // com uma linha de espaço após o cabeçalho.
+    y += 5;
     doc.setFontSize(14);
     doc.setFont(undefined, "bold");
     doc.text(`FOLHA SUPLEMENTAR Nº ${pdfData.numeroFolha || "—"}`, centro, y, { align: "center" });
@@ -159,13 +150,6 @@ function GerarPdfButton({
     // Quadro do PayrollForm.js: rubricas da aba de referência, com
     // TOTAL dentro da própria tabela, seguido das faixas de Redutor
     // Constitucional e Valor Base da Composição da Remuneração.
-    novaPaginaSeNecessario(40);
-    doc.setFontSize(10);
-    doc.setFont(undefined, "bold");
-    doc.text(`BASE DA COMPOSIÇÃO DA REMUNERAÇÃO: ${dadosFolha.mesRef || "—"}`, margemEsq, y);
-    y += 4;
-    doc.setFont(undefined, "normal");
-
     const codigosAba = MAPA_ABA_CODIGOS[pdfData.abaReferencia] || [];
     const rubricasPreenchidas = RUBRICAS_FIXAS
       .filter(r => codigosAba.includes(r.codigo) && dadosFolha.valores[r.codigo])
@@ -173,12 +157,18 @@ function GerarPdfButton({
         `${r.codigo} - ${r.nome}`,
         formatarNumeroParaMoeda(converterMoedaParaNumero(dadosFolha.valores[r.codigo]))
       ]);
-
     const valorBaseAba = dadosFolha[MAPA_ABA_CAMPO_TOTAL[pdfData.abaReferencia]] || 0;
+
+    novaPaginaSeNecessario(4 + alturaEstimadaTabela(rubricasPreenchidas.length) + 20);
+    doc.setFontSize(10);
+    doc.setFont(undefined, "bold");
+    doc.text(`BASE DA COMPOSIÇÃO DA REMUNERAÇÃO: ${dadosFolha.mesRef || "—"}`, margemEsq, y);
+    y += 4;
+    doc.setFont(undefined, "normal");
 
     doc.autoTable({
       startY: y,
-      margin: { left: margemEsq, right: margemEsq },
+      margin: { top: margemTopoConteudo, left: margemEsq, right: margemEsq },
       pageBreak: "avoid",
       head: [["DESCRIÇÃO DA RUBRICA", "VALOR"]],
       body: rubricasPreenchidas.length ? rubricasPreenchidas : [["—", "R$ 0,00"]],
@@ -187,7 +177,8 @@ function GerarPdfButton({
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
       footStyles: { fillColor: [200, 200, 200], textColor: 0, fontStyle: "bold", fontSize: 10 },
       styles: { fontSize: 9 },
-      columnStyles: { 1: { halign: "right", cellWidth: 35 } }
+      columnStyles: { 1: { halign: "right", cellWidth: 35 } },
+      didParseCell: data => alinharColunaValorADireita(data, 1)
     });
     y = doc.lastAutoTable.finalY + 6;
 
@@ -197,27 +188,28 @@ function GerarPdfButton({
     y += 2;
 
     // VANTAGENS = Quadro1 do PeriodosAquisitivosForm.js
-    novaPaginaSeNecessario(40);
-    doc.setFont(undefined, "bold");
-    doc.text("VANTAGENS", margemEsq, y);
-    y += 4;
-    doc.setFont(undefined, "normal");
-
     const linhasVantagens = listaPeriodosAquisitivos.map(item => [
       item.selecionarVantagem,
       formatarNumeroParaMoeda(item.valor)
     ]);
 
+    novaPaginaSeNecessario(4 + alturaEstimadaTabela(linhasVantagens.length) + 10);
+    doc.setFont(undefined, "bold");
+    doc.text("VANTAGENS", margemEsq, y);
+    y += 4;
+    doc.setFont(undefined, "normal");
+
     doc.autoTable({
       startY: y,
-      margin: { left: margemEsq, right: margemEsq },
+      margin: { top: margemTopoConteudo, left: margemEsq, right: margemEsq },
       pageBreak: "avoid",
       head: [["VANTAGENS", "VALOR"]],
       body: linhasVantagens.length ? linhasVantagens : [["—", "R$ 0,00"]],
       theme: "grid",
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
       styles: { fontSize: 9 },
-      columnStyles: { 1: { halign: "right", cellWidth: 35 } }
+      columnStyles: { 1: { halign: "right", cellWidth: 35 } },
+      didParseCell: data => alinharColunaValorADireita(data, 1)
     });
     y = doc.lastAutoTable.finalY + 4;
     faixaCinza("TOTAL DAS VANTAGENS", totalPeriodosAquisitivos);
@@ -225,58 +217,59 @@ function GerarPdfButton({
     y += 2;
 
     // VALORES RECEBIDOS A MAIOR = Quadro1 do AdiantamentosForm.js
-    novaPaginaSeNecessario(40);
     const linhasAdiantamentos = listaAdiantamentos.map(item => [
       item.selecionarVantagem,
       formatarNumeroParaMoeda(item.valor)
     ]);
 
+    // +10 extra pra já garantir espaço pra barra do TOTAL BRUTO logo
+    // em seguida (não pode ficar separada deste quadro por quebra de página)
+    novaPaginaSeNecessario(alturaEstimadaTabela(linhasAdiantamentos.length) + 10 + 10);
+
     doc.autoTable({
       startY: y,
-      margin: { left: margemEsq, right: margemEsq },
+      margin: { top: margemTopoConteudo, left: margemEsq, right: margemEsq },
       pageBreak: "avoid",
       head: [["VALORES RECEBIDOS A MAIOR", "VALOR"]],
       body: linhasAdiantamentos.length ? linhasAdiantamentos : [["—", "R$ 0,00"]],
       theme: "grid",
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
       styles: { fontSize: 9 },
-      columnStyles: { 1: { halign: "right", cellWidth: 35 } }
+      columnStyles: { 1: { halign: "right", cellWidth: 35 } },
+      didParseCell: data => alinharColunaValorADireita(data, 1)
     });
     y = doc.lastAutoTable.finalY + 4;
     faixaCinza("TOTAL RECEBIDO A MAIOR", totalAdiantamentos);
 
-    rodapeEndereco();
-
-    // ==================== PÁGINA 2 ====================
-    doc.addPage();
-    y = 15;
-    cabecalho();
-
+    // TOTAL BRUTO logo abaixo, sem quebra de página forçada entre os dois
     faixaCinza("TOTAL BRUTO", dadosDescontos.totalBruto);
+
     y += 2;
 
-    novaPaginaSeNecessario(40);
-    doc.setFont(undefined, "bold");
-    doc.text("DESCONTOS OBRIGATÓRIOS", margemEsq, y);
-    y += 4;
-    doc.setFont(undefined, "normal");
-
+    // DESCONTOS OBRIGATÓRIOS = Quadro1 do DiscountForm.js
     const linhasDescontos = dadosDescontos.lista.map(item => [
       item.rubrica,
       item.aliquota,
       formatarNumeroParaMoeda(item.valor)
     ]);
 
+    novaPaginaSeNecessario(4 + alturaEstimadaTabela(linhasDescontos.length) + 20);
+    doc.setFont(undefined, "bold");
+    doc.text("DESCONTOS OBRIGATÓRIOS", margemEsq, y);
+    y += 4;
+    doc.setFont(undefined, "normal");
+
     doc.autoTable({
       startY: y,
-      margin: { left: margemEsq, right: margemEsq },
+      margin: { top: margemTopoConteudo, left: margemEsq, right: margemEsq },
       pageBreak: "avoid",
       head: [["RÚBRICA", "ALÍQUOTA", "VALOR"]],
       body: linhasDescontos.length ? linhasDescontos : [["—", "—", "R$ 0,00"]],
       theme: "grid",
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
       styles: { fontSize: 9 },
-      columnStyles: { 2: { halign: "right", cellWidth: 35 } }
+      columnStyles: { 2: { halign: "right", cellWidth: 35 } },
+      didParseCell: data => alinharColunaValorADireita(data, 2)
     });
     y = doc.lastAutoTable.finalY + 4;
 
@@ -326,7 +319,34 @@ function GerarPdfButton({
     y += 5;
     doc.text("E-mail: folhapagamento.drh@policiacivil.pa.gov.br", centro, y, { align: "center" });
 
-    rodapeEndereco();
+    // ==================== CABEÇALHO E RODAPÉ EM TODAS AS PÁGINAS ====================
+    // Feito por último, numa segunda passada sobre cada página já
+    // criada — assim funciona não importa quantas páginas o
+    // conteúdo tenha ocupado.
+    const totalPaginas = doc.internal.getNumberOfPages();
+    for (let pagina = 1; pagina <= totalPaginas; pagina++) {
+      doc.setPage(pagina);
+
+      let yCabecalho = 15;
+      doc.setFontSize(11);
+      doc.setFont(undefined, "bold");
+      doc.text("POLICIA CIVIL DO ESTADO", centro, yCabecalho, { align: "center" });
+      yCabecalho += 5;
+      doc.text("DIRETORIA DE RECURSOS HUMANOS", centro, yCabecalho, { align: "center" });
+      yCabecalho += 5;
+      doc.text("COORDENADORIA DE DESENVOLVIMENTO DE PESSOAS", centro, yCabecalho, { align: "center" });
+      yCabecalho += 5;
+      doc.text("DIVISÃO DE PAGAMENTO DE PESSOAL", centro, yCabecalho, { align: "center" });
+      doc.setFont(undefined, "normal");
+
+      doc.setFontSize(8);
+      doc.text(
+        "Av. Gov Magalhães Barata, 209 - Nazaré, Belém - PA, 66040-170",
+        centro,
+        290,
+        { align: "center" }
+      );
+    }
 
     doc.save(`Folha_Suplementar_${pdfData.numeroFolha || "sem-numero"}.pdf`);
   }
