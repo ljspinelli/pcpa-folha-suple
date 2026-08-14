@@ -114,7 +114,6 @@ function GerarPdfButton({
       `MOTIVO DA POSSE: ${dadosVinculo.motivoPosse || "—"}`,
       `MOTIVO DE ENCERRAMENTO DE VÍNCULO: ${dadosVinculo.motivoEncerramento || "—"}`,
       `DATA DE ENCERRAMENTO DE VÍNCULO: ${dadosVinculo.encerramento || "—"}`
-
       `FOLHA SUPLEMENTAR Nº ${pdfData.numeroFolha || "—"}`,
     ];
     linhasInfo.forEach(linha => {
