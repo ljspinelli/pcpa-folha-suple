@@ -86,7 +86,7 @@ function BasicInfoForm({ onDadosChange }) {
     "Readaptação",
     "Falecimento",
     "Transferência",
-    "Destituição"
+    "Destituição",
     "Distrato",
   ];
 
