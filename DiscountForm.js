@@ -3,7 +3,8 @@ const contribuicoes = [
   "0656 - INSS - Temporário/Comissionado",
   "0688 - FINANPREV",
   "0695 - FUNPREV Contribuição LC112",
-  "0638 - FUNPREV Limite RPPS"
+  "0638 - FUNPREV Limite RPPS",
+  "0636 - FINANPREV Contribuição Limite"
 ];
 
 // Lista de opções de Imposto de Renda
@@ -11,7 +12,9 @@ const opcoesImpostoRenda = [
   "0658 - Imposto de Renda - IRRF",
   "RRA 13º Salario Proporcional",
   "Isento de IR - Ato Declaratório Interpretativo SRF nº 5/2005",
-  "Imposto de Renda Férias - Ato Declaratório Interpretativo SRF nº 14/2005"
+  "Imposto de Renda Férias - Ato Declaratório Interpretativo SRF nº 14/2005",
+  "0657 - Imposto de Renda Férias",
+  "0698 - Imposto de Renda RRA"
 ];
 
 // Máscara fluída de moeda (sem NaN)
