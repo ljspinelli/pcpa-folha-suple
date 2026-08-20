@@ -5,10 +5,31 @@
 // Auxílio Doença, além de IR/RPPS/INSS) simultaneamente.
 // ============================
 
+// Lista de sugestões do campo "Rúbrica" do quadro de Descontos e
+// Retenções deste formulário (autocomplete estilo Google — digitação
+// livre, mas com sugestões da lista quando o texto bate).
+const OPCOES_RUBRICA_DESCONTO_PAYROLL = [
+  "0636 - FINANPREV Contribuição Limite",
+  "0638 - FUNPREV Limite RPPS",
+  "0656 - INSS Temp/Comiss",
+  "0657 - Imposto de Renda Férias",
+  "0658 - Imposto de Renda",
+  "0688 - FINANPREV Contribuição",
+  "0695 - FUNPREV Contribuição LC112",
+  "0698 - Imposto de Renda RRA"
+];
+
 function PayrollForm({ onDadosChange }) {
   const [mesRef, setMesRef] = React.useState("");
   const [valores, setValores] = React.useState({});
   const [redutorConstitucionalTexto, setRedutorConstitucionalTexto] = React.useState("");
+
+  // Quadro "Descontos e Retenções" deste formulário
+  const [rubricaDesconto, setRubricaDesconto] = React.useState("");
+  const [aliquotaDesconto, setAliquotaDesconto] = React.useState("");
+  const [aliquotaDescontoRaw, setAliquotaDescontoRaw] = React.useState("");
+  const [valorDescontoTexto, setValorDescontoTexto] = React.useState("");
+  const [listaDescontosAplicados, setListaDescontosAplicados] = React.useState([]);
 
   function handleChangeValor(codigo, novoValor) {
     const valorFormatado = mascaraMoeda(novoValor);
@@ -57,6 +78,48 @@ function PayrollForm({ onDadosChange }) {
     }
   }, [mesRef, valores, redutorConstitucionalTexto, onDadosChange]);
 
+  // Digitação fluída da alíquota do quadro de Descontos e Retenções
+  // (mesmo padrão do campo Alíquota do DiscountForm.js)
+  function onAliquotaDescontoChange(e) {
+    const texto = e.target.value.replace(/[^0-9,]/g, "");
+    setAliquotaDescontoRaw(texto);
+    setAliquotaDesconto(texto);
+  }
+
+  function onAliquotaDescontoBlur() {
+    if (aliquotaDescontoRaw) {
+      setAliquotaDesconto(formatarPercentualFinal(aliquotaDescontoRaw));
+    }
+  }
+
+  function aplicarDescontoPayroll() {
+    if (!rubricaDesconto || !valorDescontoTexto) return;
+
+    const linha = {
+      rubrica: rubricaDesconto,
+      aliquota: aliquotaDesconto,
+      valor: converterMoedaParaNumero(valorDescontoTexto)
+    };
+
+    // Atualiza a linha se a rúbrica já existir na lista, senão adiciona
+    setListaDescontosAplicados(prev => {
+      const semDuplicata = prev.filter(item => item.rubrica !== linha.rubrica);
+      return [...semDuplicata, linha];
+    });
+
+    setRubricaDesconto("");
+    setAliquotaDesconto("");
+    setAliquotaDescontoRaw("");
+    setValorDescontoTexto("");
+  }
+
+  function removerDescontoPayroll(rubrica) {
+    setListaDescontosAplicados(prev => prev.filter(item => item.rubrica !== rubrica));
+  }
+
+  const totalDescontosAplicados = listaDescontosAplicados.reduce((acc, item) => acc + item.valor, 0);
+  const totalLiquidoPayroll = total - totalDescontosAplicados;
+
   return (
     <div style={ESTILOS.containerPrincipal}>
 
@@ -103,6 +166,113 @@ function PayrollForm({ onDadosChange }) {
         {/* Total geral */}
         <div style={ESTILOS.totalGeral}>
           Total: R$ {formatarNumeroParaMoeda(total)}
+        </div>
+
+        {/* Descontos e Retenções (deste formulário) */}
+        <div style={{ marginTop: "20px" }}>
+          <h3 style={{ color: "#0B2B4A" }}>Descontos e Retenções</h3>
+
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", alignItems: "flex-end" }}>
+            <div style={{ flex: "2", minWidth: "220px" }}>
+              <label style={ESTILOS.label}>Rúbrica:</label><br />
+              <input
+                list="opcoes-rubrica-desconto-payroll"
+                style={{ ...ESTILOS.input, width: "100%" }}
+                value={rubricaDesconto}
+                onChange={e => setRubricaDesconto(e.target.value)}
+                placeholder="Digite ou selecione..."
+              />
+              <datalist id="opcoes-rubrica-desconto-payroll">
+                {OPCOES_RUBRICA_DESCONTO_PAYROLL.map((op, i) => (
+                  <option key={i} value={op} />
+                ))}
+              </datalist>
+            </div>
+
+            <div style={{ flex: "1", minWidth: "140px" }}>
+              <label style={ESTILOS.label}>Alíquota:</label><br />
+              <input
+                style={{ ...ESTILOS.input, width: "100%" }}
+                value={aliquotaDesconto}
+                onChange={onAliquotaDescontoChange}
+                onBlur={onAliquotaDescontoBlur}
+                placeholder="00,00%"
+              />
+            </div>
+
+            <div style={{ flex: "1", minWidth: "140px" }}>
+              <label style={ESTILOS.label}>Valor:</label><br />
+              <input
+                style={{ ...ESTILOS.input, width: "100%" }}
+                value={valorDescontoTexto}
+                onChange={e => setValorDescontoTexto(mascaraMoeda(e.target.value))}
+                placeholder="0,00"
+              />
+            </div>
+          </div>
+
+          <div style={{ marginTop: "10px", textAlign: "right" }}>
+            <button onClick={aplicarDescontoPayroll}>Aplicar Descontos</button>
+          </div>
+
+          {/* Quadro Descontos Aplicados */}
+          <div style={{ marginTop: "15px" }}>
+            <h3 style={{ color: "#0B2B4A" }}>Descontos Aplicados</h3>
+
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: "#f0f0f0" }}>
+                  <th style={{ padding: "8px", textAlign: "left" }}>Rúbrica</th>
+                  <th style={{ padding: "8px", textAlign: "left" }}>Alíquota</th>
+                  <th style={{ padding: "8px", textAlign: "right" }}>Valor (R$)</th>
+                  <th style={{ padding: "8px", textAlign: "center" }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {listaDescontosAplicados.map(item => (
+                  <tr key={item.rubrica}>
+                    <td style={{ padding: "8px" }}>{item.rubrica}</td>
+                    <td style={{ padding: "8px" }}>{item.aliquota}</td>
+                    <td style={{ padding: "8px", textAlign: "right" }}>
+                      {formatarNumeroParaMoeda(item.valor)}
+                    </td>
+                    <td style={{ padding: "8px", textAlign: "center" }}>
+                      <button
+                        onClick={() => removerDescontoPayroll(item.rubrica)}
+                        style={{ color: "#b00020", border: "none", background: "none", cursor: "pointer" }}
+                        title="Remover"
+                      >
+                        ✕
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div style={{
+              marginTop: "10px",
+              textAlign: "right",
+              fontWeight: "bold",
+              fontSize: "18px",
+              background: "#f0f0f0",
+              padding: "8px"
+            }}>
+              Total: R$ {formatarNumeroParaMoeda(totalDescontosAplicados)}
+            </div>
+          </div>
+
+          {/* Total Líquido = Total das Vantagens - Total dos Descontos Aplicados */}
+          <div style={{
+            marginTop: "15px",
+            textAlign: "right",
+            fontWeight: "bold",
+            fontSize: "18px",
+            background: "#f0f0f0",
+            padding: "8px"
+          }}>
+            Total Líquido&nbsp;&nbsp;R$ {formatarNumeroParaMoeda(totalLiquidoPayroll)}
+          </div>
         </div>
 
         {/* Bases calculadas — duas colunas, rótulo à esquerda e valor à direita */}
