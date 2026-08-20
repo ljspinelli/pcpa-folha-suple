@@ -120,13 +120,14 @@ const ESTILOS = {
     fontWeight: "bold",
     color: "#0B2B4A"
   },
-  input: {
+    input: {
     width: "300px",
     padding: "6px",
     border: "1px solid #ccc",
     borderRadius: "6px",
     fontSize: "15px",
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
+    boxSizing: "border-box"
   },
   select: {
     width: "300px",
@@ -134,7 +135,8 @@ const ESTILOS = {
     border: "1px solid #ccc",
     borderRadius: "6px",
     fontSize: "15px",
-    backgroundColor: "#ffffff"
+    backgroundColor: "#ffffff",
+    boxSizing: "border-box"
   },
   inputSomenteLeitura: {
     width: "300px",
@@ -142,7 +144,8 @@ const ESTILOS = {
     border: "1px solid #ccc",
     borderRadius: "6px",
     fontSize: "15px",
-    backgroundColor: "#f7f7f7"
+    backgroundColor: "#f7f7f7",
+    boxSizing: "border-box"
   },
   inputDestaque: {
     width: "300px",
@@ -152,7 +155,8 @@ const ESTILOS = {
     fontSize: "15px",
     fontWeight: "bold",
     color: "#0B2B4A",
-    backgroundColor: "#e8f5e9"
+    backgroundColor: "#e8f5e9",
+    boxSizing: "border-box"
   },
   inputTabela: {
     width: "180px",
@@ -160,7 +164,8 @@ const ESTILOS = {
     border: "1px solid #ccc",
     borderRadius: "6px",
     fontSize: "15px",
-    textAlign: "right"
+    textAlign: "right",
+    boxSizing: "border-box"
   },
   containerPrincipal: {
     padding: "20px"
