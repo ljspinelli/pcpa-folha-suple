@@ -201,9 +201,9 @@ function PayrollForm({ onDadosChange }) {
             </div>
 
             <div style={{ flex: "1", minWidth: "140px" }}>
-              <label style={ESTILOS.label}>Valor:</label><br />
+              <label style={{ ...ESTILOS.label, display: "block", textAlign: "right" }}>Valor:</label><br />
               <input
-                style={{ ...ESTILOS.input, width: "100%" }}
+                style={{ ...ESTILOS.input, width: "100%", textAlign: "right" }}
                 value={valorDescontoTexto}
                 onChange={e => setValorDescontoTexto(mascaraMoeda(e.target.value))}
                 placeholder="0,00"
