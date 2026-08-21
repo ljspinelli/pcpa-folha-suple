@@ -284,7 +284,7 @@ function GerarPdfButton({
     doc.line(margemEsq, y, margemEsq + larguraUtil, y);
     y += 6;
 
-        doc.setFontSize(9);
+        doc.setFontSize(12);
     doc.setFont(undefined, "normal");
     const valorExtenso = numeroPorExtenso(dadosDescontos.totalBruto);
     const fraseExtenso = `Esta Folha Suplementar implica no valor bruto de R$ ${formatarNumeroParaMoeda(dadosDescontos.totalBruto)} (${valorExtenso}).`;
