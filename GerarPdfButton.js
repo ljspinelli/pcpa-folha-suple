@@ -284,17 +284,17 @@ function GerarPdfButton({
     doc.line(margemEsq, y, margemEsq + larguraUtil, y);
     y += 6;
 
-    doc.setFontSize(9);
+        doc.setFontSize(9);
     doc.setFont(undefined, "normal");
     const valorExtenso = numeroPorExtenso(dadosDescontos.totalBruto);
     const fraseExtenso = `Esta Folha Suplementar implica no valor bruto de R$ ${formatarNumeroParaMoeda(dadosDescontos.totalBruto)} (${valorExtenso}).`;
     const linhasExtenso = doc.splitTextToSize(fraseExtenso, larguraUtil);
-    linhasExtenso.forEach(linha => {
-      doc.text(linha, centro, y, { align: "center" });
-      y += 5;
+    doc.text(fraseExtenso, margemEsq, y, { align: "justify", maxWidth: larguraUtil });
+    y += linhasExtenso.length * 5;
     });
 
-    y += 10;
+    // Espaço entre o texto acima e a data: 2 linhas de base + 3 linhas extras pedidas
+    y += 10 + 15;
 
     // Bloco de assinatura — data, Nome, Cargo, Matrícula e dados
     // institucionais fixos, tudo centralizado.
@@ -304,10 +304,10 @@ function GerarPdfButton({
     y += 12;
 
     doc.setFont(undefined, "bold");
-    doc.text(`Nome: ${pdfData.nomeAssinante || "—"}`, centro, y, { align: "center" });
+    doc.text(pdfData.nomeAssinante || "—", centro, y, { align: "center" });
     y += 5;
     doc.setFont(undefined, "normal");
-    doc.text(`Cargo: ${pdfData.cargoAssinante || "—"}`, centro, y, { align: "center" });
+    doc.text(pdfData.cargoAssinante || "—", centro, y, { align: "center" });
     y += 5;
     doc.text(`Matrícula: ${pdfData.matriculaAssinante || "—"}`, centro, y, { align: "center" });
     y += 7;
