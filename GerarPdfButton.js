@@ -291,7 +291,7 @@ function GerarPdfButton({
     const linhasExtenso = doc.splitTextToSize(fraseExtenso, larguraUtil);
     doc.text(fraseExtenso, margemEsq, y, { align: "justify", maxWidth: larguraUtil });
     y += linhasExtenso.length * 5;
-    });
+   
 
     // Espaço entre o texto acima e a data: 2 linhas de base + 3 linhas extras pedidas
     y += 10 + 15;
