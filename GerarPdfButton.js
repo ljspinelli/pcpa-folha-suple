@@ -45,6 +45,31 @@ function alinharColunaValorADireita(data, indiceColuna) {
     data.cell.styles.halign = "right";
   }
 }
+// Monta o texto detalhado da "Descrição da Vantagem" pro quadro
+// VANTAGENS do PDF: acrescenta datas + dias + avos (quando houver
+// datas preenchidas) e a competência (quando preenchida).
+function montarDescricaoVantagem(item) {
+  let descricao = item.selecionarVantagem;
+
+  if (item.dataInicial && item.dataFinal) {
+    descricao += ` - ${item.dataInicial} a ${item.dataFinal}`;
+
+    if (item.dias) {
+      const palavraDia = item.dias === 1 ? "Dia" : "Dias";
+      descricao += `, ${item.dias} ${palavraDia}`;
+    }
+
+    if (item.avos >= 1) {
+      descricao += `, ${item.avos}/12 Avos`;
+    }
+  }
+
+  if (item.competencia) {
+    descricao += ` - ${item.competencia}`;
+  }
+
+  return descricao;
+}
 
 function GerarPdfButton({
   dadosRequerente,
@@ -189,7 +214,7 @@ function GerarPdfButton({
 
     // VANTAGENS = Quadro1 do PeriodosAquisitivosForm.js
     const linhasVantagens = listaPeriodosAquisitivos.map(item => [
-      item.selecionarVantagem,
+      montarDescricaoVantagem(item),
       formatarNumeroParaMoeda(item.valor)
     ]);
 
