@@ -142,7 +142,7 @@ function GerarPdfButton({
 
     // Dados Preliminares — duas linhas abaixo do título acima
     y += 10;
-    doc.setFontSize(12);
+    doc.setFontSize(10);
 
     const blocoRequerente = [
       `SERVIDOR(A): ${dadosRequerente.nome || "—"}`,
