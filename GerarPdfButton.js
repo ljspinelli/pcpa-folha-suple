@@ -134,7 +134,7 @@ function GerarPdfButton({
     // "FOLHA SUPLEMENTAR Nº" — negrito, fonte maior, centralizada,
     // com uma linha de espaço após o cabeçalho.
     y += 5;
-    doc.setFontSize(14);
+    doc.setFontSize(16);
     doc.setFont(undefined, "bold");
     doc.text(`FOLHA SUPLEMENTAR Nº ${pdfData.numeroFolha || "—"}`, centro, y, { align: "center" });
     doc.setFont(undefined, "normal");
@@ -142,7 +142,7 @@ function GerarPdfButton({
 
     // Dados Preliminares — duas linhas abaixo do título acima
     y += 10;
-    doc.setFontSize(9);
+    doc.setFontSize(12);
 
     const blocoRequerente = [
       `SERVIDOR(A): ${dadosRequerente.nome || "—"}`,
