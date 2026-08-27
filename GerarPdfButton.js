@@ -224,20 +224,21 @@ function GerarPdfButton({
     y += 4;
     doc.setFont(undefined, "normal");
 
-    doc.autoTable({
+        doc.autoTable({
       startY: y,
       margin: { top: margemTopoConteudo, left: margemEsq, right: margemEsq },
       pageBreak: "avoid",
       head: [["VANTAGENS", "VALOR"]],
       body: linhasVantagens.length ? linhasVantagens : [["—", "R$ 0,00"]],
+      foot: [["TOTAL DAS VANTAGENS", formatarNumeroParaMoeda(totalPeriodosAquisitivos)]],
       theme: "grid",
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
+      footStyles: { fillColor: [200, 200, 200], textColor: 0, fontStyle: "bold", fontSize: 10 },
       styles: { fontSize: 9 },
       columnStyles: { 1: { halign: "right", cellWidth: 35 } },
       didParseCell: data => alinharColunaValorADireita(data, 1)
     });
-    y = doc.lastAutoTable.finalY + 4;
-    faixaCinza("TOTAL DAS VANTAGENS", totalPeriodosAquisitivos);
+    y = doc.lastAutoTable.finalY + 6;
 
     y += 2;
 
@@ -251,20 +252,21 @@ function GerarPdfButton({
     // em seguida (não pode ficar separada deste quadro por quebra de página)
     novaPaginaSeNecessario(alturaEstimadaTabela(linhasAdiantamentos.length) + 10 + 10);
 
-    doc.autoTable({
+        doc.autoTable({
       startY: y,
       margin: { top: margemTopoConteudo, left: margemEsq, right: margemEsq },
       pageBreak: "avoid",
       head: [["VALORES RECEBIDOS A MAIOR", "VALOR"]],
       body: linhasAdiantamentos.length ? linhasAdiantamentos : [["—", "R$ 0,00"]],
+      foot: [["TOTAL RECEBIDO A MAIOR", formatarNumeroParaMoeda(totalAdiantamentos)]],
       theme: "grid",
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
+      footStyles: { fillColor: [200, 200, 200], textColor: 0, fontStyle: "bold", fontSize: 10 },
       styles: { fontSize: 9 },
       columnStyles: { 1: { halign: "right", cellWidth: 35 } },
       didParseCell: data => alinharColunaValorADireita(data, 1)
     });
-    y = doc.lastAutoTable.finalY + 4;
-    faixaCinza("TOTAL RECEBIDO A MAIOR", totalAdiantamentos);
+    y = doc.lastAutoTable.finalY + 6;
 
     // TOTAL BRUTO logo abaixo, sem quebra de página forçada entre os dois
     faixaCinza("TOTAL BRUTO", dadosDescontos.totalBruto);
@@ -284,21 +286,25 @@ function GerarPdfButton({
     y += 4;
     doc.setFont(undefined, "normal");
 
-    doc.autoTable({
+        doc.autoTable({
       startY: y,
       margin: { top: margemTopoConteudo, left: margemEsq, right: margemEsq },
       pageBreak: "avoid",
       head: [["RÚBRICA", "ALÍQUOTA", "VALOR"]],
       body: linhasDescontos.length ? linhasDescontos : [["—", "—", "R$ 0,00"]],
+      foot: [[
+        { content: "TOTAL DESCONTOS OBRIGATÓRIOS", colSpan: 2 },
+        formatarNumeroParaMoeda(dadosDescontos.total)
+      ]],
       theme: "grid",
       headStyles: { fillColor: [230, 230, 230], textColor: 0, fontStyle: "bold" },
+      footStyles: { fillColor: [200, 200, 200], textColor: 0, fontStyle: "bold", fontSize: 10 },
       styles: { fontSize: 9 },
       columnStyles: { 2: { halign: "right", cellWidth: 35 } },
       didParseCell: data => alinharColunaValorADireita(data, 2)
     });
-    y = doc.lastAutoTable.finalY + 4;
+    y = doc.lastAutoTable.finalY + 6;
 
-    faixaCinza("TOTAL DESCONTOS OBRIGATÓRIOS", dadosDescontos.total);
     faixaCinza("TOTAL LÍQUIDO", dadosDescontos.totalLiquido);
 
     // Linha separadora + frase do valor bruto por extenso, logo
