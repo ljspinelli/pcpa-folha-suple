@@ -37,6 +37,14 @@ function PeriodosAquisitivosForm({
   const [competencia, setCompetencia] = React.useState("");
   const [valorTexto, setValorTexto] = React.useState("");
 
+  // Mini-calculadora de Dias Corridos/Úteis, usada quando a vantagem
+  // digitada não tem fórmula pronta (ex: Auxílio Alimentação/Transporte,
+  // ou qualquer rubrica nova digitada livremente no futuro)
+  const [tipoCalculoDias, setTipoCalculoDias] = React.useState("corridos");
+  const [mesReferenciaCalculo, setMesReferenciaCalculo] = React.useState("");
+  const [feriadosPontosFacultativos, setFeriadosPontosFacultativos] = React.useState("");
+  const [valorIntegralTexto, setValorIntegralTexto] = React.useState("");
+
   const [lista, setLista] = React.useState([]);
   const [linhaSelecionadaId, setLinhaSelecionadaId] = React.useState(null);
   const [editandoId, setEditandoId] = React.useState(null);
@@ -49,16 +57,11 @@ function PeriodosAquisitivosForm({
   // diferentes por lei, por isso duas funções distintas.
   const avos13 = calcularAvosPeriodo(dataInicial, dataFinal);
   const avosFerias = calcularAvosFerias(dataInicial, dataFinal);
-  const dias = diasEntreDatas(dataInicial, dataFinal);
 
-  // Avos exibido na linha/campo depende do tipo de vantagem selecionada
-  const avos = selecionarVantagem.startsWith("13ª") ? avos13 : avosFerias;
-
-  // Determina se o Campo5 (Valor) é calculado automaticamente com base
-  // na vantagem selecionada, ou se fica livre para digitação manual.
-  // Mantido com todas as casas decimais (sem arredondar aqui) — o
-  // arredondamento só acontece na exibição (formatarNumeroParaMoeda).
-  function calcularValorAutomatico() {
+  // Determina se a vantagem digitada é uma das que já têm fórmula
+  // pronta (13º/Férias). Qualquer outra (Auxílio Alimentação/Transporte,
+  // ou rubrica nova digitada livremente) cai na mini-calculadora abaixo.
+  function calcularValorFormulaConhecida() {
     switch (selecionarVantagem) {
       case "13ª Salário Integral":
         return valorMensal13 * 12;
@@ -77,11 +80,49 @@ function PeriodosAquisitivosForm({
     }
   }
 
-  const valorAutomatico = calcularValorAutomatico();
+  const valorFormulaConhecida = calcularValorFormulaConhecida();
+  const ehFormulaConhecida = valorFormulaConhecida !== null;
+
+  // Mostra a mini-calculadora só quando algo foi digitado e não bate
+  // com nenhuma fórmula pronta.
+  const mostrarMiniCalculadora = selecionarVantagem.trim() !== "" && !ehFormulaConhecida;
+
+  // --- Mini-calculadora de Dias Corridos/Úteis ---
+  const diasUteisMes = diasUteisNoMes(mesReferenciaCalculo);
+  const diasCorridosMes = diasNoMes(mesReferenciaCalculo);
+  const diasUteisMesAjustado = Math.max(
+    0,
+    diasUteisMes - (Number(feriadosPontosFacultativos) || 0)
+  );
+  const valorIntegral = converterMoedaParaNumero(valorIntegralTexto);
+  const diasBaseDoMes = tipoCalculoDias === "uteis" ? diasUteisMesAjustado : diasCorridosMes;
+  const valorDiarioMiniCalc = diasBaseDoMes > 0 ? valorIntegral / diasBaseDoMes : 0;
+
+  // Dias do período (Data Inicial/Final): corridos ou úteis, conforme
+  // o Tipo de Cálculo escolhido na mini-calculadora
+  const diasPeriodoUteis = diasUteisEntreDatas(dataInicial, dataFinal);
+  const diasPeriodoCorridos = diasEntreDatas(dataInicial, dataFinal);
+  const dias = mostrarMiniCalculadora && tipoCalculoDias === "uteis"
+    ? diasPeriodoUteis
+    : diasPeriodoCorridos;
+
+  const valorMiniCalc = valorIntegral > 0 ? valorDiarioMiniCalc * (dias || 0) : null;
+
+  // Avos exibido na linha/campo: só faz sentido pras vantagens de
+  // 13º/Férias (que têm fórmula pronta) — nas demais, fica "—"
+  const avos = ehFormulaConhecida
+    ? (selecionarVantagem.startsWith("13ª") ? avos13 : avosFerias)
+    : null;
+
+  // Determina se o Campo5 (Valor) é calculado automaticamente — por
+  // fórmula pronta OU pela mini-calculadora — ou se fica livre para
+  // digitação manual. Mantido com todas as casas decimais (sem
+  // arredondar aqui) — o arredondamento só acontece na exibição.
+  const valorAutomatico = ehFormulaConhecida ? valorFormulaConhecida : valorMiniCalc;
   const ehValorCalculado = valorAutomatico !== null;
 
   // Atualiza o Campo5 automaticamente enquanto o usuário preenche os
-  // campos anteriores, quando a vantagem selecionada tem regra de cálculo.
+  // campos anteriores, quando há regra de cálculo aplicável.
   React.useEffect(() => {
     if (ehValorCalculado) {
       setValorTexto(formatarNumeroParaMoeda(valorAutomatico));
@@ -94,6 +135,10 @@ function PeriodosAquisitivosForm({
     setDataFinal("");
     setCompetencia("");
     setValorTexto("");
+    setTipoCalculoDias("corridos");
+    setMesReferenciaCalculo("");
+    setFeriadosPontosFacultativos("");
+    setValorIntegralTexto("");
     setEditandoId(null);
   }
 
@@ -125,7 +170,12 @@ function PeriodosAquisitivosForm({
       dias,
       avos,
       competencia,
-      valor
+      valor,
+      // Guardados só pra reconstituir a mini-calculadora ao Editar
+      tipoCalculoDias,
+      mesReferenciaCalculo,
+      feriadosPontosFacultativos,
+      valorIntegralTexto
     };
 
     if (editandoId) {
@@ -152,6 +202,10 @@ function PeriodosAquisitivosForm({
     setDataFinal(item.dataFinal);
     setCompetencia(item.competencia);
     setValorTexto(formatarNumeroParaMoeda(item.valor));
+    setTipoCalculoDias(item.tipoCalculoDias || "corridos");
+    setMesReferenciaCalculo(item.mesReferenciaCalculo || "");
+    setFeriadosPontosFacultativos(item.feriadosPontosFacultativos || "");
+    setValorIntegralTexto(item.valorIntegralTexto || "");
     setEditandoId(item.id);
   }
 
@@ -250,6 +304,89 @@ function PeriodosAquisitivosForm({
         </div>
       </div>
 
+      {/* Mini-calculadora de Dias Corridos/Úteis — só aparece quando a
+          vantagem digitada não bate com nenhuma fórmula pronta */}
+      {mostrarMiniCalculadora && (
+        <div style={{
+          background: "#f7f9fb",
+          border: "1px solid #dbe4ea",
+          borderRadius: "8px",
+          padding: "12px",
+          marginBottom: "15px"
+        }}>
+          <div style={{ fontWeight: "bold", color: "#0B2B4A", marginBottom: "8px" }}>
+            Cálculo do Valor Diário ({selecionarVantagem})
+          </div>
+
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+            <div style={{ flex: "1", minWidth: "160px" }}>
+              <label style={ESTILOS.label}>Tipo de Cálculo:</label><br />
+              <select
+                style={{ ...ESTILOS.select, width: "100%" }}
+                value={tipoCalculoDias}
+                onChange={e => setTipoCalculoDias(e.target.value)}
+              >
+                <option value="corridos">Dias Corridos</option>
+                <option value="uteis">Dias Úteis</option>
+              </select>
+            </div>
+
+            <div style={{ flex: "1", minWidth: "140px" }}>
+              <label style={ESTILOS.label}>Mês de Referência:</label><br />
+              <input
+                style={{ ...ESTILOS.input, width: "100%" }}
+                value={mesReferenciaCalculo}
+                onChange={e => setMesReferenciaCalculo(formatarMesRef(e.target.value))}
+                placeholder="Abr/2023"
+              />
+            </div>
+
+            {tipoCalculoDias === "uteis" && (
+              <>
+                <div style={{ flex: "1", minWidth: "140px" }}>
+                  <label style={ESTILOS.label}>Dias Úteis no Mês:</label><br />
+                  <input
+                    style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+                    value={mesReferenciaCalculo ? diasUteisMes : ""}
+                    readOnly
+                    placeholder="0"
+                  />
+                </div>
+
+                <div style={{ flex: "1", minWidth: "160px" }}>
+                  <label style={ESTILOS.label}>Feriados/Pontos Facultativos:</label><br />
+                  <input
+                    style={{ ...ESTILOS.input, width: "100%" }}
+                    value={feriadosPontosFacultativos}
+                    onChange={e => setFeriadosPontosFacultativos(e.target.value.replace(/\D/g, ""))}
+                    placeholder="0"
+                  />
+                </div>
+              </>
+            )}
+
+            <div style={{ flex: "1", minWidth: "160px" }}>
+              <label style={ESTILOS.label}>Valor Integral da Rubrica:</label><br />
+              <input
+                style={{ ...ESTILOS.input, width: "100%" }}
+                value={valorIntegralTexto}
+                onChange={e => setValorIntegralTexto(mascaraMoeda(e.target.value))}
+                placeholder="0,00"
+              />
+            </div>
+
+            <div style={{ flex: "1", minWidth: "140px" }}>
+              <label style={ESTILOS.label}>Valor Diário:</label><br />
+              <input
+                style={{ ...ESTILOS.inputSomenteLeitura, width: "100%" }}
+                value={formatarNumeroParaMoeda(valorDiarioMiniCalc)}
+                readOnly
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Linha de botões (Excluir, Editar, Inserir), alinhados à direita */}
       <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginBottom: "15px" }}>
         <button onClick={handleExcluir} disabled={!linhaSelecionadaId}>Excluir</button>
@@ -284,7 +421,7 @@ function PeriodosAquisitivosForm({
               <td style={{ padding: "8px" }}>{item.dataInicial || "—"}</td>
               <td style={{ padding: "8px" }}>{item.dataFinal || "—"}</td>
               <td style={{ padding: "8px", textAlign: "center" }}>{item.dias ?? "—"}</td>
-              <td style={{ padding: "8px", textAlign: "center" }}>{item.dataInicial ? item.avos : "—"}</td>
+              <td style={{ padding: "8px", textAlign: "center" }}>{item.avos != null ? item.avos : "—"}</td>
               <td style={{ padding: "8px" }}>{item.competencia || "—"}</td>
               <td style={{ padding: "8px", textAlign: "right" }}>
                 {formatarNumeroParaMoeda(item.valor)}
