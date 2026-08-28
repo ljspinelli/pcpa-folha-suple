@@ -239,3 +239,39 @@ function numeroPorExtenso(valor) {
   const centavosTexto = centavos === 1 ? "um centavo" : inteiroPorExtenso(centavos) + " centavos";
   return reaisTexto + " e " + centavosTexto;
 }
+
+// Conta os dias úteis (segunda a sexta, sem sábado/domingo) de um mês
+// no formato "Mmm/AAAA". Usado quando o Tipo de Cálculo de uma
+// vantagem sem fórmula pronta é "Dias Úteis".
+function diasUteisNoMes(mesRef) {
+  if (!mesRef || !mesRef.includes("/")) return 0;
+  const [mesAbrev, anoTexto] = mesRef.split("/");
+  const mesNumero = MESES_ABREV[mesAbrev];
+  const ano = Number(anoTexto);
+  if (!mesNumero || !ano || anoTexto.length < 4) return 0;
+
+  const totalDiasMes = diasNoMes(mesRef);
+  let uteis = 0;
+  for (let dia = 1; dia <= totalDiasMes; dia++) {
+    const diaSemana = new Date(ano, mesNumero - 1, dia).getDay(); // 0=domingo, 6=sábado
+    if (diaSemana !== 0 && diaSemana !== 6) uteis++;
+  }
+  return uteis;
+}
+
+// Conta os dias úteis (segunda a sexta) entre duas datas "DD/MM/AAAA"
+// (inclusive). Retorna null se as datas estiverem incompletas/inválidas.
+function diasUteisEntreDatas(dataInicialTexto, dataFinalTexto) {
+  const dataInicial = parseDataBR(dataInicialTexto);
+  const dataFinal = parseDataBR(dataFinalTexto);
+  if (!dataInicial || !dataFinal || dataFinal < dataInicial) return null;
+
+  let uteis = 0;
+  let cursor = new Date(dataInicial);
+  while (cursor <= dataFinal) {
+    const diaSemana = cursor.getDay();
+    if (diaSemana !== 0 && diaSemana !== 6) uteis++;
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return uteis;
+}
