@@ -355,7 +355,6 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
           placeholder="0,00"
         />
       </div>
-      </div>
 
       {/* Linha de botões (Excluir, Editar, Inserir), alinhados à direita */}
       <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginBottom: "15px" }}>
