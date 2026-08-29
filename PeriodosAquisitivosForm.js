@@ -238,7 +238,7 @@ function PeriodosAquisitivosForm({
     <div style={{ ...ESTILOS.containerTabela, marginTop: "20px" }}>
       <h3 style={{ color: "#0B2B4A" }}>Períodos Aquisitivos</h3>
 
-      {/* Linha de campos 1 a 5 */}
+      {/* Linha de campos 1 a 4 */}
       <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginBottom: "10px" }}>
         <div style={{ flex: "2", minWidth: "220px" }}>
           <label style={ESTILOS.label}>Selecionar Vantagem:</label><br />
@@ -284,22 +284,6 @@ function PeriodosAquisitivosForm({
             value={competencia}
             onChange={e => setCompetencia(formatarMesRef(e.target.value))}
             placeholder="Abr/2023"
-          />
-        </div>
-
-        <div style={{ flex: "1", minWidth: "140px" }}>
-          <label style={ESTILOS.label}>Valor:</label><br />
-          <input
-            style={{
-              ...(ehValorCalculado ? ESTILOS.inputSomenteLeitura : ESTILOS.input),
-              width: "100%"
-            }}
-            value={valorTexto}
-            readOnly={ehValorCalculado}
-            onChange={e => {
-              if (!ehValorCalculado) setValorTexto(mascaraMoeda(e.target.value));
-            }}
-            placeholder="0,00"
           />
         </div>
       </div>
@@ -354,7 +338,7 @@ function PeriodosAquisitivosForm({
                 </div>
 
                 <div style={{ flex: "1", minWidth: "160px" }}>
-                  <label style={ESTILOS.label}>Feriados/Pontos Facultativos:</label><br />
+                  <label style={{ ...ESTILOS.label, fontSize: "12px" }}>Feriados/Pontos Facultativos:</label><br />
                   <input
                     style={{ ...ESTILOS.input, width: "100%" }}
                     value={feriadosPontosFacultativos}
@@ -386,6 +370,23 @@ function PeriodosAquisitivosForm({
           </div>
         </div>
       )}
+
+      {/* Valor — linha própria, após a calculadora e antes do quadro */}
+      <div style={{ marginBottom: "15px" }}>
+        <label style={ESTILOS.label}>Valor:</label><br />
+        <input
+          style={{
+            ...(ehValorCalculado ? ESTILOS.inputSomenteLeitura : ESTILOS.input),
+            width: "100%"
+          }}
+          value={valorTexto}
+          readOnly={ehValorCalculado}
+          onChange={e => {
+            if (!ehValorCalculado) setValorTexto(mascaraMoeda(e.target.value));
+          }}
+          placeholder="0,00"
+        />
+      </div>
 
       {/* Linha de botões (Excluir, Editar, Inserir), alinhados à direita */}
       <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginBottom: "15px" }}>
