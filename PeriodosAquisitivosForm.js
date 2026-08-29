@@ -371,13 +371,14 @@ function PeriodosAquisitivosForm({
         </div>
       )}
 
-      {/* Valor — linha própria, após a calculadora e antes do quadro */}
+            {/* Valor — linha própria, após a calculadora e antes do quadro */}
       <div style={{ marginBottom: "15px" }}>
-        <label style={ESTILOS.label}>Valor:</label><br />
+        <label style={{ ...ESTILOS.label, display: "block", textAlign: "right" }}>Valor:</label><br />
         <input
           style={{
             ...(ehValorCalculado ? ESTILOS.inputSomenteLeitura : ESTILOS.input),
-            width: "100%"
+            width: "100%",
+            textAlign: "right"
           }}
           value={valorTexto}
           readOnly={ehValorCalculado}
@@ -386,6 +387,7 @@ function PeriodosAquisitivosForm({
           }}
           placeholder="0,00"
         />
+      </div>
       </div>
 
       {/* Linha de botões (Excluir, Editar, Inserir), alinhados à direita */}
