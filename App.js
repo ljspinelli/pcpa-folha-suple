@@ -146,10 +146,10 @@ function App() {
         <h2 style={{ color: "#0B2B4A" }}>
           Descontos e Retenções
         </h2>
-        <DiscountForm
+          <DiscountForm
           totalPeriodosAquisitivos={totalPeriodosAquisitivos}
-          listaPeriodosAquisitivos={listaPeriodosAquisitivos}
           totalAdiantamentos={totalAdiantamentos}
+          dadosFolha={dadosFolha}
           onDadosChange={setDadosDescontos}
         />
       </div>
