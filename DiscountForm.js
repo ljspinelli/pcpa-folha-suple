@@ -1,14 +1,15 @@
-// Lista de contribuições previdenciárias
-const contribuicoes = [
+// ============================
+// Lista única de sugestões pro campo "Descrição do Desconto"
+// (autocomplete estilo Google — digitação livre, mas com sugestões
+// da lista quando o texto bate). Junta as antigas listas de
+// Contribuição Previdenciária e Imposto de Renda num só rol.
+// ============================
+const opcoesDescricaoDesconto = [
   "0656 - INSS - Temporário/Comissionado",
   "0688 - FINANPREV",
   "0695 - FUNPREV Contribuição LC112",
   "0638 - FUNPREV Limite RPPS",
-  "0636 - FINANPREV Contribuição Limite"
-];
-
-// Lista de opções de Imposto de Renda
-const opcoesImpostoRenda = [
+  "0636 - FINANPREV Contribuição Limite",
   "0658 - Imposto de Renda - IRRF",
   "RRA 13º Salario Proporcional",
   "Isento de IR - Ato Declaratório Interpretativo SRF nº 5/2005",
@@ -47,135 +48,83 @@ function formatarPercentualFinal(digitos) {
 function DiscountForm({
   totalPeriodosAquisitivos,
   totalAdiantamentos,
-  listaPeriodosAquisitivos,
+  dadosFolha,
   onDadosChange
 }) {
-  const [contrib, setContrib] = React.useState("");
-  const [imposto, setImposto] = React.useState("");
+  const [descricaoDesconto, setDescricaoDesconto] = React.useState("");
 
-  const [aliquota, setAliquota] = React.useState("");
-  const [aliquotaRaw, setAliquotaRaw] = React.useState("");
+  const [aliquotaDesconto, setAliquotaDesconto] = React.useState("");
+  const [aliquotaDescontoRaw, setAliquotaDescontoRaw] = React.useState("");
 
-  const [valorBasePrevidenciaTexto, setValorBasePrevidenciaTexto] = React.useState("");
-  const [valorCalc, setValorCalc] = React.useState("");
-  const [valorCalcNumerico, setValorCalcNumerico] = React.useState(0);
+  const [valorBaseCalculoTexto, setValorBaseCalculoTexto] = React.useState("");
 
-  const [aliquotaIR, setAliquotaIR] = React.useState("");
-  const [aliquotaIRRaw, setAliquotaIRRaw] = React.useState("");
-
-  const [valorBaseIRTexto, setValorBaseIRTexto] = React.useState("");
-  const [valorIR, setValorIR] = React.useState("");
-  const [valorIRNumerico, setValorIRNumerico] = React.useState(0);
+  const [valorDescontoTexto, setValorDescontoTexto] = React.useState("");
+  const [valorDescontoNumerico, setValorDescontoNumerico] = React.useState(0);
 
   const [lista, setLista] = React.useState([]);
 
-  // Cálculo do Valor Previdência = Alíquota × Valor Base Previdência
-  // (campo local, escolhido de uma linha do Períodos Aquisitivos ou
-  // digitado manualmente) — o campo permanece editável mesmo assim.
-  // valorCalcNumerico guarda o valor com TODAS as casas decimais (usado
-  // no cálculo real); valorCalc é só o texto formatado exibido no campo.
+  // Cálculo do Valor do Desconto = Alíquota × Valor Base de Cálculo.
+  // Só define um valor inicial — o campo continua livre pra edição
+  // manual em qualquer momento (não é readOnly).
   React.useEffect(() => {
-    if (aliquota.includes(",")) {
+    if (aliquotaDesconto.includes(",")) {
       const perc = Number(
-        aliquota.replace("%", "").replace(",", ".")
+        aliquotaDesconto.replace("%", "").replace(",", ".")
       ) / 100;
 
-      const base = converterMoedaParaNumero(valorBasePrevidenciaTexto);
+      const base = converterMoedaParaNumero(valorBaseCalculoTexto);
       const calc = base * perc;
 
-      setValorCalcNumerico(calc);
-      setValorCalc(
+      setValorDescontoNumerico(calc);
+      setValorDescontoTexto(
         calc.toLocaleString("pt-BR", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
         })
       );
-    } else {
-      setValorCalcNumerico(0);
-      setValorCalc("");
     }
-  }, [aliquota, valorBasePrevidenciaTexto]);
-
-  // Cálculo do Valor IR = Alíquota IR × Valor Base IR — o campo
-  // permanece editável mesmo assim. valorIRNumerico guarda o valor com
-  // TODAS as casas decimais (usado no cálculo real).
-  React.useEffect(() => {
-    if (aliquotaIR.includes(",")) {
-      const perc = Number(
-        aliquotaIR.replace("%", "").replace(",", ".")
-      ) / 100;
-
-      const base = converterMoedaParaNumero(valorBaseIRTexto);
-      const calc = base * perc;
-
-      setValorIRNumerico(calc);
-      setValorIR(
-        calc.toLocaleString("pt-BR", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })
-      );
-    } else {
-      setValorIRNumerico(0);
-      setValorIR("");
-    }
-  }, [aliquotaIR, valorBaseIRTexto]);
+  }, [aliquotaDesconto, valorBaseCalculoTexto]);
 
   // Digitação fluída da alíquota
-  function onAliquotaChange(e) {
+  function onAliquotaDescontoChange(e) {
     const texto = e.target.value.replace(/[^0-9,]/g, "");
-    setAliquotaRaw(texto);
-    setAliquota(texto);
+    setAliquotaDescontoRaw(texto);
+    setAliquotaDesconto(texto);
   }
 
-  function onAliquotaBlur() {
-    setAliquota(formatarPercentualFinal(aliquotaRaw));
+  function onAliquotaDescontoBlur() {
+    setAliquotaDesconto(formatarPercentualFinal(aliquotaDescontoRaw));
   }
 
-  // Digitação fluída da alíquota IR
-  function onAliquotaIRChange(e) {
-    const texto = e.target.value.replace(/[^0-9,]/g, "");
-    setAliquotaIRRaw(texto);
-    setAliquotaIR(texto);
-  }
-
-  function onAliquotaIRBlur() {
-    setAliquotaIR(formatarPercentualFinal(aliquotaIRRaw));
-  }
-
-  // Valor IR — máscara fluída sem NaN. Ao digitar manualmente, guarda
-  // também o valor numérico correspondente (mesma precisão do texto,
-  // já que aqui é o próprio usuário digitando 2 casas decimais).
-  function onValorIRChange(e) {
-    const texto = e.target.value;
-    const formatado = formatarMoedaDigitacao(texto);
-    setValorIR(formatado);
-    setValorIRNumerico(converterMoedaParaNumero(formatado));
+  // Valor do Desconto — digitação manual, sempre disponível
+  function onValorDescontoChange(e) {
+    const formatado = formatarMoedaDigitacao(e.target.value);
+    setValorDescontoTexto(formatado);
+    setValorDescontoNumerico(converterMoedaParaNumero(formatado));
   }
 
   function aplicarDescontos() {
-    if (!contrib || !aliquota || !valorCalc || !aliquotaIR || !valorIR) return;
+    if (!descricaoDesconto || !valorDescontoTexto) return;
 
-    const linha1 = {
-      rubrica: contrib,
-      aliquota,
-      valor: valorCalcNumerico
+    const novaLinha = {
+      rubrica: descricaoDesconto,
+      aliquota: aliquotaDesconto,
+      valor: valorDescontoNumerico
     };
 
-    const linha2 = {
-      rubrica: imposto,
-      aliquota: aliquotaIR,
-      valor: valorIRNumerico
-    };
-
-    // Atualiza a linha se a rubrica já existir na lista, senão adiciona.
+    // Atualiza a linha se a rúbrica já existir na lista, senão adiciona.
     // Isso evita perder descontos já aplicados ao clicar novamente.
     setLista(prev => {
-      const semDuplicatas = prev.filter(
-        item => item.rubrica !== linha1.rubrica && item.rubrica !== linha2.rubrica
-      );
-      return [...semDuplicatas, linha1, linha2];
+      const semDuplicata = prev.filter(item => item.rubrica !== novaLinha.rubrica);
+      return [...semDuplicata, novaLinha];
     });
+
+    setDescricaoDesconto("");
+    setAliquotaDesconto("");
+    setAliquotaDescontoRaw("");
+    setValorBaseCalculoTexto("");
+    setValorDescontoTexto("");
+    setValorDescontoNumerico(0);
   }
 
   function removerDesconto(rubrica) {
@@ -214,127 +163,81 @@ function DiscountForm({
         Total Bruto&nbsp;&nbsp;R$ {formatarNumeroParaMoeda(totalBruto)}
       </div>
 
-      {/* Duas colunas: Previdência (esquerda) e Imposto de Renda (direita) */}
+      {/* Links de apoio ao cálculo */}
+      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginBottom: "15px" }}>
+        <a href="https://www.calcule.net/trabalhista/calculo-de-inss/" target="_blank" rel="noreferrer">
+          Cálculo INSS
+        </a>
+        <a href="https://www27.receita.fazenda.gov.br/simulador-irpf/" target="_blank" rel="noreferrer">
+          Alíquota Efetiva IRRF
+        </a>
+        <a href="https://www27.receita.fazenda.gov.br/simulador-irpf-rra/#/" target="_blank" rel="noreferrer">
+          Alíquota Efetiva RRA
+        </a>
+      </div>
+
+      {/* Campos 1 a 4, em duas colunas */}
       <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
 
-        {/* Coluna esquerda: Contribuição Previdenciária */}
+        {/* Coluna esquerda: Descrição do Desconto + Valor Base de Cálculo */}
         <div style={{ flex: "1", minWidth: "260px" }}>
-          <label style={ESTILOS.label}>Contribuição Previdenciária:</label><br />
+          <label style={ESTILOS.label}>Descrição do Desconto:</label><br />
           <input
-            list="opcoes-contribuicao"
+            list="opcoes-descricao-desconto"
             style={{ ...ESTILOS.input, width: "100%" }}
-            value={contrib}
-            onChange={e => setContrib(e.target.value)}
+            value={descricaoDesconto}
+            onChange={e => setDescricaoDesconto(e.target.value)}
             placeholder="Digite ou selecione..."
           />
-          <datalist id="opcoes-contribuicao">
-            {contribuicoes.map((c, i) => (
-              <option key={i} value={c} />
-            ))}
-          </datalist>
-
-          {/* Alíquota */}
-          <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Alíquota:</label><br />
-            <input
-              style={{ ...ESTILOS.input, width: "100%" }}
-              value={aliquota}
-              onChange={onAliquotaChange}
-              onBlur={onAliquotaBlur}
-              placeholder="00,00%"
-            />
-          </div>
-
-          {/* Valor Base Previdência */}
-          <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Valor Base Previdência:</label><br />
-            <input
-              list="opcoes-valor-base-previdencia"
-              style={{ ...ESTILOS.input, width: "100%" }}
-              value={valorBasePrevidenciaTexto}
-              onChange={e => setValorBasePrevidenciaTexto(mascaraMoeda(e.target.value))}
-              placeholder="0,00"
-            />
-            <datalist id="opcoes-valor-base-previdencia">
-              {listaPeriodosAquisitivos && listaPeriodosAquisitivos.map((item, i) => (
-                <option key={i} value={formatarNumeroParaMoeda(item.valor)}>
-                  {item.selecionarVantagem} — {formatarNumeroParaMoeda(item.valor)}
-                </option>
-              ))}
-            </datalist>
-          </div>
-
-          {/* Valor Previdência */}
-          <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Valor Previdência:</label><br />
-            <input
-              style={{ ...ESTILOS.input, width: "100%" }}
-              value={valorCalc}
-              onChange={e => {
-                const formatado = formatarMoedaDigitacao(e.target.value);
-                setValorCalc(formatado);
-                setValorCalcNumerico(converterMoedaParaNumero(formatado));
-              }}
-              placeholder="0,00"
-            />
-          </div>
-        </div>
-
-        {/* Coluna direita: Imposto de Renda */}
-        <div style={{ flex: "1", minWidth: "260px" }}>
-          <label style={ESTILOS.label}><a href="https://www27.receita.fazenda.gov.br/simulador-irpf/" target="_blank" rel="noreferrer">Imposto de Renda:</a></label><br />
-          <input
-            list="opcoes-imposto-renda"
-            style={{ ...ESTILOS.input, width: "100%" }}
-            value={imposto}
-            onChange={e => setImposto(e.target.value)}
-            placeholder="Digite ou selecione..."
-          />
-          <datalist id="opcoes-imposto-renda">
-            {opcoesImpostoRenda.map((op, i) => (
+          <datalist id="opcoes-descricao-desconto">
+            {opcoesDescricaoDesconto.map((op, i) => (
               <option key={i} value={op} />
             ))}
           </datalist>
 
-          {/* Alíquota IR */}
+          {/* Valor Base de Cálculo */}
           <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Alíquota IR:</label><br />
+            <label style={ESTILOS.label}>Valor Base de Cálculo:</label><br />
             <input
+              list="opcoes-valor-base-calculo"
               style={{ ...ESTILOS.input, width: "100%" }}
-              value={aliquotaIR}
-              onChange={onAliquotaIRChange}
-              onBlur={onAliquotaIRBlur}
-              placeholder="00,00%"
-            />
-          </div>
-
-          {/* Valor Base IR */}
-          <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Valor Base IR:</label><br />
-            <input
-              list="opcoes-valor-base-ir"
-              style={{ ...ESTILOS.input, width: "100%" }}
-              value={valorBaseIRTexto}
-              onChange={e => setValorBaseIRTexto(mascaraMoeda(e.target.value))}
+              value={valorBaseCalculoTexto}
+              onChange={e => setValorBaseCalculoTexto(mascaraMoeda(e.target.value))}
               placeholder="0,00"
             />
-            <datalist id="opcoes-valor-base-ir">
-              {listaPeriodosAquisitivos && listaPeriodosAquisitivos.map((item, i) => (
-                <option key={i} value={formatarNumeroParaMoeda(item.valor)}>
-                  {item.selecionarVantagem} — {formatarNumeroParaMoeda(item.valor)}
-                </option>
-              ))}
+            <datalist id="opcoes-valor-base-calculo">
+              <option value={formatarNumeroParaMoeda(dadosFolha.valorBaseIR)}>
+                Valor Base IR — {formatarNumeroParaMoeda(dadosFolha.valorBaseIR)}
+              </option>
+              <option value={formatarNumeroParaMoeda(dadosFolha.valorBaseRPPS)}>
+                Valor Base Previdência RPPS — {formatarNumeroParaMoeda(dadosFolha.valorBaseRPPS)}
+              </option>
+              <option value={formatarNumeroParaMoeda(dadosFolha.valorBaseINSS)}>
+                Valor Base Previdência INSS — {formatarNumeroParaMoeda(dadosFolha.valorBaseINSS)}
+              </option>
             </datalist>
           </div>
+        </div>
 
-          {/* Valor IR */}
+        {/* Coluna direita: Alíquota + Valor do Desconto */}
+        <div style={{ flex: "1", minWidth: "260px" }}>
+          <label style={ESTILOS.label}>Alíquota:</label><br />
+          <input
+            style={{ ...ESTILOS.input, width: "100%" }}
+            value={aliquotaDesconto}
+            onChange={onAliquotaDescontoChange}
+            onBlur={onAliquotaDescontoBlur}
+            placeholder="00,00%"
+          />
+
+          {/* Valor do Desconto */}
           <div style={{ marginTop: "10px" }}>
-            <label style={ESTILOS.label}>Valor IR:</label><br />
+            <label style={ESTILOS.label}>Valor do Desconto:</label><br />
             <input
               style={{ ...ESTILOS.input, width: "100%" }}
-              value={valorIR}
-              onChange={onValorIRChange}
-              placeholder="000.000,00"
+              value={valorDescontoTexto}
+              onChange={onValorDescontoChange}
+              placeholder="0,00"
             />
           </div>
         </div>
