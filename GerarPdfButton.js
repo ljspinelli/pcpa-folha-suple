@@ -5,29 +5,6 @@
 // coletados nos outros formulários.
 // ============================
 
-// Mapeia o id da "Aba de Referência" para a lista de códigos que
-// define o Quadro de rubricas e para o campo de total correspondente
-// já calculados no PayrollForm.js.
-const MAPA_ABA_CODIGOS = {
-  dias: CODIGOS_BASE_DIAS,
-  ferias: CODIGOS_BASE_FERIAS,
-  decimo: CODIGOS_BASE_DECIMO,
-  pecunia: CODIGOS_BASE_PECUNIA,
-  auxilioFuneral: CODIGOS_BASE_AUXILIO_FUNERAL,
-  ats: CODIGOS_BASE_ATS,
-  auxilioDoenca: CODIGOS_BASE_AUXILIO_DOENCA
-};
-
-const MAPA_ABA_CAMPO_TOTAL = {
-  dias: "valorBaseDias",
-  ferias: "valorBaseFerias",
-  decimo: "valorBase13",
-  pecunia: "valorBasePecunia",
-  auxilioFuneral: "valorBaseAuxilioFuneral",
-  ats: "valorBaseATS",
-  auxilioDoenca: "valorBaseAuxilioDoenca"
-};
-
 const MESES_EXTENSO = [
   "janeiro", "fevereiro", "março", "abril", "maio", "junho",
   "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
@@ -172,17 +149,20 @@ function GerarPdfButton({
 
     y += 6;
 
-    // Quadro do PayrollForm.js: rubricas da aba de referência, com
+    // Quadro do PayrollForm.js: TODAS as rubricas preenchidas, com
     // TOTAL dentro da própria tabela, seguido das faixas de Redutor
     // Constitucional e Valor Base da Composição da Remuneração.
-    const codigosAba = MAPA_ABA_CODIGOS[pdfData.abaReferencia] || [];
     const rubricasPreenchidas = RUBRICAS_FIXAS
-      .filter(r => codigosAba.includes(r.codigo) && dadosFolha.valores[r.codigo])
+      .filter(r => dadosFolha.valores[r.codigo])
       .map(r => [
         `${r.codigo} - ${r.nome}`,
         formatarNumeroParaMoeda(converterMoedaParaNumero(dadosFolha.valores[r.codigo]))
       ]);
-    const valorBaseAba = dadosFolha[MAPA_ABA_CAMPO_TOTAL[pdfData.abaReferencia]] || 0;
+
+    // Total = soma de todas as rubricas preenchidas
+    const valorBaseAba = RUBRICAS_FIXAS
+      .filter(r => dadosFolha.valores[r.codigo])
+      .reduce((acc, r) => acc + converterMoedaParaNumero(dadosFolha.valores[r.codigo]), 0);
 
     novaPaginaSeNecessario(4 + alturaEstimadaTabela(rubricasPreenchidas.length) + 20);
     doc.setFontSize(10);
