@@ -31,7 +31,12 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
   const [tipoCalculoDias, setTipoCalculoDias] = React.useState("corridos");
   const [mesReferenciaCalculo, setMesReferenciaCalculo] = React.useState("");
   const [feriadosPontosFacultativos, setFeriadosPontosFacultativos] = React.useState("");
+  const [diasUteisPeriodoTexto, setDiasUteisPeriodoTexto] = React.useState("");
   const [valorIntegralTexto, setValorIntegralTexto] = React.useState("");
+
+  // Marca que o usuário editou o Valor na mão — o resultado automático
+  // da mini-calculadora é apenas sugestivo e não deve sobrescrever isso
+  const [valorEditadoManualmente, setValorEditadoManualmente] = React.useState(false);
 
   const [lista, setLista] = React.useState([]);
   const [linhaSelecionadaId, setLinhaSelecionadaId] = React.useState(null);
@@ -75,11 +80,16 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
   const valorDiarioMiniCalc = diasBaseDoMes > 0 ? valorIntegral / diasBaseDoMes : 0;
 
   // Dias do período (Data Inicial/Final): corridos ou úteis, conforme
-  // o Tipo de Cálculo escolhido na mini-calculadora
+  // o Tipo de Cálculo escolhido na mini-calculadora. No caso de Dias
+  // Úteis, o campo manual "Dias Úteis no Período" tem precedência
+  // sobre a contagem automática pelas datas.
   const diasPeriodoUteis = diasUteisEntreDatas(dataInicial, dataFinal);
   const diasPeriodoCorridos = diasEntreDatas(dataInicial, dataFinal);
+  const diasUteisPeriodoManual = diasUteisPeriodoTexto !== ""
+    ? Number(diasUteisPeriodoTexto)
+    : null;
   const dias = mostrarMiniCalculadora && tipoCalculoDias === "uteis"
-    ? diasPeriodoUteis
+    ? (diasUteisPeriodoManual !== null ? diasUteisPeriodoManual : diasPeriodoUteis)
     : diasPeriodoCorridos;
 
   const valorMiniCalc = valorIntegral > 0 ? valorDiarioMiniCalc * (dias || 0) : null;
@@ -90,13 +100,18 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
   const valorAutomatico = ehFormulaConhecida ? valorFormulaConhecida : valorMiniCalc;
   const ehValorCalculado = valorAutomatico !== null;
 
+  // O resultado da mini-calculadora é apenas sugestivo: o campo Valor
+  // continua editável. Só as fórmulas prontas travam o campo.
+  const valorSomenteLeitura = ehFormulaConhecida;
+
   // Atualiza o Campo5 automaticamente enquanto o usuário preenche os
-  // campos anteriores, quando há regra de cálculo aplicável.
+  // campos anteriores, quando há regra de cálculo aplicável — sem
+  // sobrescrever um valor que o usuário já ajustou na mão.
   React.useEffect(() => {
-    if (ehValorCalculado) {
+    if (ehValorCalculado && !valorEditadoManualmente) {
       setValorTexto(formatarNumeroParaMoeda(valorAutomatico));
     }
-  }, [ehValorCalculado, valorAutomatico]);
+  }, [ehValorCalculado, valorAutomatico, valorEditadoManualmente]);
 
   function limparCampos() {
     setSelecionarVantagem("");
@@ -107,7 +122,9 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
     setTipoCalculoDias("corridos");
     setMesReferenciaCalculo("");
     setFeriadosPontosFacultativos("");
+    setDiasUteisPeriodoTexto("");
     setValorIntegralTexto("");
+    setValorEditadoManualmente(false);
     setEditandoId(null);
   }
 
@@ -144,6 +161,7 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
       tipoCalculoDias,
       mesReferenciaCalculo,
       feriadosPontosFacultativos,
+      diasUteisPeriodoTexto,
       valorIntegralTexto
     };
 
@@ -174,7 +192,9 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
     setTipoCalculoDias(item.tipoCalculoDias || "corridos");
     setMesReferenciaCalculo(item.mesReferenciaCalculo || "");
     setFeriadosPontosFacultativos(item.feriadosPontosFacultativos || "");
+    setDiasUteisPeriodoTexto(item.diasUteisPeriodoTexto || "");
     setValorIntegralTexto(item.valorIntegralTexto || "");
+    setValorEditadoManualmente(true);
     setEditandoId(item.id);
   }
 
@@ -313,6 +333,22 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
                     placeholder="0"
                   />
                 </div>
+
+                <div style={{ flex: "1", minWidth: "160px" }}>
+                  <label style={{ ...ESTILOS.label, fontSize: "12px" }}>Dias Úteis no Período:</label><br />
+                  <input
+                    style={{ ...ESTILOS.input, width: "100%" }}
+                    value={diasUteisPeriodoTexto}
+                    onChange={e => {
+                      const soDigitos = e.target.value.replace(/\D/g, "").slice(0, 2);
+                      // Aceita entre 1 e 22 (ou vazio, enquanto digita)
+                      if (soDigitos === "" || (Number(soDigitos) >= 1 && Number(soDigitos) <= 22)) {
+                        setDiasUteisPeriodoTexto(soDigitos);
+                      }
+                    }}
+                    placeholder="0"
+                  />
+                </div>
               </>
             )}
 
@@ -343,14 +379,17 @@ function AdiantamentosForm({ valorBase13, valorDiario13, onTotalChange, onListaC
         <label style={{ ...ESTILOS.label, display: "block", textAlign: "right" }}>Valor:</label><br />
         <input
           style={{
-            ...(ehValorCalculado ? ESTILOS.inputSomenteLeitura : ESTILOS.input),
+            ...(valorSomenteLeitura ? ESTILOS.inputSomenteLeitura : ESTILOS.input),
             width: "100%",
             textAlign: "right"
           }}
           value={valorTexto}
-          readOnly={ehValorCalculado}
+          readOnly={valorSomenteLeitura}
           onChange={e => {
-            if (!ehValorCalculado) setValorTexto(mascaraMoeda(e.target.value));
+            if (!valorSomenteLeitura) {
+              setValorTexto(mascaraMoeda(e.target.value));
+              setValorEditadoManualmente(true);
+            }
           }}
           placeholder="0,00"
         />
