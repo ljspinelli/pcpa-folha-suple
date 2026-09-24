@@ -47,16 +47,21 @@ function validarCPF(cpfTexto) {
 
 // Máscara Matrícula: xxxxxxxxxxxx/xx
 function mascaraMatricula(texto) {
-  let digitos = texto.replace(/\D/g, "").slice(0, 14);
+  // Mantém só dígitos e a barra "/" (digitada livremente pelo usuário,
+  // não é mais inserida automaticamente após uma quantidade fixa)
+  const limpo = texto.replace(/[^\d/]/g, "");
+  const indiceBarra = limpo.indexOf("/");
 
-  let parte1 = digitos.slice(0, 12);
-  let parte2 = digitos.slice(12, 14);
+  // Ainda não digitou a barra: só os dígitos, até 12
+  if (indiceBarra === -1) {
+    return limpo.replace(/\D/g, "").slice(0, 12);
+  }
 
-  let resultado = "";
-  if (parte1) resultado = parte1;
-  if (parte2) resultado += "/" + parte2;
+  // Já digitou a barra: até 12 dígitos antes, até 2 dígitos depois
+  const parte1 = limpo.slice(0, indiceBarra).replace(/\D/g, "").slice(0, 12);
+  const parte2 = limpo.slice(indiceBarra + 1).replace(/\D/g, "").slice(0, 2);
 
-  return resultado;
+  return `${parte1}/${parte2}`;
 }
 
 // Máscara Protocolo PAE: xxxx/xxxxxxxxxxxx
