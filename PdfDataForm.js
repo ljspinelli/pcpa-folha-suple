@@ -5,7 +5,6 @@
 // ============================
 
 function PdfDataForm({ onDadosChange }) {
-  const [abaReferencia, setAbaReferencia] = React.useState("");
   const [numeroFolha, setNumeroFolha] = React.useState("");
   const [nomeAssinante, setNomeAssinante] = React.useState("");
   const [cargoAssinante, setCargoAssinante] = React.useState("");
@@ -15,34 +14,19 @@ function PdfDataForm({ onDadosChange }) {
   React.useEffect(() => {
     if (typeof onDadosChange === "function") {
       onDadosChange({
-        abaReferencia,
         numeroFolha,
         nomeAssinante,
         cargoAssinante,
         matriculaAssinante
       });
     }
-  }, [abaReferencia, numeroFolha, nomeAssinante, cargoAssinante, matriculaAssinante, onDadosChange]);
+  }, [numeroFolha, nomeAssinante, cargoAssinante, matriculaAssinante, onDadosChange]);
 
   return (
     <div style={ESTILOS.containerPrincipal}>
 
-      {/* Linha 1: Aba de Referência + Número da Folha */}
+      {/* Linha 1: Número da Folha */}
       <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-        <div style={{ flex: "1", minWidth: "260px" }}>
-          <label style={ESTILOS.label}>Aba de Referência da Folha Suplementar:</label><br />
-          <select
-            style={{ ...ESTILOS.select, width: "100%" }}
-            value={abaReferencia}
-            onChange={e => setAbaReferencia(e.target.value)}
-          >
-            <option value="">Selecione...</option>
-            {ABAS_INFO.map(aba => (
-              <option key={aba.id} value={aba.id}>{aba.label}</option>
-            ))}
-          </select>
-        </div>
-
         <div style={{ flex: "1", minWidth: "200px" }}>
           <label style={ESTILOS.label}>Número da Folha Suplementar:</label><br />
           <input
