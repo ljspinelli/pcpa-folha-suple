@@ -13,7 +13,6 @@ function App() {
     lista: [], total: 0, totalBruto: 0, totalLiquido: 0
   });
   const [pdfData, setPdfData] = React.useState({
-    abaReferencia: "",
     numeroFolha: "",
     nomeAssinante: "",
     cargoAssinante: "",
