@@ -162,16 +162,18 @@ function RequesterForm({ onDadosChange }) {
       {/* Cargo */}
       <div style={{ marginTop: "10px" }}>
         <label style={ESTILOS.label}>Cargo:</label><br />
-        <select
-          style={ESTILOS.select}
+        <input
+          list="opcoes-cargo"
+          style={ESTILOS.input}
           value={cargo}
           onChange={e => setCargo(e.target.value)}
-        >
-          <option value="">Selecione...</option>
+          placeholder="Digite ou selecione..."
+        />
+        <datalist id="opcoes-cargo">
           {cargos.map((c, i) => (
-            <option key={i} value={c}>{c}</option>
+            <option key={i} value={c} />
           ))}
-        </select>
+        </datalist>
       </div>
 
       {/* Protocolo PAE */}
