@@ -113,19 +113,21 @@ function BasicInfoForm({ onDadosChange }) {
         placeholder="DD/MM/AAAA"
       />
 
-      {/* Motivo da Posse */}
+     {/* Motivo da Posse */}
       <div style={{ marginTop: "10px" }}>
         <label style={ESTILOS.label}>Motivo da Posse:</label><br />
-        <select
-          style={ESTILOS.select}
+        <input
+          list="opcoes-motivo-posse"
+          style={ESTILOS.input}
           value={motivoPosse}
-          onChange={e => setMotivoPosse(e.target.value)}
-        >
-          <option value="">Selecione...</option>
+          onChange={e => setMotivoPosse(mascaraTextoLivre(e.target.value))}
+          placeholder="Digite ou selecione..."
+        />
+        <datalist id="opcoes-motivo-posse">
           {motivosPosse.map((m, i) => (
-            <option key={i} value={m}>{m}</option>
+            <option key={i} value={m} />
           ))}
-        </select>
+        </datalist>
       </div>
 
       {/* Data de Encerramento */}
@@ -147,19 +149,21 @@ function BasicInfoForm({ onDadosChange }) {
         )}
       </div>
 
-      {/* Motivo de Encerramento */}
+     {/* Motivo de Encerramento */}
       <div style={{ marginTop: "10px" }}>
         <label style={ESTILOS.label}>Motivo de Encerramento de Vínculo:</label><br />
-        <select
-          style={ESTILOS.select}
+        <input
+          list="opcoes-motivo-encerramento"
+          style={ESTILOS.input}
           value={motivoEncerramento}
-          onChange={e => setMotivoEncerramento(e.target.value)}
-        >
-          <option value="">Selecione...</option>
+          onChange={e => setMotivoEncerramento(mascaraTextoLivre(e.target.value))}
+          placeholder="Digite ou selecione..."
+        />
+        <datalist id="opcoes-motivo-encerramento">
           {motivosEncerramento.map((m, i) => (
-            <option key={i} value={m}>{m}</option>
+            <option key={i} value={m} />
           ))}
-        </select>
+        </datalist>
       </div>
 
     </div>
